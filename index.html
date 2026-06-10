@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -157,14 +156,16 @@ const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
 let lessons = [], watched = {}, notes = [], currentVideoId = null, currentCat = null;
 
+// UPDATED CATEGORIES with correct keywords
 const CATS = [
-  {id:"unlock",    icon:"🌟", name:"Unlock Your Incredible Self", kw:["unlock","incredible"]},
+  {id:"unlock",    icon:"🌟", name:"Unlock Your Incredible Self", kw:["unlock","incredible","acid alkaline","meditation","artistry","listen to the attendees","acid","alkaline"]},
   {id:"coaching",  icon:"👥", name:"Group Coaching",              kw:["coach","group"]},
-  {id:"emotional", icon:"💚", name:"Emotional Clearing",          kw:["emotional","clearing","gift","grey"]},
+  {id:"goals",     icon:"🎯", name:"Goal Setting",                kw:["goal setting","goal"]},
+  {id:"emotional", icon:"💚", name:"Emotional Clearing",          kw:["emotional","clearing","gift","grey","1.0","1.1","1.4","1.5","1.6","mental rehearsal","faith continuum","yelling","ball and fire","final thoughts","disease","sickness"]},
   {id:"morning",   icon:"🌅", name:"Morning Routine",             kw:["morning","routine"]},
   {id:"strategic", icon:"🎯", name:"Strategic Visioning",         kw:["strategic","visioning"]},
   {id:"nlp",       icon:"🧠", name:"NLP Masterclass",             kw:["nlp"]},
-  {id:"intro",     icon:"🎓", name:"Free Introductions",          kw:["free","introduction","intro"]},
+  {id:"intro",     icon:"🎓", name:"Free Introductions",          kw:["free","introduction","intro","how to take full control","confidence to succeed","take full control of your mind","how to take full control of your uc mind"]},
   {id:"health",    icon:"🏥", name:"Health & Healing",            kw:["health","healing"]},
   {id:"other",     icon:"📁", name:"Other Content",               kw:[]},
 ];
@@ -173,7 +174,7 @@ function catFor(title){
   const t = title.toLowerCase();
   for(const c of CATS){
     if(c.id==="other") continue;
-    if(c.kw.some(k => t.includes(k))) return c.name;
+    if(c.kw.some(k => t.includes(k.toLowerCase()))) return c.name;
   }
   return "Other Content";
 }
@@ -208,6 +209,7 @@ function buildMenu(){
   const menu = document.getElementById("cat-menu");
   let html = "";
   for(const c of CATS){
+    if(c.id==="other") continue;
     const vids = lessons.filter(l => catFor(l.title)===c.name);
     if(!vids.length) continue;
     const wc = vids.filter(l => watched[l.id]).length;
