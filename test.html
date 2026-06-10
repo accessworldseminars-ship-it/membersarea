@@ -1,48 +1,361 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Test Login</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AccessWorld Members Area</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #1A2744;
+      --gold:  #C9A84C;
+      --teal:  #1D9E75;
+      --navy-light: #223060;
+      --white: #ffffff;
+      --grey:  #f4f6f9;
+      --text-muted: #8899aa;
+      --error: #e05555;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Open Sans', sans-serif;
+      padding: 20px;
+    }
+
+    /* Background subtle pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(29,158,117,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(201,168,76,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+      position: relative;
+    }
+
+    .card-header {
+      background: var(--navy);
+      padding: 36px 40px 28px;
+      text-align: center;
+      border-bottom: 3px solid var(--gold);
+    }
+
+    .logo {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 16px;
+      display: block;
+    }
+
+    .card-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .card-header p {
+      font-size: 13px;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .card-body {
+      padding: 36px 40px 40px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid #dde3ed;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'Open Sans', sans-serif;
+      color: var(--navy);
+      background: var(--grey);
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--teal);
+      background: var(--white);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--teal);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover  { background: #178a63; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-msg {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+      text-align: center;
+    }
+
+    .status-msg.error   { background: #fde8e8; color: var(--error); display: block; }
+    .status-msg.success { background: #e6f7f2; color: var(--teal);  display: block; }
+    .status-msg.info    { background: #eef2fa; color: var(--navy);  display: block; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #e8edf4;
+      margin: 24px 0;
+    }
+
+    .card-footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding-top: 4px;
+    }
+
+    .card-footer a {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Members content (hidden until logged in) */
+    #members-area {
+      display: none;
+    }
+
+    #members-area .card-body {
+      text-align: center;
+    }
+
+    #members-area h2 {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--navy);
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    #members-area p {
+      color: #556;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .user-badge {
+      display: inline-block;
+      background: var(--grey);
+      border: 2px solid var(--gold);
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 24px;
+      word-break: break-all;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--navy);
+      color: var(--navy);
+    }
+    .btn-outline:hover { background: var(--navy); color: var(--white); }
+  </style>
 </head>
 <body>
-    <h1>Test Login</h1>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p id="result"></p>
 
-    <script>
-        const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
-        
-        console.log("Script loaded. URL:", SUPABASE_URL);
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        async function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const resultDiv = document.getElementById('result');
-            
-            resultDiv.innerHTML = "Attempting login...";
-            
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
-                
-                if (error) {
-                    resultDiv.innerHTML = "ERROR: " + error.message;
-                } else {
-                    resultDiv.innerHTML = "SUCCESS! Welcome " + data.user.email;
-                }
-            } catch (err) {
-                resultDiv.innerHTML = "CATCH ERROR: " + err.message;
-            }
+  <!-- LOGIN FORM -->
+  <div class="card" id="login-card">
+    <div class="card-header">
+      <img
+        src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png"
+        alt="AccessWorld Seminars"
+        class="logo"
+        onerror="this.style.display='none'"
+      />
+      <h1>AccessWorld Seminars</h1>
+      <p>Members Area</p>
+    </div>
+    <div class="card-body">
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="you@email.com" autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      <button class="btn" id="login-btn" onclick="doLogin()">Sign In</button>
+
+      <div class="status-msg" id="status-msg"></div>
+
+      <hr class="divider" />
+
+      <div class="card-footer">
+        Need access? <a href="mailto:accessworldseminars@gmail.com">Contact us</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MEMBERS AREA (shown after login) -->
+  <div class="card" id="members-area">
+    <div class="card-header">
+      <img
+        src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png"
+        alt="AccessWorld Seminars"
+        class="logo"
+        onerror="this.style.display='none'"
+      />
+      <h1>AccessWorld Seminars</h1>
+      <p>Members Area</p>
+    </div>
+    <div class="card-body">
+      <h2>Welcome back! 👋</h2>
+      <p>You're logged in as:</p>
+      <div class="user-badge" id="user-email"></div>
+      <p>Your members content will appear here.</p>
+      <button class="btn btn-outline" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    //  PASTE YOUR SUPABASE KEYS HERE
+    // ============================================================
+    const SUPABASE_URL  = "https://zwwodopezadqjazhajmx.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
+    // ============================================================
+
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Check if already logged in on page load
+    sb.auth.getSession().then(({ data }) => {
+      if (data.session) showMembersArea(data.session.user.email);
+    });
+
+    // Allow Enter key to submit
+    document.getElementById('password').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+    document.getElementById('email').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+
+    function showStatus(msg, type) {
+      const el = document.getElementById('status-msg');
+      el.textContent = msg;
+      el.className = 'status-msg ' + type;
+    }
+
+    function showMembersArea(email) {
+      document.getElementById('login-card').style.display   = 'none';
+      document.getElementById('members-area').style.display = 'block';
+      document.getElementById('user-email').textContent     = email;
+    }
+
+    async function doLogin() {
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn      = document.getElementById('login-btn');
+
+      if (!email || !password) {
+        showStatus('Please enter your email and password.', 'error');
+        return;
+      }
+
+      btn.disabled     = true;
+      btn.textContent  = 'Signing in…';
+      showStatus('', '');
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+      btn.disabled    = false;
+      btn.textContent = 'Sign In';
+
+      if (error) {
+        // Give friendly error messages
+        if (error.message.includes('Invalid login credentials')) {
+          showStatus('Email or password is incorrect. Please try again.', 'error');
+        } else if (error.message.includes('Email not confirmed')) {
+          showStatus('Please confirm your email address first.', 'error');
+        } else {
+          showStatus('Error: ' + error.message, 'error');
         }
-        
-        console.log("Ready. Supabase object:", supabase);
-    </script>
+        return;
+      }
+
+      showMembersArea(data.user.email);
+    }
+
+    async function doLogout() {
+      await sb.auth.signOut();
+      document.getElementById('members-area').style.display = 'none';
+      document.getElementById('login-card').style.display   = 'block';
+      document.getElementById('email').value    = '';
+      document.getElementById('password').value = '';
+      showStatus('You have been signed out.', 'info');
+    }
+  </script>
 </body>
 </html>
