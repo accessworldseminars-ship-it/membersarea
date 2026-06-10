@@ -9,34 +9,40 @@
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
     <button onclick="login()">Login</button>
-    <pre id="result"></pre>
+    <p id="result"></p>
 
     <script>
-        // ========== PASTE YOUR SUPABASE KEYS HERE ==========
         const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
-        // ==================================================
-
+        
+        console.log("Script loaded. URL:", SUPABASE_URL);
+        
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+        
         async function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const resultDiv = document.getElementById('result');
             
-            resultDiv.innerText = "Trying to login...";
+            resultDiv.innerHTML = "Attempting login...";
             
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-            
-            if (error) {
-                resultDiv.innerText = "ERROR: " + error.message;
-            } else {
-                resultDiv.innerText = "SUCCESS! Logged in as: " + data.user.email;
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    resultDiv.innerHTML = "ERROR: " + error.message;
+                } else {
+                    resultDiv.innerHTML = "SUCCESS! Welcome " + data.user.email;
+                }
+            } catch (err) {
+                resultDiv.innerHTML = "CATCH ERROR: " + err.message;
             }
         }
+        
+        console.log("Ready. Supabase object:", supabase);
     </script>
 </body>
 </html>
