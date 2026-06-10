@@ -1,383 +1,636 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Portal - Coaching Platform</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .login-box, .disclaimer-box {
-            max-width: 500px;
-            margin: 50px auto;
-            text-align: center;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover { background: #0056b3; }
-        .tier-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .tier-1 { background: #cce5ff; color: #004085; }
-        .tier-2 { background: #d4edda; color: #155724; }
-        .tier-3 { background: #d1ecf1; color: #0c5460; }
-        .tier-4 { background: #f8d7da; color: #721c24; }
-        .lesson-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-            background: #f9f9f9;
-        }
-        .lesson-card iframe {
-            width: 100%;
-            height: 300px;
-            border: none;
-            margin-top: 10px;
-        }
-        .admin-panel {
-            border: 2px solid #28a745;
-            padding: 20px;
-            margin-top: 30px;
-            border-radius: 10px;
-            background: #f8fff8;
-        }
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .nav-buttons button {
-            width: auto;
-            background: #6c757d;
-        }
-        .logout-btn {
-            background: #dc3545;
-            width: auto;
-        }
-        h1, h2 { color: #333; }
-        hr { margin: 20px 0; }
-        .locked {
-            opacity: 0.6;
-            background: #eee;
-        }
-        .locked-message {
-            color: #999;
-            font-style: italic;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AccessWorld Seminars - Members Area</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #1A2744;
+      --gold:  #C9A84C;
+      --teal:  #1D9E75;
+      --navy-light: #223060;
+      --white: #ffffff;
+      --grey:  #f4f6f9;
+      --text-muted: #8899aa;
+      --error: #e05555;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Open Sans', sans-serif;
+      padding: 20px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(29,158,117,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(201,168,76,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+      position: relative;
+    }
+
+    .card-wide {
+      max-width: 1200px;
+    }
+
+    .card-header {
+      background: var(--navy);
+      padding: 36px 40px 28px;
+      text-align: center;
+      border-bottom: 3px solid var(--gold);
+    }
+
+    .logo {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 16px;
+      display: block;
+    }
+
+    .card-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .card-header p {
+      font-size: 13px;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .card-body {
+      padding: 36px 40px 40px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid #dde3ed;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'Open Sans', sans-serif;
+      color: var(--navy);
+      background: var(--grey);
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--teal);
+      background: var(--white);
+    }
+
+    .btn {
+      padding: 14px;
+      background: var(--teal);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover  { background: #178a63; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--navy);
+      color: var(--navy);
+    }
+    .btn-outline:hover { background: var(--navy); color: var(--white); }
+
+    .status-msg {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+      text-align: center;
+    }
+
+    .status-msg.error   { background: #fde8e8; color: var(--error); display: block; }
+    .status-msg.success { background: #e6f7f2; color: var(--teal);  display: block; }
+    .status-msg.info    { background: #eef2fa; color: var(--navy);  display: block; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #e8edf4;
+      margin: 24px 0;
+    }
+
+    /* Disclaimer box */
+    .disclaimer-box {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      background: var(--grey);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .disclaimer-box p {
+      margin-bottom: 12px;
+    }
+
+    /* Dashboard styles */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .tier-1 { background: #cce5ff; color: #004085; }
+    .tier-2 { background: #d4edda; color: #155724; }
+    .tier-3 { background: #d1ecf1; color: #0c5460; }
+    .tier-4 { background: #f8d7da; color: #721c24; }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      border-bottom: 2px solid #e8edf4;
+      padding-bottom: 16px;
+    }
+    .nav-buttons button {
+      background: transparent;
+      color: var(--navy);
+      border: 2px solid #dde3ed;
+      width: auto;
+      padding: 10px 20px;
+    }
+    .nav-buttons button:hover {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+
+    .tier-content {
+      display: none;
+    }
+
+    .lesson-card {
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin: 16px 0;
+      border-radius: 12px;
+      background: var(--grey);
+    }
+    .lesson-card h4 {
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+    .lesson-card iframe {
+      width: 100%;
+      height: 315px;
+      border: none;
+      margin-top: 15px;
+      border-radius: 8px;
+    }
+    .lesson-card.locked {
+      opacity: 0.7;
+      background: #f9f9f9;
+    }
+    .locked-message {
+      color: #999;
+      font-style: italic;
+    }
+
+    .admin-panel {
+      border: 2px solid var(--teal);
+      padding: 24px;
+      margin-top: 32px;
+      border-radius: 12px;
+      background: #f0fdf9;
+    }
+    .admin-panel h3 {
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    .flex-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .flex-row input, .flex-row select {
+      flex: 1;
+    }
+
+    @media (max-width: 768px) {
+      .card-body { padding: 24px; }
+      .nav-buttons button { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-<div class="container" id="app">
-    <!-- LOGIN VIEW -->
-    <div id="view-login" class="login-box">
-        <h1>Member Portal</h1>
-        <p>Enter your credentials to access coaching materials</p>
-        <input type="email" id="login-email" placeholder="Email Address">
-        <input type="password" id="login-password" placeholder="Password">
-        <button onclick="login()">Login</button>
-        <p><a href="#" onclick="resetPassword()">Forgot password?</a></p>
+
+<!-- LOGIN VIEW -->
+<div id="view-login" class="card">
+  <div class="card-header">
+    <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+    <h1>AccessWorld Seminars</h1>
+    <p>Members Area</p>
+  </div>
+  <div class="card-body">
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="you@email.com">
     </div>
-
-    <!-- DISCLAIMER VIEW (shown first time only) -->
-    <div id="view-disclaimer" style="display:none;">
-        <div class="disclaimer-box">
-            <h2>Legal Disclaimer & Non-Disclosure Agreement</h2>
-            <div style="border:1px solid #ddd; padding:15px; margin:15px 0; text-align:left; height:200px; overflow-y:scroll;">
-                <p><strong>IMPORTANT NOTICE:</strong></p>
-                <p>The information provided in this program is for educational and informational purposes only. The views and opinions expressed are those of the author/facilitator and should not be considered legal, medical, financial, or professional advice.</p>
-                <p>You are solely responsible for your own decisions and actions. Always seek the advice of qualified professionals for any medical, legal, or financial matters.</p>
-                <hr>
-                <p><strong>NON-DISCLOSURE AGREEMENT:</strong></p>
-                <p>You agree not to share, distribute, or reproduce any materials, videos, documents, or login credentials from this website with any third party. All content is for your personal use only.</p>
-                <p>You understand that sharing access or content violates these terms and may result in immediate termination of your membership without refund.</p>
-                <p><strong>Encouragement:</strong> We encourage you to invite friends and family to attend a free introductory session or seminar, after which they may purchase their own membership.</p>
-            </div>
-            <label style="display:block; margin:10px 0;">
-                <input type="checkbox" id="agree-checkbox"> I have read and agree to the Disclaimer and NDA
-            </label>
-            <button onclick="signDisclaimer()">I Agree & Continue</button>
-        </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="••••••••">
     </div>
-
-    <!-- DASHBOARD VIEW (after login + disclaimer) -->
-    <div id="view-dashboard" style="display:none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-            <h1>Welcome, <span id="user-email"></span></h1>
-            <div>
-                <span id="user-tier-badge" class="tier-badge"></span>
-                <button class="logout-btn" onclick="logout()">Logout</button>
-            </div>
-        </div>
-        <hr>
-
-        <!-- Navigation by Tier -->
-        <div class="nav-buttons">
-            <button onclick="showTierContent('tier1')">Tier 1 - Core</button>
-            <button onclick="showTierContent('tier2')">Tier 2 - Advanced</button>
-            <button onclick="showTierContent('tier3')">Tier 3 - Lifelong</button>
-            <button onclick="showTierContent('tier4')">Tier 4 - Inner Circle</button>
-        </div>
-
-        <!-- Content areas for each tier -->
-        <div id="tier1-content" class="tier-content"></div>
-        <div id="tier2-content" class="tier-content" style="display:none;"></div>
-        <div id="tier3-content" class="tier-content" style="display:none;"></div>
-        <div id="tier4-content" class="tier-content" style="display:none;"></div>
-
-        <!-- ADMIN PANEL (only visible to you) -->
-        <div id="admin-panel" class="admin-panel" style="display:none;">
-            <h2>🔐 Admin Panel - Register New Client</h2>
-            <p>Creates account and sends welcome email automatically</p>
-            <input type="email" id="new-client-email" placeholder="Client Email">
-            <input type="password" id="new-client-password" placeholder="Temporary Password">
-            <select id="new-client-tier">
-                <option value="1">Tier 1 ($199/mo)</option>
-                <option value="2">Tier 2 ($1495/yr)</option>
-                <option value="3">Tier 3 ($3595 Lifelong)</option>
-                <option value="4">Tier 4 Inner Circle ($25,000)</option>
-            </select>
-            <button onclick="adminCreateClient()" style="background:#28a745;">Create Client & Send Email</button>
-        </div>
+    <button class="btn btn-block" onclick="doLogin()">Sign In</button>
+    <div class="status-msg" id="status-msg"></div>
+    <hr class="divider">
+    <div class="card-footer" style="text-align:center;">
+      <a href="#" onclick="resetPassword()" style="color:var(--teal);">Forgot password?</a>
     </div>
+  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- DISCLAIMER VIEW -->
+<div id="view-disclaimer" class="card" style="display:none;">
+  <div class="card-header">
+    <h1>Legal Agreement</h1>
+    <p>Please Read Carefully</p>
+  </div>
+  <div class="card-body">
+    <div class="disclaimer-box">
+      <p><strong>IMPORTANT NOTICE:</strong></p>
+      <p>The information provided in this program is for educational and informational purposes only. The views and opinions expressed are those of the author/facilitator and should not be considered legal, medical, financial, or professional advice.</p>
+      <p>You are solely responsible for your own decisions and actions. Always seek the advice of qualified professionals for any medical, legal, or financial matters.</p>
+      <hr>
+      <p><strong>NON-DISCLOSURE AGREEMENT:</strong></p>
+      <p>You agree not to share, distribute, or reproduce any materials, videos, documents, or login credentials from this website with any third party. All content is for your personal use only.</p>
+      <p>You understand that sharing access or content violates these terms and may result in immediate termination of your membership without refund.</p>
+      <p><strong>Encouragement:</strong> We encourage you to invite friends and family to attend a free introductory session or seminar, after which they may purchase their own membership.</p>
+    </div>
+    <label style="display:block; margin:16px 0;">
+      <input type="checkbox" id="agree-checkbox"> I have read and agree to the Disclaimer and NDA
+    </label>
+    <button class="btn btn-block" onclick="signDisclaimer()">I Agree & Continue</button>
+  </div>
+</div>
+
+<!-- DASHBOARD VIEW -->
+<div id="view-dashboard" class="card card-wide" style="display:none;">
+  <div class="card-header">
+    <h1>AccessWorld Seminars</h1>
+    <p>Members Dashboard</p>
+  </div>
+  <div class="card-body">
+    <div class="dashboard-header">
+      <div class="user-info">
+        <span>Welcome, <strong id="user-email"></strong></span>
+        <span id="user-tier-badge" class="tier-badge"></span>
+      </div>
+      <button class="btn-outline btn" style="width:auto; padding:8px 20px;" onclick="doLogout()">Sign Out</button>
+    </div>
+    <hr>
+
+    <div class="nav-buttons">
+      <button onclick="showTierContent('tier1')">Tier 1 - Core</button>
+      <button onclick="showTierContent('tier2')">Tier 2 - Advanced</button>
+      <button onclick="showTierContent('tier3')">Tier 3 - Lifelong</button>
+      <button onclick="showTierContent('tier4')">Tier 4 - Inner Circle</button>
+    </div>
+
+    <div id="tier1-content" class="tier-content"></div>
+    <div id="tier2-content" class="tier-content"></div>
+    <div id="tier3-content" class="tier-content"></div>
+    <div id="tier4-content" class="tier-content"></div>
+
+    <!-- Admin Panel (only visible to you) -->
+    <div id="admin-panel" class="admin-panel" style="display:none;">
+      <h3>🔐 Admin: Register New Client</h3>
+      <p style="margin-bottom:16px;">Creates account and sends welcome email automatically.</p>
+      <div class="flex-row">
+        <input type="email" id="new-email" placeholder="Client Email">
+        <input type="password" id="new-password" placeholder="Temporary Password">
+        <select id="new-tier">
+          <option value="1">Tier 1 ($199/mo)</option>
+          <option value="2">Tier 2 ($1495/yr)</option>
+          <option value="3">Tier 3 ($3595 Lifelong)</option>
+          <option value="4">Tier 4 Inner Circle ($25,000)</option>
+        </select>
+        <button class="btn" onclick="adminCreateUser()" style="background:var(--teal);">Create Client</button>
+      </div>
+      <div id="admin-msg" style="margin-top:12px; font-size:13px;"></div>
+    </div>
+  </div>
+</div>
+
 <script>
-    // ========== STEP 1: PASTE YOUR SUPABASE KEYS HERE ==========
-    const SUPABASE_URL = " https://zwwodopezadqjazhajmx.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
-    // ============================================================
+  // ========== PASTE YOUR SUPABASE KEYS HERE ==========
+  const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
+  // ===================================================
+  // ALSO CHANGE THE ADMIN EMAIL BELOW (line ~290)
+  // ===================================================
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    let currentUser = null;
-    let currentTier = 0;
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let currentUser = null;
+  let currentTier = 0;
 
-    // ========== AUTHENTICATION FUNCTIONS ==========
-    async function login() {
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) return alert("Login failed: " + error.message);
-        
-        currentUser = data.user;
-        await loadUserProfile();
+  // ========== AUTH ==========
+  async function doLogin() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const statusDiv = document.getElementById('status-msg');
+
+    if (!email || !password) {
+      statusDiv.className = 'status-msg error';
+      statusDiv.textContent = 'Please enter email and password.';
+      return;
     }
 
-    async function logout() {
-        await supabase.auth.signOut();
-        location.reload();
+    statusDiv.className = 'status-msg info';
+    statusDiv.textContent = 'Signing in...';
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      statusDiv.className = 'status-msg error';
+      if (error.message.includes('Invalid login')) {
+        statusDiv.textContent = 'Email or password incorrect.';
+      } else {
+        statusDiv.textContent = 'Error: ' + error.message;
+      }
+      return;
     }
 
-    async function resetPassword() {
-        const email = document.getElementById('login-email').value;
-        if (!email) return alert("Enter your email address first.");
-        
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin
-        });
-        if (error) alert("Error: " + error.message);
-        else alert("Password reset email sent! Check your inbox.");
-    }
+    currentUser = data.user;
+    await loadUserProfile();
+  }
 
-    // ========== LOAD USER PROFILE & CHECK DISCLAIMER ==========
-    async function loadUserProfile() {
-        const { data: profile, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', currentUser.id)
-            .single();
-        
-        if (error && error.code === 'PGRST116') {
-            // No profile exists - create one
-            const { error: insertError } = await supabase
-                .from('profiles')
-                .insert([{ id: currentUser.id, email: currentUser.email, membership_tier: 1, disclaimer_signed: false }]);
-            if (insertError) return alert("Error creating profile: " + insertError.message);
-            currentTier = 1;
-            document.getElementById('view-dashboard').style.display = 'none';
-            document.getElementById('view-disclaimer').style.display = 'block';
-            document.getElementById('view-login').style.display = 'none';
-        } else if (profile) {
-            currentTier = profile.membership_tier;
-            if (!profile.disclaimer_signed) {
-                document.getElementById('view-dashboard').style.display = 'none';
-                document.getElementById('view-disclaimer').style.display = 'block';
-                document.getElementById('view-login').style.display = 'none';
-            } else {
-                showDashboard();
-            }
-        }
-    }
+  async function loadUserProfile() {
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', currentUser.id)
+      .single();
 
-    async function signDisclaimer() {
-        const agreed = document.getElementById('agree-checkbox').checked;
-        if (!agreed) return alert("You must agree to the disclaimer and NDA to continue.");
-        
-        const { error } = await supabase
-            .from('profiles')
-            .update({ disclaimer_signed: true })
-            .eq('id', currentUser.id);
-        
-        if (error) return alert("Error saving: " + error.message);
+    if (error && error.code === 'PGRST116') {
+      const { error: insertErr } = await supabase
+        .from('profiles')
+        .insert([{ id: currentUser.id, email: currentUser.email, membership_tier: 1, disclaimer_signed: false }]);
+      if (insertErr) return alert("Profile error: " + insertErr.message);
+      currentTier = 1;
+      showDisclaimer();
+    } else if (profile) {
+      currentTier = profile.membership_tier;
+      if (!profile.disclaimer_signed) {
+        showDisclaimer();
+      } else {
         showDashboard();
+      }
+    }
+  }
+
+  function showDisclaimer() {
+    document.getElementById('view-login').style.display = 'none';
+    document.getElementById('view-disclaimer').style.display = 'block';
+    document.getElementById('view-dashboard').style.display = 'none';
+  }
+
+  async function signDisclaimer() {
+    const agreed = document.getElementById('agree-checkbox').checked;
+    if (!agreed) {
+      alert("You must agree to the disclaimer and NDA.");
+      return;
+    }
+    const { error } = await supabase
+      .from('profiles')
+      .update({ disclaimer_signed: true })
+      .eq('id', currentUser.id);
+    if (error) return alert("Error: " + error.message);
+    showDashboard();
+  }
+
+  async function showDashboard() {
+    document.getElementById('view-login').style.display = 'none';
+    document.getElementById('view-disclaimer').style.display = 'none';
+    document.getElementById('view-dashboard').style.display = 'block';
+    document.getElementById('user-email').innerText = currentUser.email;
+
+    const badge = document.getElementById('user-tier-badge');
+    badge.className = `tier-badge tier-${currentTier}`;
+    const tierNames = {1:"Tier 1 - Core", 2:"Tier 2 - Advanced", 3:"Tier 3 - Lifelong", 4:"Tier 4 - Inner Circle"};
+    badge.innerText = tierNames[currentTier];
+
+    await loadLessons();
+
+    // Show admin panel only for your email
+    if (currentUser.email === "bossejosh@yahoo.com") {
+      document.getElementById('admin-panel').style.display = 'block';
     }
 
-    // ========== MAIN DASHBOARD ==========
-    async function showDashboard() {
-        document.getElementById('view-login').style.display = 'none';
-        document.getElementById('view-disclaimer').style.display = 'none';
-        document.getElementById('view-dashboard').style.display = 'block';
-        document.getElementById('user-email').innerText = currentUser.email;
-        
-        // Show tier badge
-        const badge = document.getElementById('user-tier-badge');
-        badge.className = `tier-badge tier-${currentTier}`;
-        const tierNames = {1:"Tier 1 - Core Access",2:"Tier 2 - Advanced Access",3:"Tier 3 - Lifelong Access",4:"Tier 4 - Inner Circle"};
-        badge.innerText = tierNames[currentTier] || `Tier ${currentTier}`;
-        
-        // Load all lessons
-        await loadLessons();
-        
-        // Show admin panel if admin email
-        if (currentUser.email === "YOUR_EMAIL@example.com") {
-            document.getElementById('admin-panel').style.display = 'block';
-        }
-        
-        // Show Tier 1 by default
-        showTierContent('tier1');
+    showTierContent('tier1');
+  }
+
+  async function loadLessons() {
+    const { data: lessons, error } = await supabase
+      .from('lessons')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      console.error("Lessons error:", error);
+      return;
     }
 
-    async function loadLessons() {
-        const { data: lessons, error } = await supabase
-            .from('lessons')
-            .select('*')
-            .order('sort_order', { ascending: true });
-        
-        if (error) return console.error("Error loading lessons:", error);
-        
-        // Render for each tier
-        for (let tier = 1; tier <= 4; tier++) {
-            const container = document.getElementById(`tier${tier}-content`);
-            if (!container) continue;
-            
-            const tierLessons = lessons.filter(l => l.tier_required <= tier);
-            if (tierLessons.length === 0) {
-                container.innerHTML = '<p class="locked-message">No lessons available for this tier yet.</p>';
-                continue;
-            }
-            
-            let html = '<h3>Available Videos</h3>';
-            for (let lesson of tierLessons) {
-                const isUnlocked = lesson.tier_required <= currentTier;
-                if (isUnlocked) {
-                    html += `
-                        <div class="lesson-card">
-                            <h4>${escapeHtml(lesson.title)}</h4>
-                            <p>${escapeHtml(lesson.description || '')}</p>
-                            <iframe src="${lesson.google_drive_embed_url}" allowfullscreen></iframe>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="lesson-card locked">
-                            <h4>🔒 ${escapeHtml(lesson.title)}</h4>
-                            <p class="locked-message">Upgrade to Tier ${lesson.tier_required} to unlock this content.</p>
-                        </div>
-                    `;
-                }
-            }
-            container.innerHTML = html;
-        }
-    }
+    for (let tier = 1; tier <= 4; tier++) {
+      const container = document.getElementById(`tier${tier}-content`);
+      if (!container) continue;
 
-    function showTierContent(tier) {
-        for (let i = 1; i <= 4; i++) {
-            const el = document.getElementById(`tier${i}-content`);
-            if (el) el.style.display = 'none';
-        }
-        document.getElementById(`${tier}-content`).style.display = 'block';
-    }
+      const tierLessons = lessons.filter(l => l.tier_required <= tier);
+      if (tierLessons.length === 0) {
+        container.innerHTML = '<p>No lessons available for this tier yet.</p>';
+        continue;
+      }
 
-    // ========== ADMIN: CREATE NEW CLIENT ==========
-    async function adminCreateClient() {
-        const email = document.getElementById('new-client-email').value;
-        const password = document.getElementById('new-client-password').value;
-        const tier = parseInt(document.getElementById('new-client-tier').value);
-        
-        if (!email || !password) return alert("Fill in email and password.");
-        
-        // Sign up the user
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password
-        });
-        
-        if (error) return alert("Auth Error: " + error.message);
-        
-        // Add profile
-        const { profileError } = await supabase
-            .from('profiles')
-            .insert([{ id: data.user.id, email: email, membership_tier: tier, disclaimer_signed: false }]);
-        
-        if (profileError) {
-            alert("Account created but profile error: " + profileError.message);
+      let html = '<h3>Available Content</h3>';
+      for (let lesson of tierLessons) {
+        const unlocked = lesson.tier_required <= currentTier;
+        if (unlocked) {
+          html += `
+            <div class="lesson-card">
+              <h4>${escapeHtml(lesson.title)}</h4>
+              <p>${escapeHtml(lesson.description || '')}</p>
+              <iframe src="${lesson.google_drive_embed_url}" allowfullscreen></iframe>
+            </div>
+          `;
         } else {
-            alert(`✅ Success! ${email} registered at Tier ${tier}. Welcome email sent.`);
-            document.getElementById('new-client-email').value = '';
-            document.getElementById('new-client-password').value = '';
+          html += `
+            <div class="lesson-card locked">
+              <h4>🔒 ${escapeHtml(lesson.title)}</h4>
+              <p class="locked-message">Upgrade to Tier ${lesson.tier_required} to unlock.</p>
+            </div>
+          `;
         }
+      }
+      container.innerHTML = html;
+    }
+  }
+
+  function showTierContent(tier) {
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById(`tier${i}-content`);
+      if (el) el.style.display = 'none';
+    }
+    document.getElementById(`${tier}-content`).style.display = 'block';
+  }
+
+  async function adminCreateUser() {
+    const email = document.getElementById('new-email').value.trim();
+    const password = document.getElementById('new-password').value;
+    const tier = parseInt(document.getElementById('new-tier').value);
+    const msgDiv = document.getElementById('admin-msg');
+
+    if (!email || !password) {
+      msgDiv.style.color = 'red';
+      msgDiv.innerText = 'Fill in email and password.';
+      return;
     }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+    msgDiv.innerText = 'Creating account...';
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      msgDiv.style.color = 'red';
+      msgDiv.innerText = 'Error: ' + error.message;
+      return;
     }
 
-    // Check if already logged in on page load
-    window.onload = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-            currentUser = user;
-            await loadUserProfile();
-        }
-    };
+    const { profileError } = await supabase
+      .from('profiles')
+      .insert([{ id: data.user.id, email, membership_tier: tier, disclaimer_signed: false }]);
+
+    if (profileError) {
+      msgDiv.style.color = 'orange';
+      msgDiv.innerText = 'Account created but profile error: ' + profileError.message;
+    } else {
+      msgDiv.style.color = 'green';
+      msgDiv.innerText = `✅ Success! ${email} created at Tier ${tier}. Welcome email sent.`;
+      document.getElementById('new-email').value = '';
+      document.getElementById('new-password').value = '';
+    }
+  }
+
+  async function resetPassword() {
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+      alert("Enter your email address first.");
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin
+    });
+    if (error) alert("Error: " + error.message);
+    else alert("Password reset email sent! Check your inbox.");
+  }
+
+  async function doLogout() {
+    await supabase.auth.signOut();
+    location.reload();
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  window.onload = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      currentUser = user;
+      await loadUserProfile();
+    }
+  };
 </script>
 </body>
 </html>
