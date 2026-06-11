@@ -16,7 +16,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 input[type=email],input[type=password]{width:100%;padding:13px 15px;margin:7px 0;border:1.5px solid #ddd;border-radius:9px;font-size:15px;outline:none;transition:border .2s}
 input:focus{border-color:#1D9E75}
 .err{color:#dc3545;font-size:13px;margin-top:8px;min-height:18px}
-.btn{border:none;border-radius:9px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn{border:none;border-radius:9px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
 .btn-green{background:#1D9E75;color:#fff;padding:13px 20px;font-size:15px;width:100%;justify-content:center}
 .btn-green:hover{background:#178a65}
 .btn-red{background:#dc3545;color:#fff;padding:8px 18px;font-size:13px}
@@ -25,32 +25,35 @@ input:focus{border-color:#1D9E75}
 .btn-gray:hover{background:#ddd}
 .btn-gold{background:#C9A84C;color:#fff;padding:9px 18px;font-size:14px}
 .btn-gold:hover{background:#b8933f}
-.btn-outline{background:none;border:1.5px solid #C9A84C;color:#C9A84C;padding:8px 16px;font-size:13px}
+.btn-outline{background:none;border:1.5px solid #C9A84C;color:#C9A84C;padding:8px 16px;font-size:13px;border-radius:9px}
 .btn-outline:hover{background:#C9A84C;color:#fff}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:18px;border-bottom:2px solid #f0f0f0}
 .header-left{display:flex;align-items:center;gap:12px}
 .header-left img{height:40px}
 .header-left h1{font-size:21px;color:#1A2744;font-weight:700}
 .header-right{display:flex;align-items:center;gap:10px}
-.tier-badge{background:#1D9E75;color:#fff;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.3px}
+.tier-badge{background:#1D9E75;color:#fff;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
 .stat-card{background:#f7f8fa;border-radius:10px;padding:14px;text-align:center;border:1px solid #eee}
 .stat-num{font-size:30px;font-weight:800;color:#1A2744}
 .stat-lbl{font-size:11px;color:#999;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
-.tab-bar{display:flex;gap:0;margin-bottom:22px;border-bottom:2px solid #eee;overflow-x:auto}
+.tab-bar{display:flex;margin-bottom:22px;border-bottom:2px solid #eee;overflow-x:auto;gap:0}
 .tab{padding:11px 20px;cursor:pointer;font-size:14px;font-weight:600;color:#aaa;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
 .tab:hover{color:#555}
 .tab.active{color:#1A2744;border-bottom-color:#C9A84C}
 .two-col{display:flex;gap:22px;min-height:480px}
 .left-menu{width:250px;flex-shrink:0;background:#f8f9fa;border-radius:12px;padding:14px;max-height:640px;overflow-y:auto;scrollbar-width:thin}
 .left-menu h4{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#aaa;margin-bottom:12px;padding:0 4px}
-.menu-item{padding:11px 12px;margin-bottom:5px;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.menu-item{padding:11px 12px;margin-bottom:5px;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:space-between}
 .menu-item:hover{background:#e8f9f1}
 .menu-item.active{background:#1D9E75;color:#fff}
+.menu-item.active .menu-count{color:rgba(255,255,255,.6)}
+.menu-item.active .menu-left{color:#fff}
 .menu-left{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#1A2744;flex:1;min-width:0}
 .menu-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .menu-count{font-size:11px;color:#bbb;flex-shrink:0}
 .w-badge{font-size:10px;background:#C9A84C;color:#fff;padding:1px 6px;border-radius:10px;flex-shrink:0}
+.menu-item.active .w-badge{background:rgba(255,255,255,.3)}
 .right-col{flex:1;min-width:0}
 .cat-header{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #eee}
 .cat-header h2{font-size:17px;color:#1A2744;font-weight:700}
@@ -67,8 +70,8 @@ input:focus{border-color:#1D9E75}
 .player-box{margin-top:14px;background:#f8f9fa;border-radius:12px;padding:20px;display:none;border:1px solid #eee}
 .player-box.on{display:block}
 .player-box h3{color:#1A2744;font-size:16px;font-weight:700;margin-bottom:8px}
-.player-desc{color:#555;font-size:13px;line-height:1.65;margin-bottom:14px;max-height:80px;overflow:hidden;transition:max-height .3s}
-.player-desc.expanded{max-height:600px}
+.player-desc{color:#555;font-size:13px;line-height:1.65;margin-bottom:14px;max-height:72px;overflow:hidden;transition:max-height .3s}
+.player-desc.expanded{max-height:500px}
 .desc-toggle{font-size:12px;color:#1D9E75;cursor:pointer;margin-bottom:12px;display:inline-block}
 .player-box iframe{width:100%;height:400px;border:none;border-radius:8px;background:#111}
 .player-actions{display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
@@ -97,11 +100,12 @@ textarea:focus{border-color:#1D9E75}
 .note-del{background:none;border:1px solid #eee;color:#ccc;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;margin-top:10px;transition:all .2s}
 .note-del:hover{background:#fee;color:#c00;border-color:#fcc}
 .empty{text-align:center;color:#bbb;padding:50px 20px;font-size:14px}
-@media(max-width:720px){.two-col{flex-direction:column}.left-menu{width:100%;max-height:220px}.stats{grid-template-columns:repeat(3,1fr)}.player-box iframe{height:240px}}
+@media(max-width:720px){.two-col{flex-direction:column}.left-menu{width:100%;max-height:220px}.stats{grid-template-columns:repeat(3,1fr)}.player-box iframe{height:240px}body{padding:12px}.container{padding:18px}}
 </style>
 </head>
 <body>
 <div class="container">
+
   <div id="login-section">
     <div class="login-box">
       <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" onerror="this.style.display='none'" alt="AccessWorld">
@@ -125,6 +129,7 @@ textarea:focus{border-color:#1D9E75}
         <button class="btn btn-red" onclick="logout()">Sign Out</button>
       </div>
     </div>
+
     <div class="stats">
       <div class="stat-card"><div class="stat-num" id="s-total">0</div><div class="stat-lbl">Videos</div></div>
       <div class="stat-card"><div class="stat-num" id="s-watched">0</div><div class="stat-lbl">Watched</div></div>
@@ -132,25 +137,25 @@ textarea:focus{border-color:#1D9E75}
     </div>
 
     <div class="tab-bar">
-      <div class="tab active" id="btn-t1" onclick="showView('tier',1)">🎓 Tier 1</div>
-      <div class="tab" id="btn-t2" onclick="showView('tier',2)">🎓 Tier 2</div>
-      <div class="tab" id="btn-t3" onclick="showView('tier',3)">🎓 Tier 3</div>
+      <div class="tab active" id="btn-t1" onclick="showView('tier',1)">⭐ Tier 1</div>
+      <div class="tab" id="btn-t2" onclick="showView('tier',2)">🚀 Tier 2</div>
+      <div class="tab" id="btn-t3" onclick="showView('tier',3)">🏆 Tier 3</div>
       <div class="tab" id="btn-notes" onclick="showView('notes',0)">📝 My Notes</div>
     </div>
 
-    <div id="view-tier1"></div>
-    <div id="view-tier2" style="display:none"></div>
-    <div id="view-tier3" style="display:none"></div>
+    <div id="view-t1"></div>
+    <div id="view-t2" style="display:none"></div>
+    <div id="view-t3" style="display:none"></div>
 
     <div id="view-notes" style="display:none">
       <div class="notes-wrap">
         <div class="notes-back">
-          <button class="btn btn-outline" onclick="showView('tier', lastTierTab)">← Back to Library</button>
+          <button class="btn-outline" onclick="showView('tier',lastTier)">← Back to Library</button>
         </div>
         <div class="note-form">
           <h3>✏️ Add a Note</h3>
-          <input type="text" id="n-title" placeholder="Title — e.g. Coaching Lesson 3">
-          <textarea id="n-body" placeholder="Write your notes here..."></textarea>
+          <input type="text" id="n-title" placeholder="Title — e.g. NLP Session 3, key insight">
+          <textarea id="n-body" placeholder="Write your notes here — what you learned, where you're up to, what resonated..."></textarea>
           <button class="btn btn-gold" style="margin-top:10px" onclick="saveNote()">Save Note</button>
         </div>
         <div id="notes-list"></div>
@@ -161,377 +166,290 @@ textarea:focus{border-color:#1D9E75}
 
 <script>
 const SB_URL = "https://zwwodopezadqjazhajmx.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg"; // <-- REPLACE WITH YOUR REAL KEY
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-let lessons = [], watched = {}, notes = [];
-let currentVideoId = null, currentUserTier = 1, lastTierTab = 1;
-let builtTiers = {};
+let allVideos=[], watched={}, notes=[];
+let currentUserTier=1, lastTier=1, currentVideoId=null;
+let builtTiers={};
 
-// ==================== CATEGORIES - SIMPLIFIED & RELIABLE ====================
-const CATS = [
-  {id:"nlp", icon:"🧠", name:"NLP Masterclass", kw:["nlp","unlock the power of stories","arcing energy"]},
-  {id:"morning", icon:"🌅", name:"Morning Routine", kw:["morning routine"]},
-  {id:"coaching2024", icon:"👥", name:"Coaching 2024", kw:["2024"]},
-  {id:"coaching2025", icon:"👥", name:"Coaching 2025", kw:["2025"]},
-  {id:"coaching2026", icon:"👥", name:"Coaching 2026", kw:["2026"]},
-  {id:"emotional", icon:"💚", name:"Emotional Clearing", kw:["emotional clearing","gift process","yelling therapy","ball and fire","ultimate freedom","womb of eternity"]},
-  {id:"health", icon:"🏥", name:"Health & Healing", kw:["health","healing","acid alkaline"]},
-  {id:"relationships", icon:"❤️", name:"Relationships", kw:["relationship","free introduction part","attachment styles"]},
-  {id:"goals", icon:"🎯", name:"Goal Setting", kw:["goal setting"]},
-  {id:"coachcert", icon:"📜", name:"World Class Coach Training", kw:["coaching lesson","world class coach","learning to coach yourself"]},
-  {id:"intro", icon:"🎓", name:"Free Introductions", kw:["free introduction","nlp for beginners","confidence to succeed","full control of your uc mind","money mindset","feeling stuck","incantations"]},
-  {id:"meditation", icon:"🧘", name:"Meditations & Processes", kw:["guided breath meditation","the gift","ultimate freedom technique","dancing with fear","blue hat","excitement meditation","strategic visioning audio"]},
-  {id:"twoday", icon:"📅", name:"2 Day Seminar", kw:["emotional mastery seminar","holistic health webinar","life skills","nsr","nervous system reprogramming"]}
+const CATS=[
+  {id:"unlock",       icon:"🌟", name:"Unlock Your Incredible Self",   kw:["unlock your incredible","unlock -"]},
+  {id:"morning",      icon:"🌅", name:"Morning Routine",               kw:["morning routine"]},
+  {id:"groupcoach",   icon:"👥", name:"Group Coaching & Mentoring",    kw:["group coaching"]},
+  {id:"goals",        icon:"🎯", name:"Goal Setting",                  kw:["goal setting","goal set"]},
+  {id:"emotional",    icon:"💚", name:"Emotional Clearing",            kw:["emotional clearing"]},
+  {id:"health",       icon:"🏥", name:"Health & Healing",              kw:["health","healing","pain & healing","healing sadness","healing the inner child","acid alkaline"]},
+  {id:"relationships",icon:"❤️", name:"Relationships",                 kw:["relationship","attachment styles"]},
+  {id:"nlp",          icon:"🧠", name:"NLP Masterclass",               kw:["nlp","incantations & the","money mindset","tapping","confidence to succeed","take full control","strategic visioning","coach yourself"]},
+  {id:"coachcert",    icon:"📜", name:"World Class Coach Training",    kw:["coaching lesson","world class coach","state elicitation","nlp foundation principles"]},
+  {id:"intro",        icon:"🎓", name:"Free Introductions",            kw:["- free introduction","nlp for beginners","feeling stuck - free"]},
+  {id:"meditation",   icon:"🧘", name:"Meditations & Processes",       kw:["meditation -"]},
+  {id:"seminar",      icon:"🎪", name:"2 Day Seminars",                kw:["seminar","holistic health webinar","life skills","nsr"]},
+  {id:"bonus",        icon:"🎁", name:"Bonus Resources",               kw:[]},
 ];
 
-// Simple category matcher - returns first matching category
-function getCategoryForVideo(video){
-  const title = (video.title || "").toLowerCase();
-  for(const c of CATS){
-    if(c.kw.some(k => title.includes(k.toLowerCase()))){
-      return c;
-    }
-  }
-  return {id:"other", icon:"📁", name:"Other Content"};
+function catFor(v){
+  if(v.category) return v.category;
+  const t=(v.title||"").toLowerCase();
+  for(const c of CATS){ if(c.id==="bonus") continue; if(c.kw.some(k=>t.includes(k))) return c.name; }
+  return "Bonus Resources";
 }
 
-// ==================== LOCAL STORAGE ====================
 function loadLocal(){
-  const savedWatched = localStorage.getItem("aw_watched");
-  if(savedWatched) watched = JSON.parse(savedWatched);
-  const savedNotes = localStorage.getItem("aw_notes");
-  if(savedNotes) notes = JSON.parse(savedNotes);
+  watched=JSON.parse(localStorage.getItem("aw_watched")||"{}");
+  notes=JSON.parse(localStorage.getItem("aw_notes")||"[]");
 }
 function saveWatched(){ localStorage.setItem("aw_watched",JSON.stringify(watched)); }
-function saveNotes(){ localStorage.setItem("aw_notes", JSON.stringify(notes)); }
+function saveNotes(){   localStorage.setItem("aw_notes",  JSON.stringify(notes));   }
 
-// ==================== AUTH ====================
 async function login(){
-  const email = document.getElementById("email").value.trim();
-  const pw = document.getElementById("password").value;
-  const errEl = document.getElementById("login-error");
-  errEl.innerText = "";
-  
-  const {data, error} = await sb.auth.signInWithPassword({email, password:pw});
-  if(error){ 
-    errEl.innerText = error.message; 
-    return; 
-  }
-  
-  // Get user's tier - default to 1 if no profile
-  try {
-    const {data: profile} = await sb.from("profiles").select("membership_tier").eq("email", email).single();
-    currentUserTier = profile?.membership_tier || 1;
-  } catch(e){ 
-    currentUserTier = 1; 
-  }
-  
-  // Tier 4 members get full access (show tiers 1-3)
-  if(currentUserTier >= 4) currentUserTier = 3;
-  
-  document.getElementById("tier-badge").innerText = currentUserTier >= 3 ? "Full Access" : `Tier ${currentUserTier} Member`;
+  const email=document.getElementById("email").value.trim();
+  const pw=document.getElementById("password").value;
+  const errDiv=document.getElementById("login-error");
+  errDiv.innerText="";
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pw});
+  if(error){ errDiv.innerText=error.message; return; }
+  try{
+    const {data:profile}=await sb.from("profiles").select("membership_tier").eq("email",email).single();
+    currentUserTier=Math.min(profile?.membership_tier||1,3);
+  }catch(e){ currentUserTier=1; }
+  document.getElementById("tier-badge").innerText=currentUserTier>=3?"Full Access":`Tier ${currentUserTier} Member`;
   await boot();
 }
 
-async function logout(){
-  await sb.auth.signOut();
-  location.reload();
-}
+async function logout(){ await sb.auth.signOut(); location.reload(); }
 
 async function boot(){
   loadLocal();
-  const {data, error} = await sb.from("lessons").select("*").order("sort_order", {ascending:true});
+  const {data,error}=await sb.from("lessons").select("*").order("sort_order");
   if(error){ console.error(error); return; }
-  lessons = data || [];
-  
-  // Debug: count videos by tier
-  console.log("Tier 1 count:", lessons.filter(l => l.tier_required === 1).length);
-  console.log("Tier 2 count:", lessons.filter(l => l.tier_required === 2).length);
-  console.log("Tier 3 count:", lessons.filter(l => l.tier_required === 3).length);
-  
-  document.getElementById("login-section").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-  showView("tier", 1);
+  allVideos=data||[];
+  document.getElementById("login-section").style.display="none";
+  document.getElementById("dashboard").style.display="block";
   updateStats();
+  showView("tier",1);
 }
 
-// ==================== VIEW SWITCHING ====================
-function showView(type, tier){
-  ["view-tier1","view-tier2","view-tier3","view-notes"].forEach(id => document.getElementById(id).style.display = "none");
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-
-  if(type === "notes"){
-    document.getElementById("view-notes").style.display = "block";
+function showView(type,tier){
+  ["view-t1","view-t2","view-t3","view-notes"].forEach(id=>{
+    document.getElementById(id).style.display="none";
+  });
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  if(type==="notes"){
+    document.getElementById("view-notes").style.display="block";
     document.getElementById("btn-notes").classList.add("active");
     renderNotes();
   } else {
-    lastTierTab = tier;
-    document.getElementById("view-tier"+tier).style.display = "block";
-    document.getElementById("btn-t"+tier).classList.add("active");
-    if(!builtTiers[tier]){
-      buildTierView(tier);
-      builtTiers[tier] = true;
-    } else {
-      refreshTierProgress(tier);
-    }
+    lastTier=tier;
+    document.getElementById(`view-t${tier}`).style.display="block";
+    document.getElementById(`btn-t${tier}`).classList.add("active");
+    if(!builtTiers[tier]){ buildTierView(tier); builtTiers[tier]=true; }
+    else{ refreshProgress(tier); rebuildMenu(tier); }
   }
 }
 
-// ==================== BUILD TIER VIEW ====================
 function buildTierView(tier){
-  const container = document.getElementById("view-tier" + tier);
-  
-  // Check access: Tier 4 members (Full Access) can see all
-  const canAccess = (currentUserTier >= tier) || (currentUserTier >= 3 && tier <= 3);
-  
-  if(!canAccess){
-    container.innerHTML = `<div class="locked-box"><div class="lock-icon">🔒</div><h2>Tier ${tier} Content</h2><p>Upgrade your membership to access this content.</p><button class="btn btn-gold" onclick="contactUpgrade(${tier})">Contact Joshua Roy to Upgrade</button></div>`;
+  const container=document.getElementById(`view-t${tier}`);
+  if(tier>currentUserTier){
+    container.innerHTML=`<div class="locked-box"><div class="lock-icon">🔒</div><h2>Tier ${tier} Content</h2><p>This tier contains more advanced training. We strongly recommend completing Tier ${tier-1} first — especially the Morning Routine.</p><button class="btn btn-gold" onclick="contactUpgrade(${tier})">Contact Joshua Roy to Unlock</button></div>`;
     return;
   }
-
-  // Get all videos for this tier
-  const tierVideos = lessons.filter(l => l.tier_required === tier);
-  
-  // Group by category
-  const groups = {};
-  tierVideos.forEach(video => {
-    const cat = getCategoryForVideo(video);
-    if(!groups[cat.id]) groups[cat.id] = { ...cat, videos: [] };
-    groups[cat.id].videos.push(video);
-  });
-  
-  const categories = Object.values(groups);
-  
-  if(categories.length === 0){
-    container.innerHTML = `<div class="empty">📭 No videos found for Tier ${tier} yet.</div>`;
-    return;
-  }
-  
-  // Calculate progress
-  const watchedCount = tierVideos.filter(v => watched[v.id]).length;
-  const progress = tierVideos.length ? Math.round((watchedCount / tierVideos.length) * 100) : 0;
-  
-  // Default to first category if none selected
-  if(!window[`activeCat_${tier}`]) window[`activeCat_${tier}`] = categories[0].id;
-  
-  const activeCatId = window[`activeCat_${tier}`];
-  const currentGroup = groups[activeCatId] || categories[0];
-  const catWatchedCount = currentGroup.videos.filter(v => watched[v.id]).length;
-  const catProgress = currentGroup.videos.length ? Math.round((catWatchedCount / currentGroup.videos.length) * 100) : 0;
-  
-  // Build left menu
-  let menuHtml = `<h4>📂 Categories</h4>`;
-  categories.forEach(cat => {
-    const isActive = activeCatId === cat.id;
-    const catWatched = cat.videos.filter(v => watched[v.id]).length;
-    const allWatched = catWatched === cat.videos.length && cat.videos.length > 0;
-    menuHtml += `
-      <div class="menu-item ${isActive ? 'active' : ''}" onclick="selectCategory(${tier}, '${cat.id}')">
-        <div class="menu-left"><span>${cat.icon}</span><span class="menu-label">${cat.name}</span>${allWatched ? '<span class="w-badge">✓</span>' : ''}</div>
-        <span class="menu-count">${cat.videos.length}</span>
-      </div>
-    `;
-  });
-  
-  // Build video list
-  let videoHtml = ``;
-  currentGroup.videos.forEach((video, idx) => {
-    const isWatched = !!watched[video.id];
-    const isActive = currentVideoId === video.id;
-    const desc = video.description ? video.description.substring(0,90) + "…" : "Click to watch";
-    videoHtml += `
-      <div class="vid-item ${isActive ? 'active' : ''}" onclick="selectVideo(${video.id}, ${tier})">
-        <div class="vid-info">
-          <div class="vid-title">${escapeHtml(video.title || "Untitled")}</div>
-          <div class="vid-desc">${escapeHtml(desc)}</div>
-        </div>
-        <div class="vid-meta">${isWatched ? '<span class="tick">✓</span>' : '<span class="play-icon">▶</span>'}</div>
-      </div>
-    `;
-  });
-  
-  container.innerHTML = `
-    <div class="progress-wrap">
-      <label><span>Tier ${tier} Progress</span><span>${watchedCount} of ${tierVideos.length} watched</span></label>
-      <div class="progress-bar"><div class="progress-fill" id="tier-progress-${tier}" style="width:${progress}%"></div></div>
+  const tierVids=allVideos.filter(v=>v.tier_required===tier);
+  const wCount=tierVids.filter(v=>watched[v.id]).length;
+  const progress=tierVids.length?Math.round(wCount/tierVids.length*100):0;
+  container.innerHTML=`
+    <div class="progress-wrap" id="pw-${tier}">
+      <label><span>Tier ${tier} Progress</span><span id="pw-label-${tier}">${wCount} of ${tierVids.length} watched</span></label>
+      <div class="progress-bar"><div class="progress-fill" id="pf-${tier}" style="width:${progress}%"></div></div>
     </div>
     <div class="two-col">
-      <div class="left-menu">${menuHtml}</div>
-      <div class="right-col">
+      <div class="left-menu"><h4>Categories</h4><div id="cat-menu-${tier}"></div></div>
+      <div class="right-col" id="right-col-${tier}">
         <div class="cat-header">
-          <h2>${currentGroup.icon} ${currentGroup.name}</h2>
-          <p>${currentGroup.videos.length} video${currentGroup.videos.length !== 1 ? 's' : ''} · ${catWatchedCount} watched</p>
+          <h2 id="cat-title-${tier}">← Pick a category</h2>
+          <p id="cat-sub-${tier}">Choose a section from the menu on the left</p>
         </div>
-        <div class="progress-wrap">
-          <div class="progress-bar"><div class="progress-fill" style="width:${catProgress}%"></div></div>
-        </div>
-        <div id="video-list-${tier}">${videoHtml}</div>
+        <div id="vid-list-${tier}"></div>
         <div id="player-box-${tier}" class="player-box">
-          <h3 id="player-title-${tier}"></h3>
-          <div class="player-desc" id="player-desc-${tier}"></div>
-          <span class="desc-toggle" id="desc-toggle-${tier}" onclick="toggleDesc(${tier})" style="display:none">Show more ▼</span>
-          <iframe id="player-iframe-${tier}" src="" allowfullscreen></iframe>
+          <h3 id="p-title-${tier}"></h3>
+          <div class="player-desc" id="p-desc-${tier}"></div>
+          <span class="desc-toggle" id="p-toggle-${tier}" onclick="toggleDesc(${tier})" style="display:none">Show more ▼</span>
+          <iframe id="p-iframe-${tier}" src="" allowfullscreen></iframe>
           <div class="player-actions">
-            <button class="btn btn-gold" id="watch-btn-${tier}" onclick="toggleWatchedStatus(${tier})">✓ Mark as watched</button>
+            <button class="btn btn-gold" id="p-watch-btn-${tier}" onclick="toggleWatched(${tier})">✓ Mark as watched</button>
             <button class="btn btn-gray" onclick="closePlayer(${tier})">✕ Close</button>
-            <span class="watched-label" id="watched-label-${tier}"></span>
+            <span class="watched-label" id="p-watch-label-${tier}"></span>
           </div>
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
+  rebuildMenu(tier);
 }
 
-function selectCategory(tier, catId){
-  window[`activeCat_${tier}`] = catId;
-  buildTierView(tier);
-}
-
-function selectVideo(id, tier){
-  const video = lessons.find(v => v.id === id);
-  if(!video) return;
-  currentVideoId = id;
-  
-  const playerBox = document.getElementById(`player-box-${tier}`);
-  document.getElementById(`player-title-${tier}`).innerText = video.title || "Untitled";
-  document.getElementById(`player-desc-${tier}`).innerText = video.description || "No description available.";
-  
-  const descEl = document.getElementById(`player-desc-${tier}`);
-  const toggle = document.getElementById(`desc-toggle-${tier}`);
-  if(descEl && descEl.scrollHeight > 80){
-    toggle.style.display = "inline-block";
-  } else {
-    toggle.style.display = "none";
+function rebuildMenu(tier){
+  const menu=document.getElementById(`cat-menu-${tier}`);
+  if(!menu) return;
+  const tierVids=allVideos.filter(v=>v.tier_required===tier);
+  let html="";
+  for(const c of CATS){
+    const vids=tierVids.filter(v=>catFor(v)===c.name);
+    if(!vids.length) continue;
+    const wc=vids.filter(v=>watched[v.id]).length;
+    html+=`<div class="menu-item" id="mi-${c.id}-${tier}" onclick="selectCat('${c.id}',${tier})">
+      <div class="menu-left"><span>${c.icon}</span><span class="menu-label">${c.name}</span>${wc>0?`<span class="w-badge">${wc}</span>`:""}</div>
+      <span class="menu-count">${vids.length}</span>
+    </div>`;
   }
-  
-  const embedUrl = getEmbedUrl(video.google_drive_embed_url || video.video_url || "");
-  document.getElementById(`player-iframe-${tier}`).src = embedUrl;
-  
-  const isWatched = !!watched[video.id];
-  const watchBtn = document.getElementById(`watch-btn-${tier}`);
-  const watchLabel = document.getElementById(`watched-label-${tier}`);
-  watchBtn.innerText = isWatched ? "✓ Watched" : "Mark as watched";
-  watchLabel.innerText = isWatched ? "✓ Completed" : "";
-  
-  playerBox.classList.add("on");
-  buildTierView(tier);
+  menu.innerHTML=html||'<div class="empty" style="padding:20px;font-size:13px">No content yet.</div>';
 }
 
-function toggleWatchedStatus(tier){
-  if(!currentVideoId) return;
-  if(watched[currentVideoId]){
-    delete watched[currentVideoId];
-  } else {
-    watched[currentVideoId] = Date.now();
-  }
-  saveWatched();
-  updateStats();
-  buildTierView(tier);
-  selectVideo(currentVideoId, tier);
+function refreshProgress(tier){
+  const tierVids=allVideos.filter(v=>v.tier_required===tier);
+  const wCount=tierVids.filter(v=>watched[v.id]).length;
+  const progress=tierVids.length?Math.round(wCount/tierVids.length*100):0;
+  const pf=document.getElementById(`pf-${tier}`);
+  const lb=document.getElementById(`pw-label-${tier}`);
+  if(pf) pf.style.width=progress+"%";
+  if(lb) lb.innerText=`${wCount} of ${tierVids.length} watched`;
 }
 
-function closePlayer(tier){
-  document.getElementById(`player-box-${tier}`).classList.remove("on");
+function selectCat(catId,tier){
+  const c=CATS.find(x=>x.id===catId);
+  if(!c) return;
+  closePlayer(tier);
+  document.querySelectorAll(`[id^="mi-"][id$="-${tier}"]`).forEach(m=>m.classList.remove("active"));
+  const mi=document.getElementById(`mi-${catId}-${tier}`);
+  if(mi) mi.classList.add("active");
+  const vids=allVideos.filter(v=>v.tier_required===tier&&catFor(v)===c.name);
+  document.getElementById(`cat-title-${tier}`).innerText=c.icon+" "+c.name;
+  document.getElementById(`cat-sub-${tier}`).innerText=`${vids.length} video${vids.length!==1?"s":""} in this section`;
+  let html="";
+  vids.forEach(v=>{
+    const desc=v.description?v.description.substring(0,90)+(v.description.length>90?"…":""):"Click to watch";
+    const isW=!!watched[v.id];
+    html+=`<div class="vid-item" id="vi-${v.id}" onclick="selectVideo(${v.id},${tier})">
+      <div class="vid-info"><div class="vid-title">${esc(v.title)}</div><div class="vid-desc">${esc(desc)}</div></div>
+      <div class="vid-meta">${isW?'<span class="tick">✓</span>':""}<span class="play-icon">▶</span></div>
+    </div>`;
+  });
+  document.getElementById(`vid-list-${tier}`).innerHTML=html||'<div class="empty">No videos in this category yet.</div>';
+}
+
+function selectVideo(id,tier){
+  const v=allVideos.find(x=>x.id===id);
+  if(!v) return;
+  if(v.tier_required>currentUserTier){ alert(`This content requires Tier ${v.tier_required} access.`); return; }
+  currentVideoId=id;
+  document.querySelectorAll(".vid-item").forEach(x=>x.classList.remove("active"));
+  const vi=document.getElementById("vi-"+id);
+  if(vi) vi.classList.add("active");
+  document.getElementById(`p-title-${tier}`).innerText=v.title;
+  const descEl=document.getElementById(`p-desc-${tier}`);
+  const toggleEl=document.getElementById(`p-toggle-${tier}`);
+  const fullDesc=v.description||"";
+  descEl.innerText=fullDesc;
+  descEl.classList.remove("expanded");
+  toggleEl.style.display=fullDesc.length>180?"inline-block":"none";
+  toggleEl.innerText="Show more ▼";
+  const iframe=document.getElementById(`p-iframe-${tier}`);
+  iframe.src="";
+  setTimeout(()=>{ iframe.src=v.google_drive_embed_url||""; },60);
+  const isW=!!watched[id];
+  document.getElementById(`p-watch-btn-${tier}`).textContent=isW?"✓ Watched":"✓ Mark as watched";
+  document.getElementById(`p-watch-btn-${tier}`).style.background=isW?"#1D9E75":"#C9A84C";
+  document.getElementById(`p-watch-label-${tier}`).textContent=isW?"Completed! ✓":"";
+  const box=document.getElementById(`player-box-${tier}`);
+  box.classList.add("on");
+  setTimeout(()=>box.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
 }
 
 function toggleDesc(tier){
-  const descEl = document.getElementById(`player-desc-${tier}`);
-  const toggle = document.getElementById(`desc-toggle-${tier}`);
-  if(descEl.classList.contains("expanded")){
-    descEl.classList.remove("expanded");
-    toggle.innerText = "Show more ▼";
-  } else {
-    descEl.classList.add("expanded");
-    toggle.innerText = "Show less ▲";
+  const d=document.getElementById(`p-desc-${tier}`);
+  const t=document.getElementById(`p-toggle-${tier}`);
+  d.classList.toggle("expanded");
+  t.innerText=d.classList.contains("expanded")?"Show less ▲":"Show more ▼";
+}
+
+function toggleWatched(tier){
+  if(!currentVideoId) return;
+  if(watched[currentVideoId]) delete watched[currentVideoId];
+  else watched[currentVideoId]=true;
+  saveWatched();
+  const isW=!!watched[currentVideoId];
+  document.getElementById(`p-watch-btn-${tier}`).textContent=isW?"✓ Watched":"✓ Mark as watched";
+  document.getElementById(`p-watch-btn-${tier}`).style.background=isW?"#1D9E75":"#C9A84C";
+  document.getElementById(`p-watch-label-${tier}`).textContent=isW?"Completed! ✓":"";
+  const vi=document.getElementById("vi-"+currentVideoId);
+  if(vi){
+    const meta=vi.querySelector(".vid-meta");
+    let tick=meta.querySelector(".tick");
+    if(isW&&!tick){ tick=document.createElement("span"); tick.className="tick"; tick.textContent="✓"; meta.insertBefore(tick,meta.firstChild); }
+    else if(!isW&&tick) tick.remove();
   }
+  refreshProgress(tier);
+  rebuildMenu(tier);
+  updateStats();
 }
 
-function refreshTierProgress(tier){
-  const tierVideos = lessons.filter(l => l.tier_required === tier);
-  const watchedCount = tierVideos.filter(v => watched[v.id]).length;
-  const progress = tierVideos.length ? Math.round((watchedCount / tierVideos.length) * 100) : 0;
-  const progressBar = document.getElementById(`tier-progress-${tier}`);
-  if(progressBar) progressBar.style.width = progress + "%";
+function closePlayer(tier){
+  const box=document.getElementById(`player-box-${tier}`);
+  const iframe=document.getElementById(`p-iframe-${tier}`);
+  if(box) box.classList.remove("on");
+  if(iframe) iframe.src="";
+  currentVideoId=null;
+  document.querySelectorAll(".vid-item").forEach(x=>x.classList.remove("active"));
 }
 
-function getEmbedUrl(url){
-  if(!url) return "";
-  if(url.includes("drive.google.com")) return url;
-  if(url.includes("youtu.be") || url.includes("youtube.com")){
-    const match = url.match(/(?:youtu\.be\/|youtube.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
-    if(match) return `https://www.youtube.com/embed/${match[1]}`;
-  }
-  return url;
-}
-
-// ==================== NOTES & STATS ====================
 function saveNote(){
-  const title = document.getElementById("n-title").value.trim();
-  const text = document.getElementById("n-body").value.trim();
-  if(!text) return;
-  const note = { id: Date.now(), title: title || "Quick note", text: text, saved: new Date().toISOString() };
-  notes.push(note);
+  const title=document.getElementById("n-title").value.trim();
+  const body=document.getElementById("n-body").value.trim();
+  if(!body){ alert("Write something before saving."); return; }
+  notes.unshift({id:Date.now(),title:title||"Untitled note",body,date:new Date().toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"})});
   saveNotes();
-  document.getElementById("n-title").value = "";
-  document.getElementById("n-body").value = "";
+  document.getElementById("n-title").value="";
+  document.getElementById("n-body").value="";
+  renderNotes();
+  updateStats();
+}
+
+function deleteNote(id){
+  if(!confirm("Delete this note?")) return;
+  notes=notes.filter(n=>n.id!==id);
+  saveNotes();
   renderNotes();
   updateStats();
 }
 
 function renderNotes(){
-  const container = document.getElementById("notes-list");
-  if(!notes.length){
-    container.innerHTML = '<div class="empty">📝 No notes yet. Add notes while watching videos.</div>';
-    return;
-  }
-  const sorted = [...notes].reverse();
-  let html = "";
-  sorted.forEach(n => {
-    html += `<div class="note-card">
-      <div class="note-hdr"><span class="note-title">${escapeHtml(n.title)}</span><span class="note-date">${new Date(n.saved).toLocaleDateString()}</span></div>
-      <div class="note-body">${escapeHtml(n.text).replace(/\n/g,"<br>")}</div>
+  const list=document.getElementById("notes-list");
+  if(!notes.length){ list.innerHTML='<div class="empty">No notes yet — start watching and capture your insights!</div>'; return; }
+  list.innerHTML=notes.map(n=>`
+    <div class="note-card">
+      <div class="note-hdr"><div class="note-title">${esc(n.title)}</div><div class="note-date">${n.date}</div></div>
+      <div class="note-body">${esc(n.body)}</div>
       <button class="note-del" onclick="deleteNote(${n.id})">Delete</button>
-    </div>`;
-  });
-  container.innerHTML = html;
-}
-
-function deleteNote(id){
-  notes = notes.filter(n => n.id !== id);
-  saveNotes();
-  renderNotes();
-  updateStats();
+    </div>`).join("");
 }
 
 function updateStats(){
-  const accessibleVideos = lessons.filter(l => l.tier_required <= currentUserTier || currentUserTier >= 3).length;
-  const watchedCount = Object.keys(watched).length;
-  document.getElementById("s-total").innerText = accessibleVideos;
-  document.getElementById("s-watched").innerText = watchedCount;
-  document.getElementById("s-notes").innerText = notes.length;
+  document.getElementById("s-total").textContent=allVideos.filter(v=>v.tier_required<=currentUserTier).length;
+  document.getElementById("s-watched").textContent=Object.keys(watched).length;
+  document.getElementById("s-notes").textContent=notes.length;
 }
 
-function escapeHtml(s){ 
-  if(!s) return ""; 
-  return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); 
-}
+function esc(s){ if(!s) return ""; return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function contactUpgrade(tier){ window.location.href=`mailto:info@accessworldseminars.com?subject=Tier%20${tier}%20Upgrade%20Request`; }
 
-function contactUpgrade(tier){ 
-  window.location.href = `mailto:info@accessworldseminars.com?subject=Tier%20${tier}%20Upgrade`; 
-}
-
-// ==================== AUTO LOGIN ====================
-window.onload = async () => {
-  const {data: {user}} = await sb.auth.getUser();
+window.onload=async()=>{
+  loadLocal();
+  const {data:{user}}=await sb.auth.getUser();
   if(user){
-    // Get user tier
-    try {
-      const {data: profile} = await sb.from("profiles").select("membership_tier").eq("email", user.email).single();
-      currentUserTier = profile?.membership_tier || 1;
-      if(currentUserTier >= 4) currentUserTier = 3;
-    } catch(e){ currentUserTier = 1; }
-    document.getElementById("tier-badge").innerText = currentUserTier >= 3 ? "Full Access" : `Tier ${currentUserTier} Member`;
+    try{
+      const {data:profile}=await sb.from("profiles").select("membership_tier").eq("id",user.id).single();
+      currentUserTier=Math.min(profile?.membership_tier||1,3);
+    }catch(e){ currentUserTier=1; }
+    document.getElementById("tier-badge").innerText=currentUserTier>=3?"Full Access":`Tier ${currentUserTier} Member`;
     await boot();
   }
 };
