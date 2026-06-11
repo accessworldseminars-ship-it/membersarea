@@ -1,883 +1,510 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>AccessWorld Seminars – Members Portal</title>
+<title>AccessWorld Members Portal</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-    background: #0f1724;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f4fa;
     min-height: 100vh;
-    padding: 24px 20px;
   }
-
-  /* elegant main container */
-  .main-container {
-    max-width: 1340px;
-    margin: 0 auto;
-    background: #ffffff;
-    border-radius: 32px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-    overflow: hidden;
-    transition: all 0.2s;
-  }
-
-  /* login card */
+  /* Login Wrapper */
   .login-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 85vh;
-    background: linear-gradient(145deg, #f8fafc 0%, #ffffff 100%);
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1A2744 0%, #0f1724 100%);
   }
-
   .login-card {
     background: white;
-    padding: 40px 36px;
+    padding: 44px 40px;
     border-radius: 36px;
     width: 100%;
     max-width: 440px;
-    box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
     text-align: center;
-    border: 1px solid rgba(201, 168, 76, 0.25);
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    border: 1px solid rgba(201, 168, 76, 0.3);
   }
-
-  .login-card img {
-    height: 64px;
-    margin-bottom: 16px;
-    object-fit: contain;
-  }
-
+  .login-card img { height: 64px; margin-bottom: 18px; }
   .login-card h1 {
     font-size: 28px;
-    font-weight: 700;
+    font-weight: 800;
     background: linear-gradient(135deg, #1A2744, #2c3d5c);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    letter-spacing: -0.3px;
   }
-
-  .login-card p {
-    color: #5b6e8c;
-    margin: 8px 0 28px;
-    font-size: 14px;
-  }
-
-  .input-group {
-    margin-bottom: 16px;
-    text-align: left;
-  }
-
-  .input-group label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #2c3e66;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .input-group input {
+  .login-card p { color: #5b6e8c; margin: 8px 0 28px; font-size: 14px; }
+  .input-field { margin-bottom: 18px; text-align: left; }
+  .input-field label { font-size: 12px; font-weight: 600; color: #2c3e66; margin-bottom: 6px; display: block; }
+  .input-field input {
     width: 100%;
     padding: 14px 16px;
     border: 1.5px solid #e2e8f0;
-    border-radius: 20px;
+    border-radius: 24px;
     font-size: 15px;
     transition: 0.2s;
-    background: #fefefe;
   }
-
-  .input-group input:focus {
-    outline: none;
-    border-color: #C9A84C;
-    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
-  }
-
-  .btn {
-    border: none;
-    border-radius: 40px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 14px;
-  }
-
+  .input-field input:focus { outline: none; border-color: #C9A84C; box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2); }
   .btn-primary {
     background: #1D9E75;
     color: white;
     width: 100%;
     padding: 14px;
+    border: none;
+    border-radius: 40px;
+    font-weight: 700;
     font-size: 15px;
-    box-shadow: 0 8px 18px -8px rgba(29, 158, 117, 0.4);
-  }
-
-  .btn-primary:hover {
-    background: #157f5c;
-    transform: translateY(-1px);
-  }
-
-  .btn-outline-gold {
-    background: transparent;
-    border: 1.5px solid #C9A84C;
-    color: #C9A84C;
-    padding: 8px 18px;
-    font-weight: 600;
-  }
-
-  .btn-outline-gold:hover {
-    background: #C9A84C;
-    color: #1A2744;
-  }
-
-  .btn-danger {
-    background: #f1f3f7;
-    color: #aa2e3e;
-    padding: 8px 18px;
-    font-size: 13px;
-  }
-
-  .btn-danger:hover {
-    background: #aa2e3e;
-    color: white;
-  }
-
-  .error-text {
-    color: #d14545;
-    font-size: 13px;
-    margin-top: 12px;
-    min-height: 20px;
-  }
-
-  /* dashboard header */
-  .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 32px;
-    background: white;
-    border-bottom: 1px solid #eef2f6;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .logo-area img {
-    height: 46px;
-  }
-
-  .logo-area h2 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1A2744;
-    letter-spacing: -0.2px;
-  }
-
-  .tier-badge {
-    background: #1D9E75;
-    padding: 6px 14px;
-    border-radius: 40px;
-    font-size: 12px;
-    font-weight: 700;
-    color: white;
-    letter-spacing: 0.3px;
-  }
-
-  /* stats row */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    padding: 24px 32px 0 32px;
-  }
-
-  .stat-card {
-    background: #F9FAFE;
-    border-radius: 24px;
-    padding: 18px 12px;
-    text-align: center;
-    border: 1px solid #eef2f8;
-  }
-
-  .stat-number {
-    font-size: 34px;
-    font-weight: 800;
-    color: #1A2744;
-    line-height: 1.2;
-  }
-
-  .stat-label {
-    font-size: 12px;
-    color: #62748c;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    margin-top: 5px;
-  }
-
-  /* tab bar */
-  .tab-bar {
-    display: flex;
-    gap: 8px;
-    padding: 20px 32px 0 32px;
-    border-bottom: 1px solid #eef2f6;
-    background: white;
-  }
-
-  .tab {
-    padding: 10px 24px;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    color: #8a99b0;
-    border-radius: 40px;
-    transition: all 0.2s;
-  }
-
-  .tab.active {
-    background: #1A2744;
-    color: white;
-  }
-
-  /* main layout */
-  .content-pane {
-    padding: 24px 32px 32px 32px;
-    background: white;
-  }
-
-  .two-columns {
-    display: flex;
-    gap: 28px;
-    flex-wrap: wrap;
-  }
-
-  .category-sidebar {
-    width: 270px;
-    flex-shrink: 0;
-    background: #F9FAFE;
-    border-radius: 28px;
-    padding: 16px 12px;
-    max-height: 620px;
-    overflow-y: auto;
-  }
-
-  .category-item {
-    padding: 12px 14px;
-    margin-bottom: 6px;
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     cursor: pointer;
     transition: 0.2s;
-    font-weight: 600;
-    font-size: 14px;
-    color: #2c3e66;
   }
-
-  .category-item:hover {
-    background: #eef2fa;
-  }
-
-  .category-item.active {
-    background: #1A2744;
-    color: white;
-  }
-
-  .cat-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .cat-count {
-    font-size: 12px;
-    background: rgba(0, 0, 0, 0.05);
-    padding: 2px 9px;
-    border-radius: 30px;
-  }
-
-  .active .cat-count {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-  }
-
-  .right-area {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .category-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1A2744;
-    margin-bottom: 6px;
-  }
-
-  .category-desc {
-    font-size: 13px;
-    color: #6f7d98;
-    margin-bottom: 20px;
-    border-left: 3px solid #C9A84C;
-    padding-left: 12px;
-  }
-
-  .progress-section {
-    margin-bottom: 20px;
-  }
-
-  .progress-text {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #2d3a5e;
-  }
-
-  .progress-bar-bg {
-    background: #e4e9f2;
-    border-radius: 30px;
-    height: 8px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    background: linear-gradient(90deg, #1D9E75, #C9A84C);
-    width: 0%;
-    height: 100%;
-    border-radius: 30px;
-    transition: width 0.3s;
-  }
-
-  .video-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 480px;
-    overflow-y: auto;
-    padding-right: 6px;
-  }
-
-  .video-card {
-    background: #ffffff;
-    border: 1.5px solid #eef2f8;
-    border-radius: 20px;
-    padding: 14px 18px;
-    cursor: pointer;
-    transition: 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .video-card:hover {
-    border-color: #C9A84C;
-    background: #FFFDF5;
-  }
-
-  .video-card.active-video {
-    background: #F2F9F5;
-    border-left: 5px solid #1D9E75;
-  }
-
-  .video-info h4 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1f2e4a;
-  }
-
-  .video-info p {
-    font-size: 12px;
-    color: #7a89a4;
-    margin-top: 4px;
-  }
-
-  .watch-check {
-    font-size: 20px;
-    font-weight: 800;
-    color: #1D9E75;
-  }
-
-  .player-panel {
-    margin-top: 22px;
-    background: #F9FAFE;
-    border-radius: 28px;
-    padding: 22px;
-    display: none;
-    border: 1px solid #eef2f8;
-  }
-
-  .player-panel.show {
-    display: block;
-    animation: fadeUp 0.25s ease;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px);}
-    to { opacity: 1; transform: translateY(0);}
-  }
-
-  .player-title {
-    font-size: 20px;
-    font-weight: 800;
-    color: #0b1a2e;
-  }
-
-  .player-desc {
-    font-size: 14px;
-    color: #3f4e6b;
-    line-height: 1.5;
-    margin: 10px 0 14px;
-  }
-
-  iframe {
-    width: 100%;
-    height: 400px;
-    border-radius: 24px;
-    background: #0a0f1c;
-    border: none;
-  }
-
-  .player-actions {
-    display: flex;
-    gap: 16px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .notes-section {
-    margin-top: 20px;
-  }
-
-  textarea {
-    width: 100%;
-    padding: 14px;
-    border-radius: 20px;
-    border: 1.5px solid #e2e8f0;
-    font-family: inherit;
-    resize: vertical;
-    min-height: 90px;
-  }
-
-  .note-saved-msg {
-    color: #1D9E75;
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0;
-  }
-
-  .locked-tier {
-    text-align: center;
-    padding: 70px 20px;
-    background: #F9FAFE;
-    border-radius: 36px;
-  }
-
+  .btn-primary:hover { background: #157f5c; transform: translateY(-1px); }
+  .error-msg { color: #e53e3e; font-size: 14px; margin-top: 16px; }
+  
+  /* Dashboard Layout */
+  .dashboard-container { display: none; max-width: 1400px; margin: 0 auto; background: #fff; border-radius: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); overflow: hidden; }
+  .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 32px; background: white; border-bottom: 1px solid #eef2f6; }
+  .logo-area { display: flex; align-items: center; gap: 12px; }
+  .logo-area img { height: 45px; }
+  .logo-area h2 { font-size: 22px; color: #1A2744; font-weight: 700; }
+  .tier-badge { background: #1D9E75; padding: 6px 16px; border-radius: 40px; color: white; font-weight: 700; font-size: 12px; }
+  .btn-logout { background: #f1f3f7; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; }
+  
+  /* Stats */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 24px 32px 0 32px; }
+  .stat-card { background: #F9FAFE; border-radius: 24px; padding: 18px; text-align: center; border: 1px solid #eef2f8; }
+  .stat-number { font-size: 34px; font-weight: 800; color: #1A2744; }
+  .stat-label { font-size: 12px; color: #62748c; margin-top: 5px; }
+  
+  /* Tabs */
+  .tab-bar { display: flex; gap: 8px; padding: 20px 32px 0 32px; border-bottom: 1px solid #eef2f6; background: white; }
+  .tab { padding: 10px 24px; font-weight: 700; font-size: 14px; cursor: pointer; color: #8a99b0; border-radius: 40px; transition: 0.2s; }
+  .tab.active { background: #1A2744; color: white; }
+  .tab.meditation-tab.active { background: #7c5cbf; color: white; }
+  .content-pane { padding: 24px 32px 32px 32px; background: white; }
+  
+  /* Categories & Videos */
+  .two-columns { display: flex; gap: 28px; flex-wrap: wrap; }
+  .category-sidebar { width: 270px; flex-shrink: 0; background: #F9FAFE; border-radius: 28px; padding: 16px; max-height: 620px; overflow-y: auto; }
+  .category-item { padding: 12px 14px; margin-bottom: 6px; border-radius: 18px; display: flex; justify-content: space-between; cursor: pointer; font-weight: 600; font-size: 14px; color: #2c3e66; }
+  .category-item:hover { background: #eef2fa; }
+  .category-item.active { background: #1A2744; color: white; }
+  .right-area { flex: 1; min-width: 0; }
+  .video-list { display: flex; flex-direction: column; gap: 10px; max-height: 500px; overflow-y: auto; }
+  .video-card { background: #fff; border: 1.5px solid #eef2f8; border-radius: 20px; padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .video-card:hover { border-color: #C9A84C; background: #FFFDF5; }
+  .video-info h4 { font-size: 15px; font-weight: 700; color: #1f2e4a; }
+  .watch-check { font-size: 20px; color: #1D9E75; }
+  .player-panel { margin-top: 24px; background: #F9FAFE; border-radius: 28px; padding: 22px; display: none; }
+  .player-panel.show { display: block; }
+  iframe { width: 100%; height: 420px; border-radius: 20px; border: none; background: #0a0f1c; }
+  
   @media (max-width: 760px) {
     .stats-row { grid-template-columns: repeat(2,1fr); }
-    .category-sidebar { width: 100%; max-height: 260px; }
+    .category-sidebar { width: 100%; max-height: 200px; }
     .two-columns { flex-direction: column; }
-    .main-container { border-radius: 28px; }
-    iframe { height: 230px; }
+    iframe { height: 240px; }
+    .tab { padding: 6px 14px; font-size: 12px; }
   }
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="loginContainer" style="display:flex; min-height:100vh; align-items:center; justify-content:center; background:#f0f4fa;">
+<!-- LOGIN SECTION -->
+<div id="loginView" class="login-wrapper">
   <div class="login-card">
-    <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" alt="AccessWorld Logo" onerror="this.style.display='none'">
+    <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" alt="AccessWorld" onerror="this.style.display='none'">
     <h1>AccessWorld Seminars</h1>
-    <p>Sign in to your member library</p>
-    <div class="input-group">
+    <p>Sign in to access your library</p>
+    <div class="input-field">
       <label>Email</label>
       <input type="email" id="loginEmail" placeholder="member@accessworld.com">
     </div>
-    <div class="input-group">
+    <div class="input-field">
       <label>Password</label>
       <input type="password" id="loginPassword" placeholder="••••••••">
     </div>
-    <button class="btn btn-primary" id="loginBtn">Sign In →</button>
-    <div id="loginErrorMsg" class="error-text"></div>
+    <button class="btn-primary" id="doLoginBtn">Sign In →</button>
+    <div id="loginErrorMessage" class="error-msg"></div>
   </div>
 </div>
 
-<!-- MAIN DASHBOARD -->
-<div id="dashboardApp" style="display:none;">
-  <div class="main-container">
-    <div class="dashboard-header">
-      <div class="logo-area">
-        <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" alt="logo" onerror="this.style.display='none'">
-        <h2>AccessWorld Library</h2>
-      </div>
-      <div style="display:flex; gap:12px; align-items:center;">
-        <span id="userTierBadge" class="tier-badge">Tier 1</span>
-        <button class="btn btn-danger" id="logoutBtn">Sign Out</button>
-      </div>
+<!-- DASHBOARD SECTION -->
+<div id="dashboardView" class="dashboard-container">
+  <div class="header">
+    <div class="logo-area">
+      <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" alt="logo" onerror="this.style.display='none'">
+      <h2>AccessWorld Library</h2>
     </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <span id="userTierBadge" class="tier-badge">Tier 1</span>
+      <button id="logoutBtn" class="btn-logout">Sign Out</button>
+    </div>
+  </div>
 
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-number" id="totalVideosStat">0</div><div class="stat-label">Total Videos</div></div>
-      <div class="stat-card"><div class="stat-number" id="watchedStat">0</div><div class="stat-label">Watched</div></div>
-      <div class="stat-card"><div class="stat-number" id="notesStat">0</div><div class="stat-label">My Notes</div></div>
-      <div class="stat-card"><div class="stat-number" id="progressPercent">0%</div><div class="stat-label">Completion</div></div>
-    </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-number" id="totalCount">0</div><div class="stat-label">Total Videos</div></div>
+    <div class="stat-card"><div class="stat-number" id="watchedCount">0</div><div class="stat-label">Watched</div></div>
+    <div class="stat-card"><div class="stat-number" id="notesCount">0</div><div class="stat-label">Notes</div></div>
+    <div class="stat-card"><div class="stat-number" id="completePercent">0%</div><div class="stat-label">Complete</div></div>
+  </div>
 
-    <div class="tab-bar" id="tabBar">
-      <div class="tab" data-tier="1">🎓 Tier 1</div>
-      <div class="tab" data-tier="2">🚀 Tier 2</div>
-      <div class="tab" data-tier="3">🏆 Tier 3</div>
-      <div class="tab" data-notes="true">📝 My Notes</div>
-    </div>
+  <div class="tab-bar" id="tabContainer">
+    <div class="tab" data-tab="tier1">⭐ Tier 1</div>
+    <div class="tab" data-tab="tier2">🚀 Tier 2</div>
+    <div class="tab" data-tab="tier3">🏆 Tier 3</div>
+    <div class="tab meditation-tab" data-tab="meditations">🧘 Meditations (All Tiers)</div>
+  </div>
 
-    <div class="content-pane" id="dynamicContent">
-      <!-- dynamic tier or notes view -->
-    </div>
+  <div class="content-pane" id="mainContentArea">
+    <!-- Dynamic content loads here -->
   </div>
 </div>
 
 <script>
-// ----------------------------- SUPABASE CONFIG ---------------------------------
-const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";   // <-- REPLACE WITH YOUR REAL ANON KEY
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// ----------------------------- GLOBAL STATE ------------------------------------
-let allLessons = [];          // all videos from supabase
-let watchedMap = {};          // { videoId: true }
-let userNotes = [];           // [{ id, title, text, updatedAt }]
-let currentUserTier = 1;      // max tier accessible (1,2,3)
-let activeTab = "1";          // "1", "2", "3", "notes"
-let activeCategoryId = null;
-let activeVideoId = null;
-let currentTierLessons = [];   // filtered by tier (no meditations/bonus duplicated logic)
-
-// ----------------------------- CATEGORY MASTER ---------------------------------
-const CATEGORIES = [
-  { id: "unlock", name: "Unlock Your Incredible Self", icon: "🌟", tier: 1, keywords: ["unlock your incredible", "artistry explained", "listen to the attendees", "december 2024"] },
-  { id: "morning", name: "Morning Routine", icon: "🌅", tier: 1, keywords: ["morning routine"] },
-  { id: "group_early", name: "Group Coaching (2022–2023)", icon: "👥", tier: 1, keywords: ["group coaching - aug 2022", "group coaching - jun 2022", "group coaching - oct 2023", "goal setting", "jan 2024", "apr 2024"] },
-  { id: "emotional", name: "Emotional Clearing", icon: "💚", tier: 1, keywords: ["emotional clearing", "gift process", "yelling therapy", "ball and fire", "ultimate freedom", "womb of eternity"] },
-  { id: "nlp_basics", name: "NLP Basics", icon: "🧠", tier: 1, keywords: ["nlp basics", "take full control of your", "confidence to succeed", "strategic visioning part"] },
-  { id: "health1", name: "Health & Healing", icon: "🏥", tier: 1, keywords: ["acid alkaline", "health & healing"] },
+  // ======================== CONFIGURATION ===========================
+  const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg"; // <-- REPLACE THIS
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   
-  { id: "free_intro", name: "Free Introductions", icon: "🎓", tier: 2, keywords: ["free introduction", "free intro", "nlp for beginners", "money mindset", "incantations", "feeling stuck"] },
-  { id: "nlp_state", name: "NLP State & Foundation", icon: "🧠", tier: 2, keywords: ["nlp state elicitation", "nlp foundation principles"] },
-  { id: "wcc", name: "World Class Coach Training", icon: "📜", tier: 2, keywords: ["coaching lesson", "how to become a world class coach", "learning to coach yourself"] },
+  // ======================== GLOBAL STATE ============================
+  let allVideos = [];
+  let watchedMap = {};
+  let userNotes = [];
+  let currentUserTier = 1;     // 1,2,3
+  let currentTab = "tier1";
+  let activeCategoryId = null;
+  let activeVideoId = null;
   
-  { id: "nlp_master", name: "NLP Masterclass", icon: "🧠", tier: 3, keywords: ["nlp - nlp", "unlock the power of stories", "arcing energy", "collapse anchors", "incantations", "grey room", "self image"] },
-  { id: "gc2024", name: "Group Coaching 2024", icon: "👥", tier: 3, keywords: ["group coaching 2024", "020224", "080724", "19012024", "090824", "2024"] },
-  { id: "gc2025", name: "Group Coaching 2025", icon: "👥", tier: 3, keywords: ["group coaching 2025", "010425", "140225", "150325", "200225", "211125", "2025"] },
-  { id: "gc2026", name: "Group Coaching 2026", icon: "👥", tier: 3, keywords: ["group coaching 2026", "020126", "090126", "230126", "190226", "2026"] },
-  { id: "adv_sem", name: "Advanced Seminars (NSR / Life Skills)", icon: "🎪", tier: 3, keywords: ["emotional mastery seminar", "holistic health webinar", "life skills", "nsr", "nervous system reprogramming"] },
-  { id: "meditation_shared", name: "🧘 Meditations & Audio", icon: "🧘", tier: 0, keywords: ["meditation", "the gift", "guided breath", "dancing with fear", "ultimate freedom technique", "strategic visioning (audio)", "excitement meditation", "blue hat"] },
-];
-
-// helper: match category for a lesson (respects bonus/med logic)
-function getCategoryForLesson(lesson, isBonus = false, isMed = false) {
-  if (isBonus) return CATEGORIES.find(c => c.id === "meditation_shared") ? null : null; // bonus not in these cats yet
-  if (isMed) return CATEGORIES.find(c => c.id === "meditation_shared");
-  const titleLower = (lesson.title || "").toLowerCase();
-  for (let cat of CATEGORIES) {
-    if (cat.tier !== lesson.tier_required && cat.tier !== 0) continue;
-    if (cat.keywords.some(kw => titleLower.includes(kw))) return cat;
+  // ======================== CATEGORIES (Dynamic matching) ===========
+  const TIER_CATEGORIES = {
+    1: [
+      { id: "unlock", name: "🌟 Unlock Yourself", kw: ["unlock your incredible", "artistry explained", "listen to the attendees"] },
+      { id: "morning", name: "🌅 Morning Routine", kw: ["morning routine"] },
+      { id: "group_early", name: "👥 Group Coaching (22-23)", kw: ["group coaching - aug 2022", "jun 2022", "oct 2023", "goal setting"] },
+      { id: "emotional", name: "💚 Emotional Clearing", kw: ["emotional clearing", "gift process", "yelling", "ball and fire"] },
+      { id: "nlp_basic", name: "🧠 NLP Basics", kw: ["nlp basics", "take full control", "confidence to succeed"] },
+      { id: "health", name: "🏥 Health & Healing", kw: ["acid alkaline", "health & energy"] }
+    ],
+    2: [
+      { id: "intro_free", name: "🎓 Free Introductions", kw: ["free introduction", "nlp for beginners", "money mindset", "feeling stuck"] },
+      { id: "nlp_state", name: "🧠 NLP State & Foundation", kw: ["nlp state elicitation", "nlp foundation principles"] },
+      { id: "wcc", name: "📜 World Class Coach Training", kw: ["coaching lesson", "how to become a world class coach"] }
+    ],
+    3: [
+      { id: "nlp_master", name: "🧠 NLP Masterclass", kw: ["nlp - nlp", "collapse anchors", "incantations", "grey room", "self image"] },
+      { id: "gc2024", name: "👥 Group Coaching 2024", kw: ["group coaching 2024", "020224", "080724", "19012024"] },
+      { id: "gc2025", name: "👥 Group Coaching 2025", kw: ["group coaching 2025", "010425", "140225", "211125"] },
+      { id: "gc2026", name: "👥 Group Coaching 2026", kw: ["group coaching 2026", "020126", "090126", "230126"] },
+      { id: "adv_sem", name: "🎪 Advanced Seminars", kw: ["emotional mastery", "holistic health", "life skills", "nsr"] }
+    ]
+  };
+  
+  // Shared Meditation Keywords (accessible to all tiers)
+  const MEDITATION_KEYWORDS = ["meditation", "guided breath", "the gift", "ultimate freedom", "dancing with fear", "womb of eternity", "blue hat", "strategic visioning audio", "excitement meditation"];
+  
+  // Helper: Check if video is a meditation (shared)
+  function isSharedMeditation(video) {
+    const title = (video.title || "").toLowerCase();
+    return MEDITATION_KEYWORDS.some(kw => title.includes(kw));
   }
-  return null;
-}
-
-// local storage
-function loadLocalData() {
-  try {
-    const w = localStorage.getItem("aw_watched_v2");
-    if (w) watchedMap = JSON.parse(w);
-    const n = localStorage.getItem("aw_notes_v2");
-    if (n) userNotes = JSON.parse(n);
-  } catch(e) {}
-}
-function persistWatched() { localStorage.setItem("aw_watched_v2", JSON.stringify(watchedMap)); }
-function persistNotes() { localStorage.setItem("aw_notes_v2", JSON.stringify(userNotes)); }
-
-// auth & bootstrap
-async function performLogin() {
-  const email = document.getElementById("loginEmail").value.trim();
-  const pwd = document.getElementById("loginPassword").value;
-  const errDiv = document.getElementById("loginErrorMsg");
-  errDiv.innerText = "";
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
-  if (error) { errDiv.innerText = error.message; return false; }
-  // get membership tier from profiles
-  let membership = 1;
-  try {
-    const { data: prof } = await supabase.from("profiles").select("membership_tier").eq("email", email).single();
-    membership = prof?.membership_tier || 1;
-  } catch(e) { membership = 1; }
-  currentUserTier = Math.min(membership, 3);
-  return true;
-}
-
-async function loadVideos() {
-  const { data, error } = await supabase.from("lessons").select("*").order("sort_order", { ascending: true });
-  if (error) { console.error(error); return []; }
-  return data || [];
-}
-
-// dynamic rendering
-function updateStats() {
-  const totalAccessible = allLessons.filter(l => l.tier_required <= currentUserTier).length;
-  const watchedCount = allLessons.filter(l => l.tier_required <= currentUserTier && watchedMap[l.id]).length;
-  const pct = totalAccessible ? Math.round((watchedCount / totalAccessible) * 100) : 0;
-  document.getElementById("totalVideosStat").innerText = totalAccessible;
-  document.getElementById("watchedStat").innerText = watchedCount;
-  document.getElementById("notesStat").innerText = userNotes.length;
-  document.getElementById("progressPercent").innerText = pct + "%";
-}
-
-function renderNotesView() {
-  const container = document.getElementById("dynamicContent");
-  let notesHtml = `<div style="max-width:780px; margin:0 auto;">
-    <button class="btn btn-outline-gold" id="backToLibraryNotesBtn" style="margin-bottom:24px;">← Back to Library</button>
-    <div style="background:#F9FAFE; border-radius:28px; padding:28px;">
-      <h3 style="font-size:22px; font-weight:700;">📝 My Notes</h3>
-      <div class="note-form" style="margin:24px 0;">
-        <input type="text" id="newNoteTitle" placeholder="Note title (e.g., Emotional Clearing insight)" style="width:100%; padding:14px; border-radius:20px; border:1px solid #e2e8f0; margin-bottom:12px;">
-        <textarea id="newNoteBody" rows="3" placeholder="Write your reflection or key takeaways..."></textarea>
-        <button class="btn btn-primary" id="saveGlobalNoteBtn" style="margin-top:12px; width:auto; padding:10px 24px;">Save Note</button>
-      </div>
-      <div id="notesListContainer">`;
-  if (userNotes.length === 0) notesHtml += `<div class="empty-state" style="text-align:center; color:#7a89a4;">✨ No notes yet. Take notes while watching videos.</div>`;
-  else {
-    userNotes.slice().reverse().forEach(n => {
-      notesHtml += `
-        <div style="background:white; border-radius:20px; padding:18px; margin-bottom:14px; border:1px solid #eef2f6;">
-          <div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(n.title)}</strong><span style="font-size:11px; color:#aaa;">${new Date(n.updatedAt).toLocaleDateString()}</span></div>
-          <div style="margin-top:8px; white-space:pre-wrap;">${escapeHtml(n.text)}</div>
-          <button class="delete-note-btn" data-id="${n.id}" style="margin-top:12px; background:none; border:1px solid #e0e0e0; border-radius:30px; padding:5px 14px; font-size:12px; cursor:pointer;">🗑 Delete</button>
-        </div>`;
+  
+  // Get category for tier-based videos
+  function getVideoCategory(video, tierNum) {
+    if (isSharedMeditation(video)) return null; // handled by meditations tab
+    const titleLower = (video.title || "").toLowerCase();
+    const cats = TIER_CATEGORIES[tierNum] || [];
+    for (let cat of cats) {
+      if (cat.kw.some(k => titleLower.includes(k))) return cat;
+    }
+    return { id: "other", name: "📁 Other Content", kw: [] };
+  }
+  
+  // ======================== LOCAL STORAGE ============================
+  function loadLocalData() {
+    try {
+      const w = localStorage.getItem("aw_watched");
+      if (w) watchedMap = JSON.parse(w);
+      const n = localStorage.getItem("aw_notes");
+      if (n) userNotes = JSON.parse(n);
+    } catch(e) {}
+  }
+  function persistWatched() { localStorage.setItem("aw_watched", JSON.stringify(watchedMap)); }
+  function persistNotes() { localStorage.setItem("aw_notes", JSON.stringify(userNotes)); }
+  
+  // ======================== AUTH & BOOTSTRAP =========================
+  async function handleLogin() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const errDiv = document.getElementById("loginErrorMessage");
+    errDiv.innerText = "";
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) { errDiv.innerText = error.message; return; }
+    // Fetch membership tier from profiles
+    let tier = 1;
+    try {
+      const { data: profile } = await supabase.from("profiles").select("membership_tier").eq("email", email).single();
+      tier = profile?.membership_tier || 1;
+    } catch(e) { console.warn(e); }
+    currentUserTier = Math.min(tier, 3);
+    document.getElementById("userTierBadge").innerText = `Tier ${currentUserTier} Member`;
+    await loadVideosAndBoot();
+  }
+  
+  async function loadVideosAndBoot() {
+    const { data, error } = await supabase.from("lessons").select("*").order("sort_order", { ascending: true });
+    if (error) { console.error(error); return; }
+    allVideos = data || [];
+    document.getElementById("loginView").style.display = "none";
+    document.getElementById("dashboardView").style.display = "block";
+    updateStatsUI();
+    switchTab("tier1");
+  }
+  
+  function updateStatsUI() {
+    const accessible = allVideos.filter(v => v.tier_required <= currentUserTier || isSharedMeditation(v));
+    const watchedCount = accessible.filter(v => watchedMap[v.id]).length;
+    const pct = accessible.length ? Math.round((watchedCount / accessible.length) * 100) : 0;
+    document.getElementById("totalCount").innerText = accessible.length;
+    document.getElementById("watchedCount").innerText = watchedCount;
+    document.getElementById("notesCount").innerText = userNotes.length;
+    document.getElementById("completePercent").innerText = pct + "%";
+  }
+  
+  // ======================== RENDER TIER VIEW =========================
+  function renderTierView(tierNum) {
+    if (tierNum > currentUserTier) {
+      document.getElementById("mainContentArea").innerHTML = `<div style="text-align:center; padding:80px;"><span style="font-size:56px;">🔒</span><h2>Tier ${tierNum} Locked</h2><p>Upgrade your membership to access this content.</p></div>`;
+      return;
+    }
+    const tierVideos = allVideos.filter(v => v.tier_required === tierNum && !isSharedMeditation(v));
+    const catsMap = new Map();
+    tierVideos.forEach(v => {
+      const cat = getVideoCategory(v, tierNum);
+      if (!cat) return;
+      if (!catsMap.has(cat.id)) catsMap.set(cat.id, { ...cat, videos: [] });
+      catsMap.get(cat.id).videos.push(v);
     });
-  }
-  notesHtml += `</div></div></div>`;
-  container.innerHTML = notesHtml;
-  document.getElementById("backToLibraryNotesBtn")?.addEventListener("click", () => switchTab("1"));
-  document.getElementById("saveGlobalNoteBtn")?.addEventListener("click", () => {
-    const title = document.getElementById("newNoteTitle").value.trim();
-    const text = document.getElementById("newNoteBody").value.trim();
-    if (!text) return;
-    userNotes.push({ id: Date.now(), title: title || "Quick note", text, updatedAt: new Date().toISOString() });
-    persistNotes();
-    renderNotesView();
-    updateStats();
-  });
-  document.querySelectorAll(".delete-note-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      const noteId = parseInt(btn.getAttribute("data-id"));
-      userNotes = userNotes.filter(n => n.id !== noteId);
-      persistNotes();
-      renderNotesView();
-      updateStats();
+    let categoriesArray = Array.from(catsMap.values());
+    if (categoriesArray.length === 0) {
+      document.getElementById("mainContentArea").innerHTML = `<div style="text-align:center; padding:60px;">✨ No content available yet for Tier ${tierNum}.</div>`;
+      return;
+    }
+    if (!activeCategoryId || !catsMap.has(activeCategoryId)) activeCategoryId = categoriesArray[0].id;
+    const currentCat = catsMap.get(activeCategoryId);
+    const watchedCount = currentCat.videos.filter(v => watchedMap[v.id]).length;
+    const progress = currentCat.videos.length ? (watchedCount / currentCat.videos.length) * 100 : 0;
+    
+    let leftHtml = `<div class="category-sidebar"><div style="font-weight:700; margin-bottom:12px;">📂 Categories</div>`;
+    categoriesArray.forEach(cat => {
+      leftHtml += `<div class="category-item ${activeCategoryId === cat.id ? 'active' : ''}" data-cat-id="${cat.id}">
+        ${cat.name} <span class="cat-count" style="background:#e2e8f0; padding:2px 8px; border-radius:30px;">${cat.videos.length}</span>
+      </div>`;
     });
-  });
-}
-
-function getCategoryLessons(tierNum, categoryId) {
-  const cat = CATEGORIES.find(c => c.id === categoryId);
-  if (!cat) return [];
-  if (categoryId === "meditation_shared") {
-    return allLessons.filter(l => (l.title || "").toLowerCase().includes("meditation") || (l.title || "").toLowerCase().includes("the gift") || (l.title || "").toLowerCase().includes("guided breath") || (l.title || "").toLowerCase().includes("blue hat"));
-  }
-  return allLessons.filter(l => l.tier_required === tierNum && getCategoryForLesson(l, false, false)?.id === categoryId);
-}
-
-function renderTierView(tierNumber) {
-  if (tierNumber > currentUserTier) {
-    document.getElementById("dynamicContent").innerHTML = `<div class="locked-tier"><span style="font-size:56px;">🔒</span><h2>Tier ${tierNumber} is locked</h2><p>Upgrade your membership to access.</p><button class="btn btn-primary" onclick="alert('Contact support@accessworldseminars.com for upgrade')">Request Upgrade</button></div>`;
-    return;
-  }
-  const availableCats = CATEGORIES.filter(c => c.tier === tierNumber);
-  if (!activeCategoryId || !availableCats.find(c => c.id === activeCategoryId)) activeCategoryId = availableCats[0]?.id || null;
-  const currentCatObj = CATEGORIES.find(c => c.id === activeCategoryId);
-  const videosInCat = activeCategoryId ? getCategoryLessons(tierNumber, activeCategoryId) : [];
-  const watchedInCat = videosInCat.filter(v => watchedMap[v.id]).length;
-  const progressPercent = videosInCat.length ? (watchedInCat / videosInCat.length) * 100 : 0;
-  
-  let leftMenuHtml = `<div class="category-sidebar"><div style="font-weight:700; margin-bottom:12px;">📂 Categories</div>`;
-  availableCats.forEach(cat => {
-    const count = getCategoryLessons(tierNumber, cat.id).length;
-    leftMenuHtml += `<div class="category-item ${activeCategoryId === cat.id ? 'active' : ''}" data-cat="${cat.id}">
-      <div class="cat-left"><span>${cat.icon}</span> ${cat.name}</div>
-      <div class="cat-count">${count}</div>
+    leftHtml += `</div>`;
+    
+    let rightHtml = `<div class="right-area">
+      <div style="font-size:22px; font-weight:700;">${currentCat.name}</div>
+      <div style="font-size:13px; color:#6f7d98; margin: 8px 0 16px;">${currentCat.videos.length} videos · ${watchedCount} watched</div>
+      <div class="progress-section" style="margin-bottom:20px;"><div style="background:#e4e9f2; border-radius:30px; height:6px;"><div style="width:${progress}%; background:#1D9E75; height:6px; border-radius:30px;"></div></div></div>
+      <div class="video-list" id="videoListContainer"></div>
+      <div id="playerPanel" class="player-panel"></div>
     </div>`;
-  });
-  leftMenuHtml += `</div>`;
-  
-  let rightHtml = `<div class="right-area">
-    <div class="category-title">${currentCatObj?.icon || "📁"} ${currentCatObj?.name || "Library"}</div>
-    <div class="category-desc">${videosInCat.length} session${videosInCat.length !== 1 ? 's' : ''} · ${watchedInCat} completed</div>
-    <div class="progress-section"><div class="progress-text"><span>Category progress</span><span>${Math.round(progressPercent)}%</span></div><div class="progress-bar-bg"><div class="progress-fill" style="width:${progressPercent}%"></div></div></div>
-    <div class="video-list" id="videoListContainer"></div>
-    <div id="playerPanelContainer" class="player-panel"></div>
-  </div>`;
-  
-  document.getElementById("dynamicContent").innerHTML = `<div class="two-columns">${leftMenuHtml}${rightHtml}</div>`;
-  
-  // attach category click
-  document.querySelectorAll(".category-item").forEach(el => {
-    el.addEventListener("click", () => {
-      activeCategoryId = el.getAttribute("data-cat");
-      renderTierView(tierNumber);
+    
+    document.getElementById("mainContentArea").innerHTML = `<div class="two-columns">${leftHtml}${rightHtml}</div>`;
+    // attach category click
+    document.querySelectorAll(".category-item").forEach(el => {
+      el.addEventListener("click", () => {
+        activeCategoryId = el.getAttribute("data-cat-id");
+        renderTierView(tierNum);
+      });
     });
-  });
-  
-  // render video list
-  const vidContainer = document.getElementById("videoListContainer");
-  if (videosInCat.length === 0) vidContainer.innerHTML = `<div style="padding:32px; text-align:center;">✨ No videos yet in this category.</div>`;
-  else {
-    vidContainer.innerHTML = videosInCat.map(v => `
-      <div class="video-card ${activeVideoId === v.id ? 'active-video' : ''}" data-video-id="${v.id}">
-        <div class="video-info"><h4>${escapeHtml(v.title || "Untitled")}</h4><p>${v.description ? v.description.substring(0,70)+"…" : "Click to watch"}</p></div>
+    // render video list
+    const vidContainer = document.getElementById("videoListContainer");
+    vidContainer.innerHTML = currentCat.videos.map(v => `
+      <div class="video-card" data-video-id="${v.id}">
+        <div class="video-info"><h4>${escapeHtml(v.title)}</h4><p>${v.description ? v.description.substring(0,70)+"…" : "Click to watch"}</p></div>
         <div class="watch-check">${watchedMap[v.id] ? "✓" : "▶"}</div>
       </div>
     `).join("");
     document.querySelectorAll(".video-card").forEach(card => {
-      card.addEventListener("click", (e) => {
-        const vidId = parseInt(card.getAttribute("data-video-id"));
-        activeVideoId = vidId;
-        renderTierView(tierNumber);
-        showPlayer(vidId, tierNumber);
+      card.addEventListener("click", () => {
+        const vid = parseInt(card.getAttribute("data-video-id"));
+        activeVideoId = vid;
+        renderTierView(tierNum);
+        showPlayer(vid, tierNum);
       });
     });
+    if (activeVideoId) showPlayer(activeVideoId, tierNum);
   }
-  if (activeVideoId) showPlayer(activeVideoId, tierNumber);
-}
-
-async function showPlayer(videoId, tierNum) {
-  const lesson = allLessons.find(l => l.id === videoId);
-  if (!lesson) return;
-  const isWatched = !!watchedMap[lesson.id];
-  const noteForVideo = userNotes.find(n => n.id === lesson.id);
-  const playerDiv = document.getElementById("playerPanelContainer");
-  if (!playerDiv) return;
-  playerDiv.classList.add("show");
-  playerDiv.innerHTML = `
-    <div class="player-title">${escapeHtml(lesson.title)}</div>
-    <div class="player-desc">${lesson.description ? escapeHtml(lesson.description) : "No description provided."}</div>
-    <iframe src="${getEmbedUrl(lesson.google_drive_embed_url || lesson.video_url || "")}" allowfullscreen></iframe>
-    <div class="player-actions">
-      <button class="btn btn-outline-gold" id="watchToggleBtn">${isWatched ? "✓ Watched" : "Mark as watched"}</button>
-      <button class="btn btn-danger" id="closePlayerBtn">Close</button>
-    </div>
-    <div class="notes-section">
-      <label style="font-weight:600;">📝 Personal notes for this session</label>
-      <textarea id="videoNoteText" rows="2" placeholder="Write your insights, questions, highlights...">${escapeHtml(noteForVideo?.text || "")}</textarea>
-      <div style="display:flex; justify-content:flex-end; margin-top:8px;"><button class="btn btn-primary" id="saveNoteForVideoBtn" style="padding:6px 20px;">Save Note</button><span id="noteSavedMsg" class="note-saved-msg" style="margin-left:12px;">✓ Saved</span></div>
-    </div>
-  `;
-  document.getElementById("watchToggleBtn")?.addEventListener("click", () => {
-    if (watchedMap[lesson.id]) delete watchedMap[lesson.id];
-    else watchedMap[lesson.id] = true;
-    persistWatched();
-    updateStats();
-    renderTierView(tierNum);
-  });
-  document.getElementById("closePlayerBtn")?.addEventListener("click", () => {
-    activeVideoId = null;
-    renderTierView(tierNum);
-  });
-  document.getElementById("saveNoteForVideoBtn")?.addEventListener("click", () => {
-    const textarea = document.getElementById("videoNoteText");
-    const newText = textarea.value.trim();
-    if (!newText) return;
-    const existingIdx = userNotes.findIndex(n => n.id === lesson.id);
-    const noteObj = { id: lesson.id, title: lesson.title, text: newText, updatedAt: new Date().toISOString() };
-    if (existingIdx !== -1) userNotes[existingIdx] = noteObj;
-    else userNotes.push(noteObj);
-    persistNotes();
-    const msg = document.getElementById("noteSavedMsg");
-    if (msg) { msg.style.opacity = "1"; setTimeout(() => msg.style.opacity = "0", 1500); }
-    updateStats();
-  });
-}
-
-function getEmbedUrl(url) {
-  if (!url) return "";
-  if (url.includes("drive.google.com")) return url;
-  if (url.includes("youtu.be") || url.includes("youtube.com")) {
-    let vid = url.match(/(?:youtu\.be\/|youtube.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
-    return vid ? `https://www.youtube.com/embed/${vid[1]}` : url;
-  }
-  return url;
-}
-
-function switchTab(tabId) {
-  activeTab = tabId;
-  activeVideoId = null;
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  const tabEl = Array.from(document.querySelectorAll(".tab")).find(t => t.getAttribute("data-tier") === tabId || (tabId === "notes" && t.getAttribute("data-notes")));
-  if (tabEl) tabEl.classList.add("active");
-  if (tabId === "notes") renderNotesView();
-  else renderTierView(parseInt(tabId));
-}
-
-async function initApp() {
-  loadLocalData();
-  allLessons = await loadVideos();
-  if (!allLessons.length) console.warn("no lessons?");
-  document.getElementById("loginContainer").style.display = "none";
-  document.getElementById("dashboardApp").style.display = "block";
-  document.getElementById("userTierBadge").innerText = `Tier ${currentUserTier} Member`;
-  updateStats();
-  // attach tab listeners
-  document.querySelectorAll(".tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      if (tab.getAttribute("data-notes") === "true") switchTab("notes");
-      else switchTab(tab.getAttribute("data-tier"));
+  
+  // ======================== MEDITATIONS (SHARED ACROSS TIERS) ========
+  function renderMeditationsView() {
+    const medVideos = allVideos.filter(v => isSharedMeditation(v));
+    if (medVideos.length === 0) {
+      document.getElementById("mainContentArea").innerHTML = `<div style="text-align:center; padding:80px;">🧘 No meditation content found yet.</div>`;
+      return;
+    }
+    const watchedCount = medVideos.filter(v => watchedMap[v.id]).length;
+    const progress = (watchedCount / medVideos.length) * 100;
+    let html = `<div><div style="font-size:28px; font-weight:800; color:#7c5cbf;">🧘 Meditations & Audio</div>
+      <p style="margin: 8px 0 20px;">✨ Shared library — available to all members regardless of tier. ${medVideos.length} tracks, ${watchedCount} listened.</p>
+      <div style="background:#e4e9f2; border-radius:30px; height:6px; margin-bottom:24px;"><div style="width:${progress}%; background:#7c5cbf; height:6px; border-radius:30px;"></div></div>
+      <div class="video-list" id="medVideoList"></div>
+      <div id="medPlayerPanel" class="player-panel"></div>
+    </div>`;
+    document.getElementById("mainContentArea").innerHTML = html;
+    const medContainer = document.getElementById("medVideoList");
+    medContainer.innerHTML = medVideos.map(v => `
+      <div class="video-card" data-video-id="${v.id}" style="border-color:#e0d6f0;">
+        <div class="video-info"><h4>${escapeHtml(v.title)}</h4><p>${v.description ? v.description.substring(0,70) : "Guided session"}</p></div>
+        <div class="watch-check">${watchedMap[v.id] ? "✓" : "▶"}</div>
+      </div>
+    `).join("");
+    document.querySelectorAll("#medVideoList .video-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const vid = parseInt(card.getAttribute("data-video-id"));
+        showMeditationPlayer(vid, medVideos);
+      });
     });
-  });
-  switchTab("1");
-}
-
-document.getElementById("loginBtn")?.addEventListener("click", async () => {
-  const ok = await performLogin();
-  if (ok) await initApp();
-});
-document.getElementById("logoutBtn")?.addEventListener("click", async () => {
-  await supabase.auth.signOut();
-  location.reload();
-});
-// auto session check
-(async () => {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (user) {
-    let membership = 1;
-    try {
-      const { data: prof } = await supabase.from("profiles").select("membership_tier").eq("email", user.email).single();
-      membership = prof?.membership_tier || 1;
-    } catch(e) {}
-    currentUserTier = Math.min(membership, 3);
-    await initApp();
+    if (activeVideoId && medVideos.some(v => v.id === activeVideoId)) showMeditationPlayer(activeVideoId, medVideos);
   }
-})();
-
-function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+  
+  function showMeditationPlayer(videoId, medList) {
+    const lesson = medList.find(v => v.id === videoId);
+    if (!lesson) return;
+    const isWatched = !!watchedMap[lesson.id];
+    const playerDiv = document.getElementById("medPlayerPanel");
+    if (!playerDiv) return;
+    playerDiv.classList.add("show");
+    playerDiv.innerHTML = `
+      <div style="font-size:20px; font-weight:800;">${escapeHtml(lesson.title)}</div>
+      <div style="margin: 12px 0;">${escapeHtml(lesson.description || "No description")}</div>
+      <iframe src="${getEmbedUrl(lesson.google_drive_embed_url || lesson.video_url || "")}" allowfullscreen></iframe>
+      <div style="display:flex; gap:16px; margin-top:20px;">
+        <button id="watchMedBtn" style="background:#7c5cbf; border:none; padding:10px 24px; border-radius:40px; color:white; font-weight:700;">${isWatched ? "✓ Watched" : "Mark as Listened"}</button>
+        <button id="closeMedBtn" style="background:#e2e8f0; border:none; padding:10px 24px; border-radius:40px;">Close</button>
+      </div>
+      <div style="margin-top:20px;"><textarea id="medNoteText" rows="2" style="width:100%; padding:12px; border-radius:20px;" placeholder="Add a note about this meditation..."></textarea>
+      <button id="saveMedNoteBtn" style="margin-top:8px; background:#1D9E75; border:none; padding:8px 20px; border-radius:30px; color:white;">Save Note</button></div>
+    `;
+    document.getElementById("watchMedBtn")?.addEventListener("click", () => {
+      if (watchedMap[lesson.id]) delete watchedMap[lesson.id];
+      else watchedMap[lesson.id] = true;
+      persistWatched();
+      updateStatsUI();
+      renderMeditationsView();
+    });
+    document.getElementById("closeMedBtn")?.addEventListener("click", () => renderMeditationsView());
+    document.getElementById("saveMedNoteBtn")?.addEventListener("click", () => {
+      const noteText = document.getElementById("medNoteText").value.trim();
+      if (noteText) {
+        const existing = userNotes.findIndex(n => n.id === lesson.id);
+        const newNote = { id: lesson.id, title: lesson.title, text: noteText, updatedAt: new Date().toISOString() };
+        if (existing !== -1) userNotes[existing] = newNote;
+        else userNotes.push(newNote);
+        persistNotes();
+        updateStatsUI();
+        alert("Note saved");
+      }
+    });
+  }
+  
+  function showPlayer(videoId, tierNum) {
+    const lesson = allVideos.find(v => v.id === videoId);
+    if (!lesson) return;
+    const isWatched = !!watchedMap[lesson.id];
+    const playerDiv = document.getElementById("playerPanel");
+    if (!playerDiv) return;
+    playerDiv.classList.add("show");
+    playerDiv.innerHTML = `
+      <div style="font-size:20px; font-weight:800;">${escapeHtml(lesson.title)}</div>
+      <div style="margin: 12px 0;">${escapeHtml(lesson.description || "No description")}</div>
+      <iframe src="${getEmbedUrl(lesson.google_drive_embed_url || lesson.video_url || "")}" allowfullscreen></iframe>
+      <div style="display:flex; gap:16px; margin-top:20px;">
+        <button id="watchToggleBtn" style="background:#1D9E75; border:none; padding:10px 24px; border-radius:40px; color:white;">${isWatched ? "✓ Watched" : "Mark Watched"}</button>
+        <button id="closePlayerBtn" style="background:#e2e8f0; border:none; padding:10px 24px; border-radius:40px;">Close</button>
+      </div>
+      <div style="margin-top:20px;"><textarea id="videoNoteText" rows="2" style="width:100%; padding:12px; border-radius:20px;" placeholder="Write your notes..."></textarea>
+      <button id="saveNoteBtn" style="margin-top:8px; background:#C9A84C; border:none; padding:8px 20px; border-radius:30px;">Save Note</button></div>
+    `;
+    document.getElementById("watchToggleBtn")?.addEventListener("click", () => {
+      if (watchedMap[lesson.id]) delete watchedMap[lesson.id];
+      else watchedMap[lesson.id] = true;
+      persistWatched();
+      updateStatsUI();
+      renderTierView(tierNum);
+    });
+    document.getElementById("closePlayerBtn")?.addEventListener("click", () => renderTierView(tierNum));
+    document.getElementById("saveNoteBtn")?.addEventListener("click", () => {
+      const noteText = document.getElementById("videoNoteText").value.trim();
+      if (noteText) {
+        const existing = userNotes.findIndex(n => n.id === lesson.id);
+        const newNote = { id: lesson.id, title: lesson.title, text: noteText, updatedAt: new Date().toISOString() };
+        if (existing !== -1) userNotes[existing] = newNote;
+        else userNotes.push(newNote);
+        persistNotes();
+        updateStatsUI();
+        alert("Note saved");
+      }
+    });
+  }
+  
+  function getEmbedUrl(url) {
+    if (!url) return "";
+    if (url.includes("drive.google.com")) return url;
+    if (url.includes("youtu.be") || url.includes("youtube.com")) {
+      let vid = url.match(/(?:youtu\.be\/|youtube.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
+      return vid ? `https://www.youtube.com/embed/${vid[1]}` : url;
+    }
+    return url;
+  }
+  
+  function switchTab(tabId) {
+    currentTab = tabId;
+    activeVideoId = null;
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    const targetTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+    if (targetTab) targetTab.classList.add("active");
+    if (tabId === "meditations") renderMeditationsView();
+    else if (tabId === "tier1") renderTierView(1);
+    else if (tabId === "tier2") renderTierView(2);
+    else if (tabId === "tier3") renderTierView(3);
+  }
+  
+  function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+  
+  // ======================== EVENT LISTENERS ==========================
+  document.getElementById("doLoginBtn")?.addEventListener("click", handleLogin);
+  document.getElementById("logoutBtn")?.addEventListener("click", async () => { await supabase.auth.signOut(); location.reload(); });
+  document.getElementById("tabContainer")?.addEventListener("click", (e) => {
+    const tabDiv = e.target.closest(".tab");
+    if (tabDiv && tabDiv.getAttribute("data-tab")) switchTab(tabDiv.getAttribute("data-tab"));
+  });
+  
+  // Auto-restore session
+  window.onload = async () => {
+    loadLocalData();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      let tier = 1;
+      try {
+        const { data: profile } = await supabase.from("profiles").select("membership_tier").eq("email", user.email).single();
+        tier = profile?.membership_tier || 1;
+      } catch(e) {}
+      currentUserTier = Math.min(tier, 3);
+      document.getElementById("userTierBadge").innerText = `Tier ${currentUserTier} Member`;
+      await loadVideosAndBoot();
+    } else {
+      document.getElementById("loginView").style.display = "flex";
+      document.getElementById("dashboardView").style.display = "none";
+    }
+  };
 </script>
 </body>
 </html>
