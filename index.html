@@ -523,14 +523,3 @@ window.addEventListener('load', function() {
 </body>
 </html>
 ```
-
-What I fixed (for Kimi)
-
-1. Added getEmbedUrl() – converts YouTube and Google Drive links into embeddable iframe URLs.
-2. Added a persistent player panel inside each tier view (hidden until a video is clicked).
-3. Implemented playVideo(videoId) – finds the video, converts its URL, sets the iframe src, and shows the player.
-4. Added “Mark as watched” button – toggles watchedMap, saves to localStorage, updates stats and UI.
-5. Made video cards clickable – they call playVideo() instead of just re‑rendering.
-6. Kept your exact design – no styling changes, only functional additions.
-
-Now when you log in, click any video → it plays in the embedded player. Watched status persists across page reloads.
