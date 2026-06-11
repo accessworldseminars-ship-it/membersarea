@@ -208,9 +208,16 @@ async function login(){
 
 async function boot(){
   loadLocal();
+  // IMPORTANT: Load ALL lessons - NO filter on tier_required
   const {data,error} = await sb.from("lessons").select("*").order("sort_order");
   if(error){ console.error(error); return; }
   lessons = data||[];
+  
+  console.log("Total lessons loaded:", lessons.length);
+  console.log("Tier 1:", lessons.filter(l => l.tier_required === 1).length);
+  console.log("Tier 2:", lessons.filter(l => l.tier_required === 2).length);
+  console.log("Tier 3:", lessons.filter(l => l.tier_required === 3).length);
+  
   document.getElementById("login-section").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
   buildMenu();
@@ -221,7 +228,7 @@ function buildMenu(){
   const menu = document.getElementById("cat-menu");
   let html = "";
   for(const c of CATS){
-    // Show ALL videos user has access to (tier_required <= currentUserTier)
+    // Show ALL videos user has access to
     const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required <= currentUserTier);
     if(!vids.length) continue;
     const wc = vids.filter(l => watched[l.id]).length;
@@ -241,7 +248,6 @@ function selectCat(catId){
   const mi = document.getElementById("mi-"+catId);
   if(mi) mi.classList.add("active");
   
-  // Show ALL videos user has access to in this category
   const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required <= currentUserTier);
   document.getElementById("cat-title").innerText = c.icon + " " + c.name;
   document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
@@ -267,6 +273,10 @@ function selectCat(catId){
 function selectVideo(id){
   const v = lessons.find(x=>x.id===id);
   if(!v) return;
+  if(v.tier_required > currentUserTier){
+    alert(`This content requires Tier ${v.tier_required} access. Please upgrade your membership.`);
+    return;
+  }
   currentVideoId = id;
   
   document.querySelectorAll(".vid-item").forEach(x=>x.classList.remove("active"));
@@ -361,7 +371,6 @@ function renderNotes(){
 }
 
 function updateStats(){
-  // Count videos user has access to (tier_required <= currentUserTier)
   const visibleCount = lessons.filter(l => l.tier_required <= currentUserTier).length;
   document.getElementById("s-total").textContent = visibleCount;
   document.getElementById("s-watched").textContent = Object.keys(watched).length;
