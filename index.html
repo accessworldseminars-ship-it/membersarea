@@ -154,7 +154,7 @@ const SB_URL  = "https://zwwodopezadqjazhajmx.supabase.co";
 const SB_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-let lessons = [], watched = {}, notes = [], currentVideoId = null, currentCat = null;
+let lessons = [], watched = {}, notes = [], currentVideoId = null, currentCat = null, currentUserTier = 1;
 
 // UPDATED CATEGORIES with correct keywords
 const CATS = [
@@ -167,6 +167,7 @@ const CATS = [
   {id:"nlp",       icon:"🧠", name:"NLP Masterclass",             kw:["nlp"]},
   {id:"intro",     icon:"🎓", name:"Free Introductions",          kw:["free","introduction","intro","how to take full control","confidence to succeed","take full control of your mind","how to take full control of your uc mind"]},
   {id:"health",    icon:"🏥", name:"Health & Healing",            kw:["health","healing"]},
+  {id:"coachingcert", icon:"📜", name:"Coaching Certification",   kw:["coaching lesson","coach yourself","world class coach","state elicitation"]},
   {id:"other",     icon:"📁", name:"Other Content",               kw:[]},
 ];
 
@@ -189,14 +190,20 @@ function saveNotes(){   localStorage.setItem("aw_notes",  JSON.stringify(notes))
 async function login(){
   const email = document.getElementById("email").value;
   const pw    = document.getElementById("password").value;
-  const {error} = await sb.auth.signInWithPassword({email, password:pw});
+  const {data, error} = await sb.auth.signInWithPassword({email, password:pw});
   if(error){ document.getElementById("login-error").innerText = error.message; return; }
+  
+  // Get user's membership tier
+  const {data: profile} = await sb.from("profiles").select("membership_tier").eq("id", data.user.id).single();
+  currentUserTier = profile?.membership_tier || 1;
+  
   await boot();
 }
 
 async function boot(){
   loadLocal();
-  const {data,error} = await sb.from("lessons").select("*").eq("tier_required",1).order("sort_order");
+  // Load ALL lessons (no tier filter)
+  const {data,error} = await sb.from("lessons").select("*").order("sort_order");
   if(error){ console.error(error); return; }
   lessons = data||[];
   document.getElementById("login-section").style.display = "none";
@@ -210,7 +217,8 @@ function buildMenu(){
   let html = "";
   for(const c of CATS){
     if(c.id==="other") continue;
-    const vids = lessons.filter(l => catFor(l.title)===c.name);
+    // Filter lessons by category AND by user's tier access
+    const vids = lessons.filter(l => catFor(l.title)===c.name && l.tier_required <= currentUserTier);
     if(!vids.length) continue;
     const wc = vids.filter(l => watched[l.id]).length;
     html += `<div class="menu-item" id="mi-${c.id}" onclick="selectCat('${c.id}')">
@@ -231,7 +239,8 @@ function selectCat(catId){
   const mi = document.getElementById("mi-"+catId);
   if(mi) mi.classList.add("active");
 
-  const vids = lessons.filter(l => catFor(l.title)===c.name);
+  // Filter by category AND user's tier access
+  const vids = lessons.filter(l => catFor(l.title)===c.name && l.tier_required <= currentUserTier);
   document.getElementById("cat-title").innerText = c.icon+" "+c.name;
   document.getElementById("cat-subtitle").innerText = vids.length+" video"+(vids.length!==1?"s":"")+" in this section";
 
@@ -239,14 +248,15 @@ function selectCat(catId){
   vids.forEach(l=>{
     const desc = l.description ? l.description.substring(0,90)+(l.description.length>90?"...":"") : "Click to watch";
     const isW = watched[l.id];
-    html += `<div class="vid-item" id="vi-${l.id}" onclick="selectVideo(${l.id})">
+    const isLocked = l.tier_required > currentUserTier;
+    html += `<div class="vid-item ${isLocked ? 'locked' : ''}" id="vi-${l.id}" onclick="${isLocked ? '' : `selectVideo(${l.id})`}">
       <div class="vid-info">
-        <div class="vid-title">${esc(l.title)}</div>
-        <div class="vid-desc">${esc(desc)}</div>
+        <div class="vid-title">${isLocked ? '🔒 ' : ''}${esc(l.title)}</div>
+        <div class="vid-desc">${isLocked ? `Upgrade to Tier ${l.tier_required} to access` : esc(desc)}</div>
       </div>
       <div class="vid-meta">
         ${isW?'<span class="tick" title="Watched">✓</span>':""}
-        <span class="play-icon">▶</span>
+        <span class="play-icon">${isLocked ? '🔒' : '▶'}</span>
       </div>
     </div>`;
   });
@@ -256,6 +266,10 @@ function selectCat(catId){
 function selectVideo(id){
   const v = lessons.find(x=>x.id===id);
   if(!v) return;
+  if(v.tier_required > currentUserTier){
+    alert(`This content requires Tier ${v.tier_required} access. Please upgrade your membership.`);
+    return;
+  }
   currentVideoId = id;
 
   document.querySelectorAll(".vid-item").forEach(x=>x.classList.remove("active"));
@@ -366,7 +380,7 @@ function renderNotes(){
 }
 
 function updateStats(){
-  document.getElementById("s-total").textContent   = lessons.length;
+  document.getElementById("s-total").textContent   = lessons.filter(l => l.tier_required <= currentUserTier).length;
   document.getElementById("s-watched").textContent = Object.keys(watched).length;
   document.getElementById("s-notes").textContent   = notes.length;
 }
