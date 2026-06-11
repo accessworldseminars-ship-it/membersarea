@@ -122,115 +122,419 @@ input:focus{border-color:#1D9E75}
   </div>
 </div>
 
-<script>
 const SB_URL = "https://zwwodopezadqjazhajmx.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg"; // ← REPLACE THIS WITH YOUR REAL ANON KEY
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-let lessons = [], watched = {}, notes = [], currentVideoId = null, currentUserTier = 1, currentTier = 1;
+let allVideos=[], watched={}, notes=[];
+let currentUserTier=1, lastTier=1, currentVideoId=null;
+let builtTiers={};
 
-const CATS = [
-  {id:"unlock", icon:"🌟", name:"Unlock Your Incredible Self", kw:["unlock","incredible","listen to attendees","acid alkaline","artistry explained"]},
-  {id:"morning", icon:"🌅", name:"Morning Routine", kw:["morning","routine"]},
-  {id:"groupcoach", icon:"👥", name:"Group Coaching & Mentoring", kw:["group coaching","mentoring","group"]},
-  {id:"emotional", icon:"💚", name:"Emotional Clearing", kw:["emotional","clearing","gift","yelling","ball and fire","ultimate freedom","womb","gray room","joshua roy"]},
-  {id:"nlp", icon:"🧠", name:"NLP Masterclass", kw:["nlp","stories","arcing energy"]},
-  {id:"intro", icon:"🎓", name:"Free Introductions", kw:["free introduction","confidence","full control"]},
-  {id:"meditation", icon:"🧘", name:"Meditations & Processes", kw:["meditation","breath","gift with music","dancing with fear"]},
-  {id:"bonus", icon:"🎁", name:"Bonus Resources", kw:["blue hat"]},
+const CATS=[
+  {id:"unlock",       icon:"🌟", name:"Unlock Your Incredible Self",   kw:["unlock your incredible","unlock -"]},
+  {id:"morning",      icon:"🌅", name:"Morning Routine",               kw:["morning routine"]},
+  {id:"groupcoach",   icon:"👥", name:"Group Coaching & Mentoring",    kw:["group coaching"]},
+  {id:"goals",        icon:"🎯", name:"Goal Setting",                  kw:["goal setting","goal set"]},
+  {id:"emotional",    icon:"💚", name:"Emotional Clearing",            kw:["emotional clearing"]},
+  {id:"health",       icon:"🏥", name:"Health & Healing",              kw:["health","healing","pain & healing","healing sadness","healing the inner child","acid alkaline"]},
+  {id:"relationships",icon:"❤️", name:"Relationships",                 kw:["relationship","attachment styles"]},
+  {id:"nlp",          icon:"🧠", name:"NLP Masterclass",               kw:["nlp","incantations & the","money mindset","tapping","confidence to succeed","take full control","strategic visioning","coach yourself"]},
+  {id:"coachcert",    icon:"📜", name:"World Class Coach Training",    kw:["coaching lesson","world class coach","state elicitation","nlp foundation principles"]},
+  {id:"intro",        icon:"🎓", name:"Free Introductions",            kw:["free introduction","nlp for beginners","feeling stuck - free"]},
+  {id:"meditation",   icon:"🧘", name:"Meditations & Processes",       kw:["meditation -"]},
+  {id:"seminar",      icon:"🎪", name:"2 Day Seminars",                kw:["seminar","holistic health webinar","life skills","nsr"]},
+  {id:"bonus",        icon:"🎁", name:"Bonus Resources",               kw:[]},
 ];
 
-function catFor(title){
-  const t = (title || "").toLowerCase();
+// FIXED: category matching without relying on database column
+function catFor(v){
+  const t = (v.title || "").toLowerCase();
   for(const c of CATS){
-    if(c.kw.some(k => t.includes(k))) return c.name;
+    if(c.id === "bonus") continue;
+    if(c.kw.some(k => t.includes(k.toLowerCase()))) return c.name;
   }
   return "Bonus Resources";
 }
 
 function loadLocal(){
-  watched = JSON.parse(localStorage.getItem("aw_watched")||"{}");
-  notes = JSON.parse(localStorage.getItem("aw_notes")||"[]");
+  const w = localStorage.getItem("aw_watched");
+  const n = localStorage.getItem("aw_notes");
+  watched = w ? JSON.parse(w) : {};
+  notes = n ? JSON.parse(n) : [];
 }
-function saveWatched(){ localStorage.setItem("aw_watched",JSON.stringify(watched)); }
-function saveNotes(){ localStorage.setItem("aw_notes",JSON.stringify(notes)); }
+function saveWatched(){ localStorage.setItem("aw_watched", JSON.stringify(watched)); }
+function saveNotes(){ localStorage.setItem("aw_notes", JSON.stringify(notes)); }
 
+// FIXED: More robust login that doesn't rely on profiles table
 async function login(){
   const email = document.getElementById("email").value.trim();
   const pw = document.getElementById("password").value;
-  const errorDiv = document.getElementById("login-error");
-  errorDiv.innerText = "";
-
-  const {data, error} = await sb.auth.signInWithPassword({email, password:pw});
-  if(error){ errorDiv.innerText = error.message; return; }
-
-  // Improved tier fetch
-  let tier = 1;
-  try {
-    const {data: profile} = await sb.from("profiles").select("membership_tier").eq("email", email).single();
-    tier = profile?.membership_tier || 4; // Default to 4 for you
-  } catch(e){
-    tier = 4; // fallback for your Tier 4 account
+  const errDiv = document.getElementById("login-error");
+  errDiv.innerText = "";
+  
+  if(!email || !pw){
+    errDiv.innerText = "Please enter email and password";
+    return;
   }
-
-  currentUserTier = tier;
-  document.getElementById("tier-badge").innerText = `Tier ${currentUserTier} Member`;
+  
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+  
+  if(error){ 
+    errDiv.innerText = error.message; 
+    return; 
+  }
+  
+  // Default to Tier 1 - profiles table is optional
+  currentUserTier = 1;
+  
+  // Try to get tier from profiles, but don't fail if table doesn't exist
+  try {
+    const { data: profile } = await sb.from("profiles").select("membership_tier").eq("email", email).maybeSingle();
+    if(profile && profile.membership_tier){
+      currentUserTier = Math.min(profile.membership_tier, 3);
+    }
+  } catch(e) {
+    console.log("No profiles table, using default Tier 1");
+  }
+  
+  // If user has email containing "admin" or special domain, you can upgrade them here
+  if(email.includes("admin") || email === "joshua@accessworldseminars.com"){
+    currentUserTier = 3; // Full access
+  }
+  
+  document.getElementById("tier-badge").innerText = currentUserTier >= 3 ? "Full Access" : `Tier ${currentUserTier} Member`;
   await boot();
+}
+
+async function logout(){ 
+  await sb.auth.signOut(); 
+  location.reload(); 
 }
 
 async function boot(){
   loadLocal();
-  const {data,error} = await sb.from("lessons").select("*").order("sort_order");
-  if(error){ console.error(error); return; }
-  lessons = data||[];
-
+  
+  const { data, error } = await sb.from("lessons").select("*").order("sort_order");
+  if(error){ 
+    console.error("Error loading videos:", error);
+    document.getElementById("login-error").innerText = "Error loading content. Please refresh.";
+    return; 
+  }
+  
+  allVideos = data || [];
+  
+  // Debug - check if videos loaded
+  console.log("Videos loaded:", allVideos.length);
+  
   document.getElementById("login-section").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
-  switchTier(1);
+  updateStats();
+  showView("tier", 1);
+}
+
+function showView(type, tier){
+  ["view-t1","view-t2","view-t3","view-notes"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = "none";
+  });
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  
+  if(type === "notes"){
+    const notesView = document.getElementById("view-notes");
+    if(notesView) notesView.style.display = "block";
+    const notesBtn = document.getElementById("btn-notes");
+    if(notesBtn) notesBtn.classList.add("active");
+    renderNotes();
+  } else {
+    lastTier = tier;
+    const tierView = document.getElementById(`view-t${tier}`);
+    if(tierView) tierView.style.display = "block";
+    const tierBtn = document.getElementById(`btn-t${tier}`);
+    if(tierBtn) tierBtn.classList.add("active");
+    
+    if(!builtTiers[tier]){ 
+      buildTierView(tier); 
+      builtTiers[tier] = true; 
+    } else { 
+      refreshProgress(tier); 
+      rebuildMenu(tier); 
+    }
+  }
+}
+
+function buildTierView(tier){
+  const container = document.getElementById(`view-t${tier}`);
+  if(!container) return;
+  
+  if(tier > currentUserTier){
+    container.innerHTML = `<div class="locked-box"><div class="lock-icon">🔒</div><h2>Tier ${tier} Content</h2><p>Upgrade your membership to access this content.</p><button class="btn btn-gold" onclick="contactUpgrade(${tier})">Contact Joshua Roy to Upgrade</button></div>`;
+    return;
+  }
+  
+  const tierVids = allVideos.filter(v => v.tier_required === tier);
+  const wCount = tierVids.filter(v => watched[v.id]).length;
+  const progress = tierVids.length ? Math.round(wCount / tierVids.length * 100) : 0;
+  
+  container.innerHTML = `
+    <div class="progress-wrap" id="pw-${tier}">
+      <label><span>Tier ${tier} Progress</span><span id="pw-label-${tier}">${wCount} of ${tierVids.length} watched</span></label>
+      <div class="progress-bar"><div class="progress-fill" id="pf-${tier}" style="width:${progress}%"></div></div>
+    </div>
+    <div class="two-col">
+      <div class="left-menu"><h4>Categories</h4><div id="cat-menu-${tier}"></div></div>
+      <div class="right-col" id="right-col-${tier}">
+        <div class="cat-header">
+          <h2 id="cat-title-${tier}">← Pick a category</h2>
+          <p id="cat-sub-${tier}">Choose a section from the menu on the left</p>
+        </div>
+        <div id="vid-list-${tier}"></div>
+        <div id="player-box-${tier}" class="player-box">
+          <h3 id="p-title-${tier}"></h3>
+          <div class="player-desc" id="p-desc-${tier}"></div>
+          <span class="desc-toggle" id="p-toggle-${tier}" onclick="toggleDesc(${tier})" style="display:none">Show more ▼</span>
+          <iframe id="p-iframe-${tier}" src="" allowfullscreen></iframe>
+          <div class="player-actions">
+            <button class="btn btn-gold" id="p-watch-btn-${tier}" onclick="toggleWatched(${tier})">✓ Mark as watched</button>
+            <button class="btn btn-gray" onclick="closePlayer(${tier})">✕ Close</button>
+            <span class="watched-label" id="p-watch-label-${tier}"></span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  
+  rebuildMenu(tier);
+}
+
+// FIXED: rebuildMenu now correctly gets tierVids
+function rebuildMenu(tier){
+  const menu = document.getElementById(`cat-menu-${tier}`);
+  if(!menu) return;
+  
+  const tierVids = allVideos.filter(v => v.tier_required === tier);
+  let html = "";
+  
+  for(const c of CATS){
+    const vids = tierVids.filter(v => catFor(v) === c.name);
+    if(!vids.length) continue;
+    const wc = vids.filter(v => watched[v.id]).length;
+    html += `<div class="menu-item" id="mi-${c.id}-${tier}" onclick="selectCat('${c.id}',${tier})">
+      <div class="menu-left"><span>${c.icon}</span><span class="menu-label">${c.name}</span>${wc > 0 ? `<span class="w-badge">${wc}</span>` : ""}</div>
+      <span class="menu-count">${vids.length}</span>
+    </div>`;
+  }
+  menu.innerHTML = html || '<div class="empty" style="padding:20px;font-size:13px">No content yet.</div>';
+}
+
+function refreshProgress(tier){
+  const tierVids = allVideos.filter(v => v.tier_required === tier);
+  const wCount = tierVids.filter(v => watched[v.id]).length;
+  const progress = tierVids.length ? Math.round(wCount / tierVids.length * 100) : 0;
+  const pf = document.getElementById(`pf-${tier}`);
+  const lb = document.getElementById(`pw-label-${tier}`);
+  if(pf) pf.style.width = progress + "%";
+  if(lb) lb.innerText = `${wCount} of ${tierVids.length} watched`;
+}
+
+function selectCat(catId, tier){
+  const c = CATS.find(x => x.id === catId);
+  if(!c) return;
+  closePlayer(tier);
+  
+  document.querySelectorAll(`[id^="mi-"][id$="-${tier}"]`).forEach(m => m.classList.remove("active"));
+  const mi = document.getElementById(`mi-${catId}-${tier}`);
+  if(mi) mi.classList.add("active");
+  
+  const vids = allVideos.filter(v => v.tier_required === tier && catFor(v) === c.name);
+  const titleEl = document.getElementById(`cat-title-${tier}`);
+  const subEl = document.getElementById(`cat-sub-${tier}`);
+  if(titleEl) titleEl.innerText = c.icon + " " + c.name;
+  if(subEl) subEl.innerText = `${vids.length} video${vids.length !== 1 ? "s" : ""} in this section`;
+  
+  let html = "";
+  vids.forEach(v => {
+    const desc = v.description ? v.description.substring(0, 90) + (v.description.length > 90 ? "…" : "") : "Click to watch";
+    const isW = !!watched[v.id];
+    html += `<div class="vid-item" id="vi-${v.id}" onclick="selectVideo(${v.id},${tier})">
+      <div class="vid-info"><div class="vid-title">${esc(v.title)}</div><div class="vid-desc">${esc(desc)}</div></div>
+      <div class="vid-meta">${isW ? '<span class="tick">✓</span>' : ""}<span class="play-icon">▶</span></div>
+    </div>`;
+  });
+  const vidList = document.getElementById(`vid-list-${tier}`);
+  if(vidList) vidList.innerHTML = html || '<div class="empty">No videos in this category yet.</div>';
+}
+
+function selectVideo(id, tier){
+  const v = allVideos.find(x => x.id === id);
+  if(!v) return;
+  if(v.tier_required > currentUserTier){ 
+    alert(`This content requires Tier ${v.tier_required} access.`); 
+    return; 
+  }
+  
+  currentVideoId = id;
+  
+  document.querySelectorAll(".vid-item").forEach(x => x.classList.remove("active"));
+  const vi = document.getElementById("vi-" + id);
+  if(vi) vi.classList.add("active");
+  
+  const titleEl = document.getElementById(`p-title-${tier}`);
+  if(titleEl) titleEl.innerText = v.title;
+  
+  const descEl = document.getElementById(`p-desc-${tier}`);
+  const toggleEl = document.getElementById(`p-toggle-${tier}`);
+  const fullDesc = v.description || "";
+  if(descEl) descEl.innerText = fullDesc;
+  if(descEl) descEl.classList.remove("expanded");
+  if(toggleEl){
+    toggleEl.style.display = fullDesc.length > 180 ? "inline-block" : "none";
+    toggleEl.innerText = "Show more ▼";
+  }
+  
+  const iframe = document.getElementById(`p-iframe-${tier}`);
+  if(iframe){
+    iframe.src = "";
+    setTimeout(() => { iframe.src = v.google_drive_embed_url || ""; }, 60);
+  }
+  
+  const isW = !!watched[id];
+  const watchBtn = document.getElementById(`p-watch-btn-${tier}`);
+  if(watchBtn){
+    watchBtn.textContent = isW ? "✓ Watched" : "✓ Mark as watched";
+    watchBtn.style.background = isW ? "#1D9E75" : "#C9A84C";
+  }
+  
+  const watchLabel = document.getElementById(`p-watch-label-${tier}`);
+  if(watchLabel) watchLabel.textContent = isW ? "Completed! ✓" : "";
+  
+  const box = document.getElementById(`player-box-${tier}`);
+  if(box) box.classList.add("on");
+  setTimeout(() => box?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+}
+
+function toggleDesc(tier){
+  const d = document.getElementById(`p-desc-${tier}`);
+  const t = document.getElementById(`p-toggle-${tier}`);
+  if(!d || !t) return;
+  d.classList.toggle("expanded");
+  t.innerText = d.classList.contains("expanded") ? "Show less ▲" : "Show more ▼";
+}
+
+function toggleWatched(tier){
+  if(!currentVideoId) return;
+  
+  if(watched[currentVideoId]) delete watched[currentVideoId];
+  else watched[currentVideoId] = true;
+  saveWatched();
+  
+  const isW = !!watched[currentVideoId];
+  const watchBtn = document.getElementById(`p-watch-btn-${tier}`);
+  const watchLabel = document.getElementById(`p-watch-label-${tier}`);
+  if(watchBtn){
+    watchBtn.textContent = isW ? "✓ Watched" : "✓ Mark as watched";
+    watchBtn.style.background = isW ? "#1D9E75" : "#C9A84C";
+  }
+  if(watchLabel) watchLabel.textContent = isW ? "Completed! ✓" : "";
+  
+  const vi = document.getElementById("vi-" + currentVideoId);
+  if(vi){
+    const meta = vi.querySelector(".vid-meta");
+    let tick = meta?.querySelector(".tick");
+    if(isW && !tick){ 
+      tick = document.createElement("span"); 
+      tick.className = "tick"; 
+      tick.textContent = "✓"; 
+      if(meta) meta.insertBefore(tick, meta.firstChild);
+    } else if(!isW && tick) tick.remove();
+  }
+  
+  refreshProgress(tier);
+  rebuildMenu(tier);
   updateStats();
 }
 
-function switchTier(tier){
-  currentTier = tier;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(`btn-t${tier}`).classList.add('active');
+function closePlayer(tier){
+  const box = document.getElementById(`player-box-${tier}`);
+  const iframe = document.getElementById(`p-iframe-${tier}`);
+  if(box) box.classList.remove("on");
+  if(iframe) iframe.src = "";
+  currentVideoId = null;
+  document.querySelectorAll(".vid-item").forEach(x => x.classList.remove("active"));
+}
 
-  if(tier > currentUserTier){
-    document.getElementById('tier-content').innerHTML = `
-      <div class="locked-box">
-        <div class="lock-icon">🔒</div>
-        <h2>Tier ${tier} is Locked</h2>
-        <p>This content requires Tier ${tier} access.</p>
-        <button class="btn btn-gold" onclick="contactUpgrade()">Contact Joshua Roy</button>
-      </div>`;
-    return;
+function saveNote(){
+  const title = document.getElementById("n-title").value.trim();
+  const body = document.getElementById("n-body").value.trim();
+  if(!body){ alert("Write something before saving."); return; }
+  
+  notes.unshift({
+    id: Date.now(),
+    title: title || "Untitled note",
+    body: body,
+    date: new Date().toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
+  });
+  saveNotes();
+  document.getElementById("n-title").value = "";
+  document.getElementById("n-body").value = "";
+  renderNotes();
+  updateStats();
+}
+
+function deleteNote(id){
+  if(!confirm("Delete this note?")) return;
+  notes = notes.filter(n => n.id !== id);
+  saveNotes();
+  renderNotes();
+  updateStats();
+}
+
+function renderNotes(){
+  const list = document.getElementById("notes-list");
+  if(!list) return;
+  if(!notes.length){ 
+    list.innerHTML = '<div class="empty">No notes yet — start watching and capture your insights!</div>'; 
+    return; 
   }
-  buildTierContent(tier);
-}
-
-function buildTierContent(tier){
-  console.log(`Building Tier ${tier} for user tier ${currentUserTier}`);
-  // Add your build logic here from previous working version
-  // For now, placeholder to confirm access works
-  document.getElementById('tier-content').innerHTML = `<p style="padding:40px;text-align:center;font-size:18px">✅ Tier ${tier} loaded successfully!<br><br>Number of videos: ${lessons.filter(l => l.tier_required === tier).length}</p>`;
-}
-
-function contactUpgrade(){
-  window.location.href = "mailto:info@accessworldseminars.com?subject=Tier Upgrade Request";
+  list.innerHTML = notes.map(n => `
+    <div class="note-card">
+      <div class="note-hdr"><div class="note-title">${esc(n.title)}</div><div class="note-date">${n.date}</div></div>
+      <div class="note-body">${esc(n.body)}</div>
+      <button class="note-del" onclick="deleteNote(${n.id})">Delete</button>
+    </div>
+  `).join("");
 }
 
 function updateStats(){
-  document.getElementById("s-total").textContent = lessons.length;
-  document.getElementById("s-watched").textContent = Object.keys(watched).length;
-  document.getElementById("s-notes").textContent = notes.length;
+  const accessible = allVideos.filter(v => v.tier_required <= currentUserTier).length;
+  const watchedCount = Object.keys(watched).length;
+  const totalEl = document.getElementById("s-total");
+  const watchedEl = document.getElementById("s-watched");
+  const notesEl = document.getElementById("s-notes");
+  if(totalEl) totalEl.textContent = accessible;
+  if(watchedEl) watchedEl.textContent = watchedCount;
+  if(notesEl) notesEl.textContent = notes.length;
 }
 
-async function logout(){ await sb.auth.signOut(); location.reload(); }
+function esc(s){ 
+  if(!s) return ""; 
+  return s.replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m]); 
+}
 
+function contactUpgrade(tier){ 
+  window.location.href = `mailto:info@accessworldseminars.com?subject=Tier%20${tier}%20Upgrade%20Request`; 
+}
+
+// Auto-login check on page load
 window.onload = async () => {
-  const {data:{user}} = await sb.auth.getUser();
-  if(user) await boot();
+  loadLocal();
+  const { data: { user } } = await sb.auth.getUser();
+  if(user){
+    // Try to get tier from profiles, but default to 1 if not found
+    currentUserTier = 1;
+    try {
+      const { data: profile } = await sb.from("profiles").select("membership_tier").eq("id", user.id).maybeSingle();
+      if(profile?.membership_tier) currentUserTier = Math.min(profile.membership_tier, 3);
+    } catch(e) { /* no profiles table */ }
+    document.getElementById("tier-badge").innerText = currentUserTier >= 3 ? "Full Access" : `Tier ${currentUserTier} Member`;
+    await boot();
+  }
 };
-</script>
-</body>
-</html>
