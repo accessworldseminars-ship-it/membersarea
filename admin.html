@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AccessWorld Admin Console</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #0c111c;
+            color: #eef2ff;
+            padding: 24px 20px;
+        }
+
+        .admin-wrapper {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* header & auth */
+        .login-overlay {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 20% 30%, #0f172a, #0a0f1c);
+        }
+
+        .login-card {
+            background: #111827;
+            border-radius: 32px;
+            padding: 44px 38px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            border: 1px solid #2d3748;
+            box-shadow: 0 25px 40px -12px black;
+        }
+
+        .login-card h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #C9A84C, #f5d97e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            color: #9ca3af;
+            margin-bottom: 28px;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 28px;
+            color: white;
+            font-size: 15px;
+            margin-bottom: 18px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .admin-input:focus {
+            border-color: #C9A84C;
+            box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.3);
+        }
+
+        .btn-admin {
+            background: #C9A84C;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #0f111a;
+            font-size: 15px;
+        }
+
+        .btn-admin:hover {
+            background: #e0bc60;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-danger {
+            background: transparent;
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 8px 18px;
+            border-radius: 30px;
+        }
+
+        .btn-outline-danger:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* dashboard header */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: #111827cc;
+            backdrop-filter: blur(8px);
+            padding: 16px 28px;
+            border-radius: 60px;
+            border: 1px solid #2d3748;
+        }
+
+        .stats-badge {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat-pill {
+            background: #1f2937;
+            padding: 6px 18px;
+            border-radius: 60px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .stat-pill span {
+            color: #C9A84C;
+            font-weight: 800;
+            margin-right: 6px;
+        }
+
+        /* tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 12px;
+            margin: 24px 0 20px 0;
+            border-bottom: 1px solid #2d3748;
+            padding-bottom: 8px;
+        }
+
+        .admin-tab {
+            background: transparent;
+            border: none;
+            padding: 10px 24px;
+            font-weight: 600;
+            color: #9ca3af;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+
+        .admin-tab.active {
+            background: #C9A84C;
+            color: #0a0f1c;
+        }
+
+        /* table */
+        .table-container {
+            background: #111827;
+            border-radius: 28px;
+            overflow-x: auto;
+            border: 1px solid #2d3748;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 16px 14px;
+            text-align: left;
+            border-bottom: 1px solid #253041;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #0f1722;
+            color: #C9A84C;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #1a2538;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            font-size: 18px;
+            color: #6b7a8f;
+            user-select: none;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .title-edit {
+            background: #0f1724;
+            border: 1px solid #334155;
+            padding: 8px 12px;
+            border-radius: 20px;
+            color: white;
+            width: 280px;
+            font-size: 13px;
+        }
+
+        .tier-select {
+            background: #0f1724;
+            border: 1px solid #C9A84C;
+            padding: 6px 12px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .sort-input {
+            width: 70px;
+            background: #0f1724;
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 6px 8px;
+            color: white;
+            text-align: center;
+        }
+
+        .action-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .save-icon, .delete-icon {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+
+        .save-icon {
+            color: #22c55e;
+        }
+        .delete-icon {
+            color: #f87171;
+        }
+        .save-icon:hover {
+            background: #22c55e20;
+        }
+        .delete-icon:hover {
+            background: #ef444420;
+        }
+
+        .bulk-bar {
+            background: #0f1724;
+            padding: 14px 20px;
+            border-radius: 60px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .bulk-bar select, .bulk-bar button {
+            background: #1f2937;
+            border: 1px solid #374151;
+            padding: 8px 16px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .bulk-bar button {
+            background: #C9A84C;
+            color: black;
+            font-weight: 700;
+            border: none;
+        }
+
+        .search-filter {
+            background: #1f2937;
+            border: 1px solid #374151;
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: white;
+            width: 240px;
+        }
+
+        .checkbox-col {
+            width: 30px;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: #1f2a3e;
+            backdrop-filter: blur(12px);
+            padding: 12px 24px;
+            border-radius: 60px;
+            color: #C9A84C;
+            font-weight: 600;
+            border-left: 4px solid #C9A84C;
+            z-index: 999;
+            transition: 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body>
+<div id="adminAuthScreen" class="login-overlay">
+    <div class="login-card">
+        <h1>⚙️ Admin Portal</h1>
+        <p>Secure access · Manage videos, tiers & content</p>
+        <input type="password" id="adminMasterPass" class="admin-input" placeholder="Enter admin password">
+        <button class="btn-admin" id="authenticateAdminBtn">Unlock Console</button>
+        <div id="authError" style="color:#f87171; margin-top: 16px; font-size:13px;"></div>
+    </div>
+</div>
+
+<div id="adminDashboard" style="display: none;">
+    <div class="admin-wrapper">
+        <div class="admin-header">
+            <div style="display: flex; align-items:center; gap:12px;">
+                <span style="font-size:28px;">🎛️</span>
+                <h2 style="font-weight:700;">AccessWorld Admin</h2>
+            </div>
+            <div class="stats-badge">
+                <div class="stat-pill"><span>📹</span> <span id="totalVideosCount">0</span> videos</div>
+                <div class="stat-pill"><span>⭐</span> Tier1: <span id="t1Count">0</span></div>
+                <div class="stat-pill"><span>🚀</span> Tier2: <span id="t2Count">0</span></div>
+                <div class="stat-pill"><span>🏆</span> Tier3: <span id="t3Count">0</span></div>
+                <button id="adminLogoutBtn" style="background:#2d3748; border:none; border-radius:30px; padding:6px 18px; color:#ddd; cursor:pointer;">Sign out</button>
+            </div>
+        </div>
+
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tier="all">📚 All videos</button>
+            <button class="admin-tab" data-tier="1">⭐ Tier 1</button>
+            <button class="admin-tab" data-tier="2">🚀 Tier 2</button>
+            <button class="admin-tab" data-tier="3">🏆 Tier 3</button>
+        </div>
+
+        <div class="bulk-bar">
+            <div style="display: flex; align-items:center; gap:8px;">
+                <input type="checkbox" id="selectAllCheckbox">
+                <label>Select all</label>
+            </div>
+            <select id="bulkTierMoveSelect">
+                <option value="">Move selected to tier…</option>
+                <option value="1">Tier 1</option>
+                <option value="2">Tier 2</option>
+                <option value="3">Tier 3</option>
+            </select>
+            <button id="applyBulkMoveBtn">Apply move</button>
+            <button id="bulkDeleteBtn" style="background:#7f1a1a; color:#ffb3b3;">🗑️ Delete selected</button>
+            <input type="text" id="searchInput" class="search-filter" placeholder="🔍 Filter by title...">
+            <span style="font-size:12px; margin-left:auto;">💡 Drag ⋮⋮ to reorder → auto-save</span>
+        </div>
+
+        <div class="table-container">
+            <table id="videoAdminTable">
+                <thead>
+                    <tr><th style="width:30px"></th><th style="width:30px"></th><th>ID</th><th>Title</th><th>Tier</th><th>Sort</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="adminTableBody">
+                    <tr><td colspan="7" style="text-align:center; padding:60px;">Loading videos from Supabase...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================== SUPABASE CONFIG ===========================
+    const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";   // REPLACE WITH YOUR ACTUAL KEY
+    const ADMIN_PASSWORD = "AccessWorldAdmin2025";     // CHANGE THIS
+        
+    let supabaseClient;
+    let allVideos = [];
+    let currentFilterTier = "all";
+    let searchQuery = "";
+    let selectedVideoIds = new Set();
+    let sortableInstance = null;
+    
+    // helpers
+    function showToast(message, isError = false) {
+        const toast = document.createElement("div");
+        toast.className = "toast-msg";
+        toast.innerText = message;
+        if (isError) toast.style.borderLeftColor = "#f87171";
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2800);
+    }
+    
+    // init supabase
+    function initSupabase() {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+    
+    async function loadVideosFromSupabase() {
+        const { data, error } = await supabaseClient
+            .from("lessons")
+            .select("*")
+            .order("sort_order", { ascending: true });
+        if (error) throw error;
+        allVideos = data || [];
+        return allVideos;
+    }
+    
+    function updateStatsUI() {
+        const total = allVideos.length;
+        const t1 = allVideos.filter(v => v.tier_required === 1).length;
+        const t2 = allVideos.filter(v => v.tier_required === 2).length;
+        const t3 = allVideos.filter(v => v.tier_required === 3).length;
+        document.getElementById("totalVideosCount").innerText = total;
+        document.getElementById("t1Count").innerText = t1;
+        document.getElementById("t2Count").innerText = t2;
+        document.getElementById("t3Count").innerText = t3;
+    }
+    
+    function filterVideos() {
+        let filtered = [...allVideos];
+        if (currentFilterTier !== "all") {
+            filtered = filtered.filter(v => v.tier_required === parseInt(currentFilterTier));
+        }
+        if (searchQuery.trim() !== "") {
+            const q = searchQuery.toLowerCase();
+            filtered = filtered.filter(v => (v.title || "").toLowerCase().includes(q));
+        }
+        // keep original sort_order but allow client side search only
+        filtered.sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0));
+        return filtered;
+    }
+    
+    function renderTable() {
+        const filtered = filterVideos();
+        const tbody = document.getElementById("adminTableBody");
+        if (!filtered.length) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:48px;">✨ No videos match criteria</td></tr>';
+            return;
+        }
+        let html = "";
+        filtered.forEach(video => {
+            const isSelected = selectedVideoIds.has(video.id);
+            html += `
+                <tr data-id="${video.id}" data-sort-order="${video.sort_order || 0}">
+                    <td class="drag-handle">⋮⋮</td>
+                    <td class="checkbox-col"><input type="checkbox" class="video-checkbox" data-id="${video.id}" ${isSelected ? "checked" : ""}></td>
+                    <td>${video.id}</td>
+                    <td><input type="text" class="title-edit" id="title-${video.id}" value="${escapeHtml(video.title || "")}" style="width:100%"></td>
+                    <td>
+                        <select class="tier-select" id="tier-${video.id}">
+                            <option value="1" ${video.tier_required === 1 ? "selected" : ""}>Tier 1</option>
+                            <option value="2" ${video.tier_required === 2 ? "selected" : ""}>Tier 2</option>
+                            <option value="3" ${video.tier_required === 3 ? "selected" : ""}>Tier 3</option>
+                        </select>
+                    </td>
+                    <td><input type="number" class="sort-input" id="sort-${video.id}" value="${video.sort_order || 0}" step="1"></td>
+                    <td class="action-icons">
+                        <button class="save-icon" data-id="${video.id}" title="Save changes">💾</button>
+                        <button class="delete-icon" data-id="${video.id}" title="Delete permanently">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+        
+        // attach checkbox events
+        document.querySelectorAll(".video-checkbox").forEach(cb => {
+            cb.addEventListener("change", (e) => {
+                const vid = parseInt(cb.getAttribute("data-id"));
+                if (cb.checked) selectedVideoIds.add(vid);
+                else selectedVideoIds.delete(vid);
+                updateSelectAllCheckbox();
+            });
+        });
+        
+        // attach save buttons
+        document.querySelectorAll(".save-icon").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const id = parseInt(btn.getAttribute("data-id"));
+                const newTitle = document.getElementById(`title-${id}`).value;
+                const newTier = parseInt(document.getElementById(`tier-${id}`).value);
+                const newSort = parseInt(document.getElementById(`sort-${id}`).value);
+                await updateVideoInDB(id, { title: newTitle, tier_required: newTier, sort_order: newSort });
+                showToast(`✅ Video ${id} updated`);
+                await refreshData();
+            });
+        });
+        
+        // attach delete
+        document.querySelectorAll(".delete-icon").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const id = parseInt(btn.getAttribute("data-id"));
+                if (confirm(`⚠️ Permanently delete video ID ${id}? This cannot be undone.`)) {
+                    await deleteVideoById(id);
+                    showToast(`Deleted video ${id}`);
+                    await refreshData();
+                }
+            });
+        });
+        
+        // reattach sortable
+        if (sortableInstance) sortableInstance.destroy();
+        const tbodyEl = document.getElementById("adminTableBody");
+        sortableInstance = new Sortable(tbodyEl, {
+            handle: ".drag-handle",
+            animation: 200,
+            onEnd: async () => {
+                // after reorder, get all rows and update sort_order based on new index
+                const rows = document.querySelectorAll("#adminTableBody tr");
+                const updates = [];
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    const id = parseInt(row.getAttribute("data-id"));
+                    const newSort = i + 1;   // 1-indexed
+                    updates.push({ id, sort_order: newSort });
+                    const inputField = document.getElementById(`sort-${id}`);
+                    if (inputField) inputField.value = newSort;
+                }
+                for (let up of updates) {
+                    await supabaseClient.from("lessons").update({ sort_order: up.sort_order }).eq("id", up.id);
+                }
+                showToast(`📌 Sort order saved (${updates.length} videos)`);
+                await refreshData();
+            }
+        });
+        updateSelectAllCheckbox();
+    }
+    
+    async function updateVideoInDB(id, changes) {
+        const { error } = await supabaseClient.from("lessons").update(changes).eq("id", id);
+        if (error) throw error;
+    }
+    
+    async function deleteVideoById(id) {
+        const { error } = await supabaseClient.from("lessons").delete().eq("id", id);
+        if (error) throw error;
+        selectedVideoIds.delete(id);
+    }
+    
+    async function refreshData() {
+        await loadVideosFromSupabase();
+        updateStatsUI();
+        renderTable();
+    }
+    
+    function updateSelectAllCheckbox() {
+        const filtered = filterVideos();
+        const allChecked = filtered.length > 0 && filtered.every(v => selectedVideoIds.has(v.id));
+        const selectAllBox = document.getElementById("selectAllCheckbox");
+        if (selectAllBox) selectAllBox.checked = allChecked;
+    }
+    
+    function toggleSelectAll() {
+        const filtered = filterVideos();
+        if (document.getElementById("selectAllCheckbox").checked) {
+            filtered.forEach(v => selectedVideoIds.add(v.id));
+        } else {
+            filtered.forEach(v => selectedVideoIds.delete(v.id));
+        }
+        renderTable();
+    }
+    
+    async function bulkMoveToTier(targetTier) {
+        if (selectedVideoIds.size === 0) { showToast("No videos selected", true); return; }
+        if (!targetTier) return;
+        const ids = Array.from(selectedVideoIds);
+        for (let id of ids) {
+            await supabaseClient.from("lessons").update({ tier_required: targetTier }).eq("id", id);
+        }
+        showToast(`Moved ${ids.length} videos to Tier ${targetTier}`);
+        selectedVideoIds.clear();
+        await refreshData();
+    }
+    
+    async function bulkDeleteSelected() {
+        if (selectedVideoIds.size === 0) { showToast("Select videos first", true); return; }
+        if (!confirm(`⚠️ DELETE ${selectedVideoIds.size} videos permanently?`)) return;
+        const ids = Array.from(selectedVideoIds);
+        for (let id of ids) {
+            await supabaseClient.from("lessons").delete().eq("id", id);
+        }
+        showToast(`Deleted ${ids.length} videos`);
+        selectedVideoIds.clear();
+        await refreshData();
+    }
+    
+    // auth
+    function checkAdminPassword() {
+        const inputPass = document.getElementById("adminMasterPass").value;
+        if (inputPass === ADMIN_PASSWORD) {
+            document.getElementById("adminAuthScreen").style.display = "none";
+            document.getElementById("adminDashboard").style.display = "block";
+            initSupabase();
+            loadVideosFromSupabase().then(() => {
+                updateStatsUI();
+                renderTable();
+            }).catch(err => {
+                alert("Supabase error: " + err.message);
+            });
+        } else {
+            document.getElementById("authError").innerText = "Wrong password. Access denied.";
+        }
+    }
+    
+    // search & filter
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("authenticateAdminBtn")?.addEventListener("click", checkAdminPassword);
+        document.getElementById("adminLogoutBtn")?.addEventListener("click", () => {
+            location.reload();
+        });
+        // dynamic elements will be attached after render
+    });
+    
+    // attach global listeners after dashboard shows (delegation)
+    document.addEventListener("change", (e) => {
+        if (e.target.id === "selectAllCheckbox") toggleSelectAll();
+    });
+    document.addEventListener("click", (e) => {
+        if (e.target.id === "applyBulkMoveBtn") {
+            const tierVal = document.getElementById("bulkTierMoveSelect").value;
+            if (tierVal) bulkMoveToTier(parseInt(tierVal));
+            else showToast("Select a target tier", true);
+        }
+        if (e.target.id === "bulkDeleteBtn") bulkDeleteSelected();
+        if (e.target.classList?.contains("admin-tab")) {
+            document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
+            e.target.classList.add("active");
+            currentFilterTier = e.target.getAttribute("data-tier");
+            selectedVideoIds.clear();
+            renderTable();
+        }
+        if (e.target.id === "searchInput") return;
+    });
+    document.addEventListener("input", (e) => {
+        if (e.target.id === "searchInput") {
+            searchQuery = e.target.value;
+            selectedVideoIds.clear();
+            renderTable();
+        }
+    });
+    
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
+    }
+    
+    // ensure drag&drop persist after re-render
+    window.refreshData = refreshData;
+</script>
+</body>
+</html>
