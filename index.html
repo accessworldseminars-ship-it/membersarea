@@ -154,7 +154,7 @@ const SB_URL  = "https://zwwodopezadqjazhajmx.supabase.co";
 const SB_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-let lessons = [], watched = {}, notes = [], currentVideoId = null, currentCat = null, currentUserTier = 1;
+let lessons = [], watched = {}, notes = [], currentVideoId = null, currentCat = null, currentUserTier = 1, currentViewTier = 1;
 
 // UPDATED CATEGORIES with correct keywords
 const CATS = [
@@ -202,14 +202,37 @@ async function login(){
 
 async function boot(){
   loadLocal();
-  // Load ALL lessons (no tier filter)
+  // Load ALL lessons
   const {data,error} = await sb.from("lessons").select("*").order("sort_order");
   if(error){ console.error(error); return; }
   lessons = data||[];
   document.getElementById("login-section").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
+  buildTierTabs();
   buildMenu();
   updateStats();
+}
+
+function buildTierTabs(){
+  const tabsContainer = document.getElementById("tier-tabs");
+  if(!tabsContainer) return;
+  
+  let html = '<div class="tier-tabs">';
+  
+  // Only show tiers that user has access to
+  for(let tier = 1; tier <= currentUserTier; tier++){
+    const tierNames = {1:"🌱 Tier 1 - Foundation", 2:"🚀 Tier 2 - Coaching", 3:"🏆 Tier 3 - Mastery", 4:"👑 Tier 4 - Inner Circle"};
+    html += `<button class="tier-tab ${currentViewTier === tier ? 'active' : ''}" onclick="switchTier(${tier})">${tierNames[tier] || `Tier ${tier}`}</button>`;
+  }
+  
+  html += '</div>';
+  tabsContainer.innerHTML = html;
+}
+
+function switchTier(tier){
+  currentViewTier = tier;
+  buildTierTabs();
+  buildMenu();
 }
 
 function buildMenu(){
@@ -217,8 +240,8 @@ function buildMenu(){
   let html = "";
   for(const c of CATS){
     if(c.id==="other") continue;
-    // Filter lessons by category AND by user's tier access
-    const vids = lessons.filter(l => catFor(l.title)===c.name && l.tier_required <= currentUserTier);
+    // Filter lessons by category AND by selected tier AND user has access
+    const vids = lessons.filter(l => catFor(l.title)===c.name && l.tier_required === currentViewTier);
     if(!vids.length) continue;
     const wc = vids.filter(l => watched[l.id]).length;
     html += `<div class="menu-item" id="mi-${c.id}" onclick="selectCat('${c.id}')">
@@ -226,7 +249,7 @@ function buildMenu(){
       <span class="menu-count">${vids.length}</span>
     </div>`;
   }
-  menu.innerHTML = html;
+  menu.innerHTML = html || '<div class="menu-item">No content available for this tier</div>';
 }
 
 function selectCat(catId){
@@ -239,8 +262,8 @@ function selectCat(catId){
   const mi = document.getElementById("mi-"+catId);
   if(mi) mi.classList.add("active");
 
-  // Filter by category AND user's tier access
-  const vids = lessons.filter(l => catFor(l.title)===c.name && l.tier_required <= currentUserTier);
+  // Filter by category AND selected tier
+  const vids = lessons.filter(l => catFor(l.title)===c.name && l.tier_required === currentViewTier);
   document.getElementById("cat-title").innerText = c.icon+" "+c.name;
   document.getElementById("cat-subtitle").innerText = vids.length+" video"+(vids.length!==1?"s":"")+" in this section";
 
@@ -248,15 +271,14 @@ function selectCat(catId){
   vids.forEach(l=>{
     const desc = l.description ? l.description.substring(0,90)+(l.description.length>90?"...":"") : "Click to watch";
     const isW = watched[l.id];
-    const isLocked = l.tier_required > currentUserTier;
-    html += `<div class="vid-item ${isLocked ? 'locked' : ''}" id="vi-${l.id}" onclick="${isLocked ? '' : `selectVideo(${l.id})`}">
+    html += `<div class="vid-item" id="vi-${l.id}" onclick="selectVideo(${l.id})">
       <div class="vid-info">
-        <div class="vid-title">${isLocked ? '🔒 ' : ''}${esc(l.title)}</div>
-        <div class="vid-desc">${isLocked ? `Upgrade to Tier ${l.tier_required} to access` : esc(desc)}</div>
+        <div class="vid-title">${esc(l.title)}</div>
+        <div class="vid-desc">${esc(desc)}</div>
       </div>
       <div class="vid-meta">
         ${isW?'<span class="tick" title="Watched">✓</span>':""}
-        <span class="play-icon">${isLocked ? '🔒' : '▶'}</span>
+        <span class="play-icon">▶</span>
       </div>
     </div>`;
   });
@@ -380,7 +402,8 @@ function renderNotes(){
 }
 
 function updateStats(){
-  document.getElementById("s-total").textContent   = lessons.filter(l => l.tier_required <= currentUserTier).length;
+  const visibleCount = lessons.filter(l => l.tier_required <= currentUserTier && l.tier_required === currentViewTier).length;
+  document.getElementById("s-total").textContent   = visibleCount;
   document.getElementById("s-watched").textContent = Object.keys(watched).length;
   document.getElementById("s-notes").textContent   = notes.length;
 }
@@ -399,6 +422,3 @@ window.onload = async()=>{
   const {data:{user}} = await sb.auth.getUser();
   if(user) await boot();
 };
-</script>
-</body>
-</html>
