@@ -74,13 +74,15 @@ textarea:focus{border-color:#1D9E75}
 .note-del{background:none;border:1px solid #ddd;color:#aaa;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;margin-top:8px}
 .note-del:hover{background:#fee;color:#c00;border-color:#f99}
 .error{color:red;font-size:13px;margin-top:8px}
-.upgrade-box{text-align:center;padding:80px 20px;color:#555}
+.progress-bar{background:#eee;border-radius:999px;height:8px;margin:12px 0;overflow:hidden}
+.progress-fill{background:#1D9E75;height:100%;transition:width .4s}
+.upgrade-box{text-align:center;padding:60px 20px;color:#555}
+.upgrade-box h2{margin-bottom:16px}
 @media(max-width:700px){.two-col{flex-direction:column}.left-menu{width:100%;max-height:200px}.stats{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
 <div class="container">
-  <!-- Login Section -->
   <div id="login-section">
     <div class="login-box">
       <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" style="height:60px;margin-bottom:16px" onerror="this.style.display='none'">
@@ -93,7 +95,6 @@ textarea:focus{border-color:#1D9E75}
     </div>
   </div>
 
-  <!-- Dashboard -->
   <div id="dashboard" style="display:none">
     <div class="header">
       <div style="display:flex;align-items:center;gap:12px">
@@ -112,7 +113,6 @@ textarea:focus{border-color:#1D9E75}
       <div class="stat-card"><div class="stat-num" id="s-notes">0</div><div class="stat-lbl">Notes</div></div>
     </div>
 
-    <!-- Tier Tabs -->
     <div class="tabs">
       <div class="tab tier-tab active" data-tier="1" onclick="showTierTab(1)">Tier 1</div>
       <div class="tab tier-tab" data-tier="2" onclick="showTierTab(2)">Tier 2</div>
@@ -120,14 +120,12 @@ textarea:focus{border-color:#1D9E75}
       <div class="tab" id="tab-notes-btn" onclick="showTab('notes')">📝 My Notes</div>
     </div>
 
-    <!-- Tier Content Area -->
     <div id="tier-content"></div>
 
-    <!-- Notes Tab -->
     <div id="tab-notes" style="display:none">
       <div class="note-form">
         <input type="text" id="n-title" placeholder="Note title — e.g. Emotional Clearing, Session 2">
-        <textarea id="n-body" placeholder="Write your notes here — key insights, where you're up to, what resonated..."></textarea>
+        <textarea id="n-body" placeholder="Write your notes here — key insights..."></textarea>
         <button class="btn-gold" style="margin-top:8px" onclick="saveNote()">Save Note</button>
       </div>
       <div id="notes-list"></div>
@@ -137,20 +135,19 @@ textarea:focus{border-color:#1D9E75}
 
 <script>
 const SB_URL = "https://zwwodopezadqjazhajmx.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";   // ← Replace with your real Supabase anon key
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";   // ← Replace with your real key
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
 let lessons = [], watched = {}, notes = [], currentVideoId = null, currentUserTier = 1, currentTierTab = 1;
 
 const CATS = [
   {id:"unlock", icon:"🌟", name:"Unlock Your Incredible Self", kw:["unlock","incredible"]},
-  {id:"coaching", icon:"👥", name:"Group Coaching", kw:["coach","group"]},
+  {id:"coaching", icon:"👥", name:"Group Coaching and Mentoring", kw:["coach","group","mentoring"]},
   {id:"goals", icon:"🎯", name:"Goal Setting", kw:["goal"]},
-  {id:"emotional", icon:"💚", name:"Emotional Clearing", kw:["emotional","clearing","gift","grey"]},
+  {id:"emotional", icon:"💚", name:"Emotional Clearing", kw:["emotional","clearing","gift","grey","joshua roy","seminar leader","disease","sickness","mental rehearsal","faith continuum","gray room","yelling therapy","bull and fire","final thoughts"]},
   {id:"morning", icon:"🌅", name:"Morning Routine", kw:["morning","routine"]},
-  {id:"strategic", icon:"🎯", name:"Strategic Visioning", kw:["strategic","visioning"]},
-  {id:"nlp", icon:"🧠", name:"NLP Masterclass", kw:["nlp"]},
-  {id:"intro", icon:"🎓", name:"Free Introductions", kw:["free","intro"]},
+  {id:"nlp", icon:"🧠", name:"NLP Masterclass", kw:["nlp","strategic","visioning","masks"]},
+  {id:"intro", icon:"🎓", name:"Free Introductions", kw:["free","intro","introduction"]},
   {id:"health", icon:"🏥", name:"Health & Healing", kw:["health","healing"]},
   {id:"coachingcert", icon:"📜", name:"Coaching Certification", kw:["coaching lesson","coach yourself","world class coach","state elicitation"]},
   {id:"meditation", icon:"🧘", name:"Meditations", kw:["meditation","breath","gift","womb","freedom"]},
@@ -202,6 +199,13 @@ async function boot(){
   updateStats();
 }
 
+function getTierProgress(tier){
+  const tierVideos = lessons.filter(l => l.tier_required === tier);
+  if(!tierVideos.length) return 0;
+  const watchedCount = tierVideos.filter(l => watched[l.id]).length;
+  return Math.round((watchedCount / tierVideos.length) * 100);
+}
+
 function showTierTab(tier){
   currentTierTab = tier;
   
@@ -214,12 +218,12 @@ function showTierTab(tier){
   if(tier > currentUserTier){
     contentArea.innerHTML = `
       <div class="upgrade-box">
-        <h2 style="color:#1A2744;margin-bottom:16px;">🔒 Tier ${tier} Content</h2>
-        <p style="font-size:17px;max-width:600px;margin:0 auto 24px;">
-          This level is available for Tier ${tier} members only.
+        <h2>🔒 Tier ${tier} Content</h2>
+        <p style="font-size:17px;max-width:620px;margin:20px auto;">
+          This tier is for more advanced training. We strongly recommend completing <strong>Tier 1</strong> first — especially the <strong>Morning Routine</strong> — before moving forward.
         </p>
-        <p style="color:#1D9E75;font-weight:600;margin-bottom:30px;">
-          Upgrade your membership to unlock all videos in this tier.
+        <p style="color:#1D9E75;font-weight:600;margin:20px 0;">
+          Build your foundation for true mastery of mind and life.
         </p>
         <button class="btn btn-gold" onclick="contactUpgrade()">
           Contact Joshua Roy for Upgrade Options
@@ -232,30 +236,38 @@ function showTierTab(tier){
 }
 
 function renderTierContent(tier){
+  const progress = getTierProgress(tier);
   const contentArea = document.getElementById("tier-content");
-  let html = `<div class="two-col">
-    <div class="left-menu">
-      <h4>📁 Categories</h4>
-      <div id="cat-menu-tier${tier}"></div>
+  
+  let html = `
+    <div style="margin-bottom:16px;">
+      <strong>Tier ${tier} Progress</strong>
+      <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+      <small style="color:#666">${progress}% complete</small>
     </div>
-    <div class="right-col">
-      <div class="cat-header">
-        <h2 id="cat-title">← Pick a category</h2>
-        <p id="cat-subtitle">Choose a section from the menu on the left</p>
+    <div class="two-col">
+      <div class="left-menu">
+        <h4>📁 Categories</h4>
+        <div id="cat-menu-tier${tier}"></div>
       </div>
-      <div id="vid-list"></div>
-      <div id="player-box" class="player-box">
-        <h3 id="p-title"></h3>
-        <div class="player-desc" id="p-desc"></div>
-        <iframe id="p-iframe" src="" allowfullscreen></iframe>
-        <div class="player-actions">
-          <button class="btn-gold" id="p-watch-btn" onclick="toggleWatched()">✓ Mark as watched</button>
-          <button class="btn btn-gray" onclick="closePlayer()">✕ Close</button>
-          <span class="watched-label" id="p-watch-label"></span>
+      <div class="right-col">
+        <div class="cat-header">
+          <h2 id="cat-title">← Pick a category</h2>
+          <p id="cat-subtitle">Choose a section from the menu on the left</p>
+        </div>
+        <div id="vid-list"></div>
+        <div id="player-box" class="player-box">
+          <h3 id="p-title"></h3>
+          <div class="player-desc" id="p-desc"></div>
+          <iframe id="p-iframe" src="" allowfullscreen></iframe>
+          <div class="player-actions">
+            <button class="btn-gold" id="p-watch-btn" onclick="toggleWatched()">✓ Mark as watched</button>
+            <button class="btn btn-gray" onclick="closePlayer()">✕ Close</button>
+            <span class="watched-label" id="p-watch-label"></span>
+          </div>
         </div>
       </div>
-    </div>
-  </div>`;
+    </div>`;
   
   contentArea.innerHTML = html;
   buildTierMenu(tier);
@@ -267,9 +279,7 @@ function buildTierMenu(tier){
   
   let html = "";
   for(const c of CATS){
-    const vids = lessons.filter(l => 
-      catFor(l.title) === c.name && l.tier_required === tier
-    );
+    const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required === tier);
     if(!vids.length) continue;
 
     const wc = vids.filter(l => watched[l.id]).length;
@@ -284,7 +294,6 @@ function buildTierMenu(tier){
 function selectCat(catId, tier){
   const c = CATS.find(x=>x.id===catId);
   if(!c) return;
-  
   closePlayer();
   
   const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required === tier);
@@ -313,7 +322,6 @@ function selectCat(catId, tier){
 function selectVideo(id){
   const v = lessons.find(x=>x.id===id);
   if(!v) return;
-  
   if(v.tier_required > currentUserTier){
     alert(`This content requires Tier ${v.tier_required} access.`);
     return;
@@ -361,12 +369,11 @@ function toggleWatched(){
     const meta = vi.querySelector(".vid-meta");
     let tick = meta.querySelector(".tick");
     if(isW && !tick){
-      tick = document.createElement("span");
-      tick.className = "tick";
-      tick.textContent = "✓";
+      tick = document.createElement("span"); tick.className="tick"; tick.textContent="✓";
       meta.insertBefore(tick, meta.firstChild);
     } else if(!isW && tick) tick.remove();
   }
+  
   buildTierMenu(currentTierTab);
   updateStats();
 }
@@ -386,9 +393,11 @@ function showTab(tab){
   document.getElementById("tier-content").style.display = tab === "notes" ? "none" : "block";
   document.getElementById("tab-notes").style.display = tab === "notes" ? "block" : "none";
   document.getElementById("tab-notes-btn").classList.toggle("active", tab === "notes");
+  
+  if(tab !== "notes") showTierTab(currentTierTab); // refresh current tier when switching back
 }
 
-function saveNote(){
+function saveNote(){ /* unchanged */ 
   const title = document.getElementById("n-title").value.trim();
   const body = document.getElementById("n-body").value.trim();
   if(!body){ alert("Please write something."); return; }
@@ -400,7 +409,7 @@ function saveNote(){
   updateStats();
 }
 
-function deleteNote(id){
+function deleteNote(id){ /* unchanged */ 
   if(!confirm("Delete this note?")) return;
   notes = notes.filter(n => n.id !== id);
   saveNotes();
