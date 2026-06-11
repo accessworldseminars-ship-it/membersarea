@@ -1,822 +1,506 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AccessWorld Admin - Full Control</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AccessWorld Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0c111c;color:#e5e7eb;min-height:100vh}
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: #0c111c;
-            color: #eef2ff;
-            padding: 24px 20px;
-        }
+/* ── LOGIN ── */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.login-card{background:#111827;padding:40px;border-radius:20px;width:100%;max-width:380px;text-align:center}
+.login-card h2{color:#C9A84C;margin-bottom:24px;font-size:22px}
+.login-card input{width:100%;padding:13px 16px;margin:8px 0;border-radius:30px;border:1px solid #374151;background:#1f2937;color:#fff;font-size:15px;outline:none}
+.login-card input:focus{border-color:#C9A84C}
+.login-card button{background:#C9A84C;color:#000;padding:13px 32px;border:none;border-radius:30px;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;width:100%}
+.login-card button:hover{background:#b8933f}
+.err{color:#f87171;margin-top:10px;font-size:13px;min-height:18px}
 
-        .admin-wrapper {
-            max-width: 1600px;
-            margin: 0 auto;
-        }
+/* ── HEADER ── */
+.admin-header{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:#111827;border-radius:14px;margin:20px;gap:16px;flex-wrap:wrap}
+.admin-header h2{color:#C9A84C;font-size:18px;white-space:nowrap}
+.stats{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stat{background:#1f2937;padding:6px 14px;border-radius:30px;font-size:13px;white-space:nowrap}
+.stat span{color:#C9A84C;font-weight:700}
+.signout-btn{background:#374151;border:none;color:#e5e7eb;padding:8px 16px;border-radius:30px;cursor:pointer;font-size:13px}
+.signout-btn:hover{background:#4b5563}
 
-        /* Login */
-        .login-overlay {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at 20% 30%, #0f172a, #0a0f1c);
-        }
+/* ── TOOLBAR ── */
+.toolbar{margin:0 20px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#111827;padding:14px 18px;border-radius:14px}
+.toolbar input[type=text]{flex:1;min-width:160px;padding:8px 16px;border-radius:30px;border:1px solid #374151;background:#1f2937;color:#fff;font-size:14px;outline:none}
+.toolbar input[type=text]:focus{border-color:#C9A84C}
+.toolbar select{padding:8px 14px;border-radius:30px;border:1px solid #374151;background:#1f2937;color:#fff;font-size:13px;outline:none;cursor:pointer}
+.toolbar select:focus{border-color:#C9A84C}
 
-        .login-card {
-            background: #111827;
-            border-radius: 32px;
-            padding: 44px 38px;
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
-            border: 1px solid #2d3748;
-        }
+/* ── TABS ── */
+.tabs{display:flex;gap:8px;margin:0 20px 14px;flex-wrap:wrap}
+.tab{background:#1f2937;color:#9ca3af;padding:9px 20px;border-radius:30px;cursor:pointer;font-size:13px;font-weight:600;border:1px solid transparent;transition:all .2s}
+.tab:hover{background:#2d3748;color:#fff}
+.tab.active{background:#C9A84C;color:#000;border-color:#C9A84C}
 
-        .login-card h1 {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #C9A84C, #f5d97e);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
+/* ── BULK BAR ── */
+.bulk-bar{margin:0 20px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#111827;padding:12px 16px;border-radius:14px}
+.bulk-bar label{font-size:13px;color:#9ca3af;display:flex;align-items:center;gap:6px;cursor:pointer}
+.bulk-bar select{padding:7px 12px;border-radius:30px;border:1px solid #374151;background:#1f2937;color:#fff;font-size:13px;outline:none}
+.btn{border:none;padding:8px 18px;border-radius:30px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-gold{background:#C9A84C;color:#000}
+.btn-gold:hover{background:#b8933f}
+.btn-green{background:#16a34a;color:#fff}
+.btn-green:hover{background:#15803d}
+.btn-red{background:#7f1d1d;color:#fca5a5}
+.btn-red:hover{background:#991b1b}
+.btn-gray{background:#374151;color:#e5e7eb}
+.btn-gray:hover{background:#4b5563}
+.selected-count{font-size:12px;color:#6b7280;margin-left:4px}
 
-        .admin-input {
-            width: 100%;
-            padding: 14px 18px;
-            background: #1f2937;
-            border: 1px solid #374151;
-            border-radius: 28px;
-            color: white;
-            font-size: 15px;
-            margin-bottom: 18px;
-        }
+/* ── TABLE ── */
+.table-wrap{margin:0 20px 20px;overflow-x:auto;border-radius:14px;border:1px solid #1f2937}
+table{width:100%;border-collapse:collapse;background:#111827;min-width:900px}
+thead{position:sticky;top:0;z-index:10}
+th{background:#0f1722;color:#C9A84C;padding:12px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid #1a2332;vertical-align:middle;font-size:13px}
+tr:hover td{background:#161f2e}
+tr.selected td{background:#1a2a1a}
 
-        .btn-admin {
-            background: #C9A84C;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 40px;
-            font-weight: 700;
-            cursor: pointer;
-            color: #0f111a;
-        }
+/* ── INLINE INPUTS ── */
+.cell-input{background:#1f2937;border:1px solid #374151;padding:6px 10px;border-radius:8px;color:#fff;font-size:13px;outline:none;transition:border .2s}
+.cell-input:focus{border-color:#C9A84C}
+.title-input{width:240px}
+.sort-input{width:65px;text-align:center}
+.cell-select{background:#1f2937;border:1px solid #374151;padding:6px 10px;border-radius:8px;color:#fff;font-size:13px;outline:none;cursor:pointer}
+.cell-select:focus{border-color:#C9A84C}
 
-        /* Admin Header */
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            gap: 16px;
-            background: #111827cc;
-            padding: 16px 28px;
-            border-radius: 60px;
-            border: 1px solid #2d3748;
-        }
+/* ── TIER BADGES ── */
+.tier-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.t1{background:#1d4ed8;color:#bfdbfe}
+.t2{background:#7c3aed;color:#ddd6fe}
+.t3{background:#b45309;color:#fde68a}
 
-        .stats-badge {
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
+/* ── ACTION BUTTONS ── */
+.save-btn{background:#16a34a;color:#fff;border:none;padding:5px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600}
+.save-btn:hover{background:#15803d}
+.del-btn{background:#7f1d1d;color:#fca5a5;border:none;padding:5px 10px;border-radius:20px;cursor:pointer;font-size:12px}
+.del-btn:hover{background:#991b1b}
 
-        .stat-pill {
-            background: #1f2937;
-            padding: 6px 18px;
-            border-radius: 60px;
-            font-size: 13px;
-        }
+/* ── PAGINATION ── */
+.pagination{display:flex;justify-content:center;align-items:center;gap:10px;margin:0 20px 20px;flex-wrap:wrap}
+.page-btn{background:#1f2937;border:1px solid #374151;color:#e5e7eb;padding:7px 14px;border-radius:30px;cursor:pointer;font-size:13px}
+.page-btn:hover{background:#374151}
+.page-btn.active{background:#C9A84C;color:#000;border-color:#C9A84C}
+.page-info{font-size:13px;color:#6b7280}
 
-        .stat-pill span {
-            color: #C9A84C;
-            font-weight: 800;
-        }
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 22px;border-radius:30px;font-size:14px;font-weight:600;z-index:9999;animation:fadeIn .3s ease}
+.toast-ok{background:#16a34a;color:#fff}
+.toast-err{background:#dc2626;color:#fff}
+.toast-info{background:#C9A84C;color:#000}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-        /* Tabs */
-        .admin-tabs {
-            display: flex;
-            gap: 12px;
-            margin: 24px 0 20px 0;
-            border-bottom: 1px solid #2d3748;
-            padding-bottom: 8px;
-        }
+/* ── EMPTY / LOADING ── */
+.empty-row td{text-align:center;padding:50px;color:#4b5563}
+.loading{text-align:center;padding:60px;color:#6b7280;font-size:15px}
 
-        .admin-tab {
-            background: transparent;
-            border: none;
-            padding: 10px 24px;
-            font-weight: 600;
-            color: #9ca3af;
-            cursor: pointer;
-            border-radius: 40px;
-        }
-
-        .admin-tab.active {
-            background: #C9A84C;
-            color: #0a0f1c;
-        }
-
-        /* Category Editor Section */
-        .category-editor {
-            background: #111827;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid #2d3748;
-        }
-
-        .category-editor h3 {
-            margin-bottom: 16px;
-            color: #C9A84C;
-        }
-
-        .category-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .cat-badge {
-            background: #1f2937;
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #374151;
-        }
-
-        .cat-badge:hover {
-            background: #2d3748;
-        }
-
-        .cat-badge.selected {
-            background: #C9A84C;
-            color: #0a0f1c;
-            border-color: #C9A84C;
-        }
-
-        .new-cat-input {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-top: 16px;
-        }
-
-        .new-cat-input input {
-            background: #1f2937;
-            border: 1px solid #374151;
-            padding: 10px 16px;
-            border-radius: 40px;
-            color: white;
-            flex: 1;
-        }
-
-        /* Table */
-        .table-container {
-            background: #111827;
-            border-radius: 28px;
-            overflow-x: auto;
-            border: 1px solid #2d3748;
-            margin-top: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-        th, td {
-            padding: 14px 12px;
-            text-align: left;
-            border-bottom: 1px solid #253041;
-        }
-
-        th {
-            background: #0f1722;
-            color: #C9A84C;
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background: #1a2538;
-        }
-
-        .drag-handle {
-            cursor: grab;
-            font-size: 18px;
-            color: #6b7a8f;
-        }
-
-        .title-input {
-            background: #0f1724;
-            border: 1px solid #334155;
-            padding: 8px 12px;
-            border-radius: 20px;
-            color: white;
-            width: 260px;
-        }
-
-        .cat-select {
-            background: #0f1724;
-            border: 1px solid #C9A84C;
-            padding: 6px 12px;
-            border-radius: 30px;
-            color: white;
-            min-width: 160px;
-        }
-
-        .tier-select-admin {
-            background: #0f1724;
-            border: 1px solid #334155;
-            padding: 6px 12px;
-            border-radius: 30px;
-            color: white;
-            width: 80px;
-        }
-
-        .sort-input {
-            width: 70px;
-            background: #0f1724;
-            border: 1px solid #334155;
-            border-radius: 20px;
-            padding: 6px 8px;
-            color: white;
-            text-align: center;
-        }
-
-        .save-icon, .delete-icon {
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 30px;
-        }
-
-        .save-icon { color: #22c55e; }
-        .delete-icon { color: #f87171; }
-
-        .bulk-bar {
-            background: #0f1724;
-            padding: 14px 20px;
-            border-radius: 60px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .bulk-bar select, .bulk-bar button {
-            background: #1f2937;
-            border: 1px solid #374151;
-            padding: 8px 16px;
-            border-radius: 40px;
-            color: white;
-            cursor: pointer;
-        }
-
-        .bulk-bar button {
-            background: #C9A84C;
-            color: black;
-            font-weight: 700;
-        }
-
-        .search-filter {
-            background: #1f2937;
-            border: 1px solid #374151;
-            padding: 8px 18px;
-            border-radius: 40px;
-            color: white;
-            width: 240px;
-        }
-
-        .toast-msg {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            background: #1f2a3e;
-            padding: 12px 24px;
-            border-radius: 60px;
-            color: #C9A84C;
-            font-weight: 600;
-            border-left: 4px solid #C9A84C;
-            z-index: 999;
-        }
-    </style>
+@media(max-width:640px){
+  .admin-header,.toolbar,.bulk-bar,.tabs,.table-wrap,.pagination{margin-left:12px;margin-right:12px}
+  .title-input{width:160px}
+}
+</style>
 </head>
 <body>
-<div id="adminAuthScreen" class="login-overlay">
-    <div class="login-card">
-        <h1>⚙️ Admin Portal</h1>
-        <p>Full control · Categories, Tiers, Videos</p>
-        <input type="password" id="adminMasterPass" class="admin-input" placeholder="Enter admin password">
-        <button class="btn-admin" id="authenticateAdminBtn">Unlock Console</button>
-        <div id="authError" style="color:#f87171; margin-top: 16px;"></div>
-    </div>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <h2>⚙️ Admin Portal</h2>
+    <input type="password" id="adminPass" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()">
+    <button onclick="checkPassword()">Sign In</button>
+    <div id="loginErr" class="err"></div>
+  </div>
 </div>
 
-<div id="adminDashboard" style="display: none;">
-    <div class="admin-wrapper">
-        <div class="admin-header">
-            <div style="display: flex; align-items:center; gap:12px;">
-                <span style="font-size:28px;">🎛️</span>
-                <h2>AccessWorld Admin - Full Control</h2>
-            </div>
-            <div class="stats-badge">
-                <div class="stat-pill"><span>📹</span> <span id="totalVideosCount">0</span></div>
-                <div class="stat-pill"><span>⭐</span> Tier1: <span id="t1Count">0</span></div>
-                <div class="stat-pill"><span>🚀</span> Tier2: <span id="t2Count">0</span></div>
-                <div class="stat-pill"><span>🏆</span> Tier3: <span id="t3Count">0</span></div>
-                <button id="adminLogoutBtn" style="background:#2d3748; border:none; border-radius:30px; padding:6px 18px; color:#ddd; cursor:pointer;">Sign out</button>
-            </div>
-        </div>
+<!-- ═══ ADMIN PANEL ═══ -->
+<div id="adminPanel" style="display:none; padding-bottom:40px">
 
-        <!-- Category Management Section -->
-        <div class="category-editor">
-            <h3>📁 Category Management</h3>
-            <div class="category-grid" id="categoryList">
-                <!-- Categories will load here -->
-            </div>
-            <div class="new-cat-input">
-                <input type="text" id="newCategoryName" placeholder="New category name (e.g., 'Advanced NLP')">
-                <button class="btn-admin" id="addCategoryBtn" style="padding:10px 24px;">+ Add Category</button>
-            </div>
-            <p style="font-size:12px; color:#6b7a8f; margin-top:12px;">💡 Click a category to filter videos. Use the dropdown in the table to reassign videos to categories.</p>
-        </div>
-
-        <div class="admin-tabs">
-            <button class="admin-tab active" data-tier="all">📚 All videos</button>
-            <button class="admin-tab" data-tier="1">⭐ Tier 1</button>
-            <button class="admin-tab" data-tier="2">🚀 Tier 2</button>
-            <button class="admin-tab" data-tier="3">🏆 Tier 3</button>
-        </div>
-
-        <div class="bulk-bar">
-            <div style="display: flex; gap:8px;">
-                <input type="checkbox" id="selectAllCheckbox">
-                <label>Select all</label>
-            </div>
-            <select id="bulkTierMoveSelect">
-                <option value="">Move selected to tier…</option>
-                <option value="1">Tier 1</option>
-                <option value="2">Tier 2</option>
-                <option value="3">Tier 3</option>
-            </select>
-            <select id="bulkCategoryMoveSelect">
-                <option value="">Move selected to category…</option>
-            </select>
-            <button id="applyBulkMoveBtn">Apply Move</button>
-            <button id="bulkDeleteBtn" style="background:#7f1a1a;">🗑️ Delete selected</button>
-            <input type="text" id="searchInput" class="search-filter" placeholder="🔍 Filter by title...">
-        </div>
-
-        <div class="table-container">
-            <table id="videoAdminTable">
-                <thead>
-                    <tr>
-                        <th style="width:30px"></th>
-                        <th style="width:30px"></th>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Tier</th>
-                        <th>Sort</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="adminTableBody">
-                    <tr><td colspan="8" style="text-align:center; padding:60px;">Loading videos...</td></tr>
-                </tbody>
-            </table>
-        </div>
+  <div class="admin-header">
+    <h2>🎛️ AccessWorld Admin</h2>
+    <div class="stats">
+      <div class="stat">📹 Total: <span id="s-total">0</span></div>
+      <div class="stat">⭐ T1: <span id="s-t1">0</span></div>
+      <div class="stat">🚀 T2: <span id="s-t2">0</span></div>
+      <div class="stat">🏆 T3: <span id="s-t3">0</span></div>
+      <div class="stat">🔍 Showing: <span id="s-showing">0</span></div>
+      <button class="signout-btn" onclick="logout()">Sign Out</button>
     </div>
+  </div>
+
+  <!-- Search + Per Page -->
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="🔍  Search by title...">
+    <select id="perPageSelect" onchange="perPage=parseInt(this.value);currentPage=1;renderTable()">
+      <option value="25">25 per page</option>
+      <option value="50">50 per page</option>
+      <option value="100">100 per page</option>
+      <option value="9999">Show all</option>
+    </select>
+    <button class="btn btn-gold" onclick="loadVideos()">↺ Refresh</button>
+  </div>
+
+  <!-- Tier Tabs -->
+  <div class="tabs">
+    <div class="tab active" onclick="setTierFilter('all',this)">All</div>
+    <div class="tab" onclick="setTierFilter(1,this)">⭐ Tier 1</div>
+    <div class="tab" onclick="setTierFilter(2,this)">🚀 Tier 2</div>
+    <div class="tab" onclick="setTierFilter(3,this)">🏆 Tier 3</div>
+    <div class="tab" onclick="setTierFilter(null,this)">⚠️ No Tier</div>
+  </div>
+
+  <!-- Bulk Actions -->
+  <div class="bulk-bar">
+    <label><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"> Select page</label>
+    <span class="selected-count" id="selCount">0 selected</span>
+    <select id="bulkTier">
+      <option value="">Move to tier...</option>
+      <option value="1">Tier 1</option>
+      <option value="2">Tier 2</option>
+      <option value="3">Tier 3</option>
+    </select>
+    <select id="bulkCat">
+      <option value="">Set category...</option>
+      <option>Unlock Your Incredible Self</option>
+      <option>Morning Routine</option>
+      <option>Group Coaching & Mentoring</option>
+      <option>Goal Setting</option>
+      <option>Emotional Clearing</option>
+      <option>Health & Healing</option>
+      <option>Relationships</option>
+      <option>NLP Masterclass</option>
+      <option>World Class Coach Training</option>
+      <option>Free Introductions</option>
+      <option>Meditations & Processes</option>
+      <option>2 Day Seminars</option>
+      <option>Bonus Resources</option>
+    </select>
+    <button class="btn btn-gold" onclick="bulkApply()">✓ Apply</button>
+    <button class="btn btn-red" onclick="bulkDelete()">🗑️ Delete Selected</button>
+    <button class="btn btn-gray" onclick="clearSelection()">✕ Clear</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="headerCheck" onchange="toggleSelectAll(this)"></th>
+          <th style="width:60px">ID</th>
+          <th>Title</th>
+          <th style="width:190px">Category</th>
+          <th style="width:100px">Tier</th>
+          <th style="width:80px">Sort</th>
+          <th style="width:110px">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"><tr class="empty-row"><td colspan="7">Loading...</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" id="pagination"></div>
+
 </div>
 
 <script>
-    // ======================== CONFIGURATION ===========================
-    const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";  // REPLACE THIS
-    const ADMIN_PASSWORD = "Boxing2000";
-    
-    let supabase;
-    let allVideos = [];
-    let currentFilterTier = "all";
-    let searchQuery = "";
-    let selectedVideoIds = new Set();
-    let sortableInstance = null;
-    let categories = [];  // Store custom categories
-    
-    // Default categories
-    const DEFAULT_CATEGORIES = [
-        "NLP Masterclass", "Morning Routine", "Coaching 2024", "Coaching 2025", 
-        "Coaching 2026", "Emotional Clearing", "Health & Healing", "Relationships",
-        "Goal Setting", "World Class Coach Training", "Free Introductions",
-        "Meditations & Processes", "2 Day Seminar", "Bonus Resources", "Other"
-    ];
-    
-    function initSupabase() {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SB_URL  = "https://zwwodopezadqjazhajmx.supabase.co";
+const SB_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg"; // ← paste your key
+const ADMIN_PW = "accessworld2025";   // ← change this password
+
+const CATS = [
+  "Unlock Your Incredible Self","Morning Routine","Group Coaching & Mentoring",
+  "Goal Setting","Emotional Clearing","Health & Healing","Relationships",
+  "NLP Masterclass","World Class Coach Training","Free Introductions",
+  "Meditations & Processes","2 Day Seminars","Bonus Resources"
+];
+
+let sb, allVideos = [], selectedIds = new Set();
+let tierFilter = "all", searchQuery = "", currentPage = 1, perPage = 25;
+
+// ─── AUTH ──────────────────────────────────────────────────
+function checkPassword(){
+  if(document.getElementById("adminPass").value === ADMIN_PW){
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("adminPanel").style.display  = "block";
+    sb = window.supabase.createClient(SB_URL, SB_KEY);
+    loadVideos();
+  } else {
+    document.getElementById("loginErr").innerText = "Incorrect password";
+  }
+}
+function logout(){ location.reload(); }
+
+// ─── LOAD ──────────────────────────────────────────────────
+async function loadVideos(){
+  document.getElementById("tableBody").innerHTML = '<tr class="empty-row"><td colspan="7">⏳ Loading...</td></tr>';
+  const {data, error} = await sb.from("lessons").select("*").order("sort_order");
+  if(error){ toast("Load error: " + error.message, "err"); return; }
+  allVideos = data || [];
+  currentPage = 1;
+  updateStats();
+  renderTable();
+}
+
+// ─── STATS ─────────────────────────────────────────────────
+function updateStats(){
+  document.getElementById("s-total").innerText = allVideos.length;
+  document.getElementById("s-t1").innerText    = allVideos.filter(v => v.tier_required === 1).length;
+  document.getElementById("s-t2").innerText    = allVideos.filter(v => v.tier_required === 2).length;
+  document.getElementById("s-t3").innerText    = allVideos.filter(v => v.tier_required === 3).length;
+}
+
+// ─── FILTER ────────────────────────────────────────────────
+function getFiltered(){
+  return allVideos.filter(v => {
+    const matchTier = tierFilter === "all" ? true
+      : tierFilter === null ? (v.tier_required == null)
+      : v.tier_required === tierFilter;
+    const matchSearch = !searchQuery || (v.title||"").toLowerCase().includes(searchQuery.toLowerCase());
+    return matchTier && matchSearch;
+  });
+}
+
+function setTierFilter(tier, el){
+  tierFilter = tier;
+  currentPage = 1;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+  renderTable();
+}
+
+// ─── RENDER TABLE ──────────────────────────────────────────
+function renderTable(){
+  const filtered  = getFiltered();
+  const total     = filtered.length;
+  const totalPages = Math.ceil(total / perPage);
+  if(currentPage > totalPages) currentPage = Math.max(1, totalPages);
+  const start  = (currentPage - 1) * perPage;
+  const paged  = filtered.slice(start, start + perPage);
+
+  document.getElementById("s-showing").innerText = total;
+
+  const tbody = document.getElementById("tableBody");
+  if(!paged.length){
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No videos found</td></tr>';
+    renderPagination(0, 0);
+    return;
+  }
+
+  tbody.innerHTML = paged.map(v => {
+    const cat  = v.category || autoCategory(v.title || "");
+    const tier = v.tier_required;
+    const tbadge = tier === 1 ? '<span class="tier-badge t1">Tier 1</span>'
+                 : tier === 2 ? '<span class="tier-badge t2">Tier 2</span>'
+                 : tier === 3 ? '<span class="tier-badge t3">Tier 3</span>'
+                 : '<span style="color:#6b7280;font-size:11px">—</span>';
+    const isSel = selectedIds.has(v.id);
+    return `<tr data-id="${v.id}" class="${isSel?'selected':''}">
+      <td><input type="checkbox" class="vcheck" data-id="${v.id}" ${isSel?'checked':''} onchange="toggleOne(this)"></td>
+      <td style="color:#6b7280">${v.id}</td>
+      <td><input class="cell-input title-input" id="t-${v.id}" value="${esc(v.title||'')}"></td>
+      <td>
+        <select class="cell-select" id="c-${v.id}" style="width:100%">
+          ${CATS.map(c => `<option value="${c}" ${cat===c?'selected':''}>${c}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <select class="cell-select" id="r-${v.id}">
+          <option value="1" ${tier===1?'selected':''}>Tier 1</option>
+          <option value="2" ${tier===2?'selected':''}>Tier 2</option>
+          <option value="3" ${tier===3?'selected':''}>Tier 3</option>
+        </select>
+      </td>
+      <td><input class="cell-input sort-input" type="number" id="s-${v.id}" value="${v.sort_order||0}"></td>
+      <td style="white-space:nowrap">
+        <button class="save-btn" onclick="saveRow(${v.id})">💾</button>
+        <button class="del-btn"  onclick="deleteRow(${v.id})">🗑️</button>
+      </td>
+    </tr>`;
+  }).join("");
+
+  renderPagination(totalPages, total);
+  syncHeaderCheck();
+}
+
+// ─── PAGINATION ────────────────────────────────────────────
+function renderPagination(totalPages, total){
+  const pg = document.getElementById("pagination");
+  if(totalPages <= 1){ pg.innerHTML = ""; return; }
+  let html = `<span class="page-info">Page ${currentPage} of ${totalPages} &nbsp;·&nbsp; ${total} videos</span>`;
+  html += `<button class="page-btn" onclick="goPage(1)" ${currentPage===1?'disabled':''}>«</button>`;
+  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  const range = 2;
+  for(let i = Math.max(1,currentPage-range); i <= Math.min(totalPages,currentPage+range); i++){
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+  html += `<button class="page-btn" onclick="goPage(${totalPages})" ${currentPage===totalPages?'disabled':''}>»</button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p){
+  currentPage = p;
+  renderTable();
+  document.querySelector(".table-wrap").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+// ─── SAVE ROW ──────────────────────────────────────────────
+async function saveRow(id){
+  const title     = document.getElementById(`t-${id}`).value.trim();
+  const category  = document.getElementById(`c-${id}`).value;
+  const tier      = parseInt(document.getElementById(`r-${id}`).value);
+  const sort      = parseInt(document.getElementById(`s-${id}`).value) || 0;
+
+  const {error} = await sb.from("lessons").update({title, category, tier_required: tier, sort_order: sort}).eq("id", id);
+  if(error){ toast("Save failed: " + error.message, "err"); return; }
+
+  const v = allVideos.find(v => v.id === id);
+  if(v){ v.title = title; v.category = category; v.tier_required = tier; v.sort_order = sort; }
+  updateStats();
+  toast("✅ Saved");
+}
+
+// ─── DELETE ROW ────────────────────────────────────────────
+async function deleteRow(id){
+  if(!confirm("Delete this video permanently?")) return;
+  const {error} = await sb.from("lessons").delete().eq("id", id);
+  if(error){ toast("Delete failed: " + error.message, "err"); return; }
+  allVideos = allVideos.filter(v => v.id !== id);
+  selectedIds.delete(id);
+  updateStats();
+  renderTable();
+  toast("Deleted");
+}
+
+// ─── BULK ACTIONS ──────────────────────────────────────────
+async function bulkApply(){
+  if(!selectedIds.size){ toast("Select some videos first", "info"); return; }
+  const newTier = document.getElementById("bulkTier").value;
+  const newCat  = document.getElementById("bulkCat").value;
+  if(!newTier && !newCat){ toast("Choose a tier or category to apply", "info"); return; }
+
+  const updates = {};
+  if(newTier) updates.tier_required = parseInt(newTier);
+  if(newCat)  updates.category = newCat;
+
+  let done = 0;
+  for(const id of selectedIds){
+    const {error} = await sb.from("lessons").update(updates).eq("id", id);
+    if(!error){
+      const v = allVideos.find(v => v.id === id);
+      if(v){ if(newTier) v.tier_required = parseInt(newTier); if(newCat) v.category = newCat; }
+      done++;
     }
-    
-    function loadCategories() {
-        const saved = localStorage.getItem("aw_categories");
-        if (saved) {
-            categories = JSON.parse(saved);
-        } else {
-            categories = [...DEFAULT_CATEGORIES];
-            localStorage.setItem("aw_categories", JSON.stringify(categories));
-        }
-        renderCategoryList();
-        populateCategoryDropdowns();
-    }
-    
-    function saveCategories() {
-        localStorage.setItem("aw_categories", JSON.stringify(categories));
-        renderCategoryList();
-        populateCategoryDropdowns();
-        renderTable();
-    }
-    
-    function renderCategoryList() {
-        const container = document.getElementById("categoryList");
-        if (!container) return;
-        let html = `<div class="cat-badge ${currentFilterTier === 'all' && !searchQuery ? 'selected' : ''}" onclick="filterByCategory(null)">📂 All Videos</div>`;
-        categories.forEach(cat => {
-            const count = allVideos.filter(v => v.category === cat).length;
-            html += `<div class="cat-badge" data-cat="${cat}" onclick="filterByCategory('${cat.replace(/'/g, "\\'")}')">
-                        ${cat} <span style="opacity:0.6; font-size:11px;">(${count})</span>
-                    </div>`;
-        });
-        container.innerHTML = html;
-    }
-    
-    function filterByCategory(category) {
-        currentFilterCategory = category;
-        renderTable();
-        // Update UI highlight
-        document.querySelectorAll('.cat-badge').forEach(el => {
-            el.classList.remove('selected');
-            if (el.getAttribute('data-cat') === category) el.classList.add('selected');
-            if (!category && el.getAttribute('data-cat') === null) el.classList.add('selected');
-        });
-    }
-    
-    function populateCategoryDropdowns() {
-        const bulkSelect = document.getElementById("bulkCategoryMoveSelect");
-        if (!bulkSelect) return;
-        bulkSelect.innerHTML = '<option value="">Move selected to category…</option>';
-        categories.forEach(cat => {
-            bulkSelect.innerHTML += `<option value="${cat.replace(/"/g, '&quot;')}">${cat}</option>`;
-        });
-    }
-    
-    async function loadVideos() {
-        const { data, error } = await supabase
-            .from("lessons")
-            .select("*")
-            .order("sort_order", { ascending: true });
-        if (error) throw error;
-        
-        // Load custom categories from metadata or use auto-detection
-        for (let v of data) {
-            if (!v.category) {
-                // Auto-detect category from title using keywords
-                v.category = detectCategoryFromTitle(v.title);
-            }
-        }
-        allVideos = data;
-        updateStats();
-        renderCategoryList();
-        return allVideos;
-    }
-    
-    function detectCategoryFromTitle(title) {
-        const t = (title || "").toLowerCase();
-        const categoryMap = [
-            { cat: "NLP Masterclass", kw: ["nlp", "unlock the power of stories", "arcing energy", "collapse anchors", "incantations", "grey room"] },
-            { cat: "Morning Routine", kw: ["morning routine"] },
-            { cat: "Coaching 2024", kw: ["2024", "group coaching 2024"] },
-            { cat: "Coaching 2025", kw: ["2025", "group coaching 2025"] },
-            { cat: "Coaching 2026", kw: ["2026", "group coaching 2026"] },
-            { cat: "Emotional Clearing", kw: ["emotional clearing", "gift process", "yelling", "ball and fire", "ultimate freedom", "womb of eternity"] },
-            { cat: "Health & Healing", kw: ["health", "healing", "acid alkaline"] },
-            { cat: "Relationships", kw: ["relationship", "attachment"] },
-            { cat: "Goal Setting", kw: ["goal setting"] },
-            { cat: "World Class Coach Training", kw: ["coaching lesson", "world class coach", "learning to coach yourself"] },
-            { cat: "Free Introductions", kw: ["free introduction", "nlp for beginners", "confidence to succeed", "money mindset", "feeling stuck"] },
-            { cat: "Meditations & Processes", kw: ["meditation", "guided breath", "the gift", "dancing with fear", "blue hat"] },
-            { cat: "2 Day Seminar", kw: ["emotional mastery seminar", "holistic health webinar", "life skills", "nsr"] }
-        ];
-        for (let map of categoryMap) {
-            if (map.kw.some(k => t.includes(k))) return map.cat;
-        }
-        return "Other";
-    }
-    
-    async function updateVideoField(id, field, value) {
-        const { error } = await supabase.from("lessons").update({ [field]: value }).eq("id", id);
-        if (error) throw error;
-    }
-    
-    async function deleteVideo(id) {
-        const { error } = await supabase.from("lessons").delete().eq("id", id);
-        if (error) throw error;
-        selectedVideoIds.delete(id);
-    }
-    
-    function updateStats() {
-        const total = allVideos.length;
-        const t1 = allVideos.filter(v => v.tier_required === 1).length;
-        const t2 = allVideos.filter(v => v.tier_required === 2).length;
-        const t3 = allVideos.filter(v => v.tier_required === 3).length;
-        document.getElementById("totalVideosCount").innerText = total;
-        document.getElementById("t1Count").innerText = t1;
-        document.getElementById("t2Count").innerText = t2;
-        document.getElementById("t3Count").innerText = t3;
-    }
-    
-    function getFilteredVideos() {
-        let filtered = [...allVideos];
-        if (currentFilterTier !== "all") {
-            filtered = filtered.filter(v => v.tier_required === parseInt(currentFilterTier));
-        }
-        if (currentFilterCategory) {
-            filtered = filtered.filter(v => v.category === currentFilterCategory);
-        }
-        if (searchQuery.trim()) {
-            const q = searchQuery.toLowerCase();
-            filtered = filtered.filter(v => (v.title || "").toLowerCase().includes(q));
-        }
-        filtered.sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0));
-        return filtered;
-    }
-    
-    let currentFilterCategory = null;
-    
-    function renderTable() {
-        const filtered = getFilteredVideos();
-        const tbody = document.getElementById("adminTableBody");
-        if (!filtered.length) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:48px;">No videos found</td></tr>';
-            return;
-        }
-        
-        let html = "";
-        filtered.forEach(video => {
-            const isSelected = selectedVideoIds.has(video.id);
-            html += `
-                <tr data-id="${video.id}" data-sort-order="${video.sort_order || 0}">
-                    <td class="drag-handle">⋮⋮</td>
-                    <td><input type="checkbox" class="video-checkbox" data-id="${video.id}" ${isSelected ? "checked" : ""}></td>
-                    <td>${video.id}</td>
-                    <td><input type="text" class="title-input" id="title-${video.id}" value="${escapeHtml(video.title || "")}"></td>
-                    <td>
-                        <select class="cat-select" id="cat-${video.id}" data-original-cat="${video.category || 'Other'}">
-                            ${categories.map(cat => `<option value="${escapeHtml(cat)}" ${(video.category === cat) ? "selected" : ""}>${escapeHtml(cat)}</option>`).join('')}
-                        </select>
-                    </td>
-                    <td>
-                        <select class="tier-select-admin" id="tier-${video.id}">
-                            <option value="1" ${video.tier_required === 1 ? "selected" : ""}>T1</option>
-                            <option value="2" ${video.tier_required === 2 ? "selected" : ""}>T2</option>
-                            <option value="3" ${video.tier_required === 3 ? "selected" : ""}>T3</option>
-                        </select>
-                    </td>
-                    <td><input type="number" class="sort-input" id="sort-${video.id}" value="${video.sort_order || 0}"></td>
-                    <td>
-                        <button class="save-icon" data-id="${video.id}">💾</button>
-                        <button class="delete-icon" data-id="${video.id}">🗑️</button>
-                    </td>
-                </tr>
-            `;
-        });
-        tbody.innerHTML = html;
-        
-        // Attach save handlers
-        document.querySelectorAll(".save-icon").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const id = parseInt(btn.getAttribute("data-id"));
-                const newTitle = document.getElementById(`title-${id}`).value;
-                const newCat = document.getElementById(`cat-${id}`).value;
-                const newTier = parseInt(document.getElementById(`tier-${id}`).value);
-                const newSort = parseInt(document.getElementById(`sort-${id}`).value);
-                
-                await updateVideoField(id, "title", newTitle);
-                await updateVideoField(id, "category", newCat);
-                await updateVideoField(id, "tier_required", newTier);
-                await updateVideoField(id, "sort_order", newSort);
-                
-                // Update local array
-                const video = allVideos.find(v => v.id === id);
-                if (video) {
-                    video.title = newTitle;
-                    video.category = newCat;
-                    video.tier_required = newTier;
-                    video.sort_order = newSort;
-                }
-                showToast(`✅ Video ${id} saved`);
-                updateStats();
-                renderCategoryList();
-                renderTable();
-            });
-        });
-        
-        // Attach delete handlers
-        document.querySelectorAll(".delete-icon").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const id = parseInt(btn.getAttribute("data-id"));
-                if (confirm(`⚠️ Permanently delete video ID ${id}?`)) {
-                    await deleteVideo(id);
-                    allVideos = allVideos.filter(v => v.id !== id);
-                    selectedVideoIds.delete(id);
-                    showToast(`Deleted video ${id}`);
-                    updateStats();
-                    renderCategoryList();
-                    renderTable();
-                }
-            });
-        });
-        
-        // Attach checkbox handlers
-        document.querySelectorAll(".video-checkbox").forEach(cb => {
-            cb.addEventListener("change", (e) => {
-                const id = parseInt(cb.getAttribute("data-id"));
-                if (cb.checked) selectedVideoIds.add(id);
-                else selectedVideoIds.delete(id);
-                updateSelectAllCheckbox();
-            });
-        });
-        
-        // Reattach sortable
-        if (sortableInstance) sortableInstance.destroy();
-        const tbodyEl = document.getElementById("adminTableBody");
-        sortableInstance = new Sortable(tbodyEl, {
-            handle: ".drag-handle",
-            animation: 200,
-            onEnd: async () => {
-                const rows = document.querySelectorAll("#adminTableBody tr");
-                for (let i = 0; i < rows.length; i++) {
-                    const id = parseInt(rows[i].getAttribute("data-id"));
-                    const newSort = i + 1;
-                    await updateVideoField(id, "sort_order", newSort);
-                    const video = allVideos.find(v => v.id === id);
-                    if (video) video.sort_order = newSort;
-                    const input = document.getElementById(`sort-${id}`);
-                    if (input) input.value = newSort;
-                }
-                showToast(`📌 Sort order updated`);
-                renderTable();
-            }
-        });
-        updateSelectAllCheckbox();
-    }
-    
-    function updateSelectAllCheckbox() {
-        const filtered = getFilteredVideos();
-        const allChecked = filtered.length > 0 && filtered.every(v => selectedVideoIds.has(v.id));
-        document.getElementById("selectAllCheckbox").checked = allChecked;
-    }
-    
-    function toggleSelectAll() {
-        const filtered = getFilteredVideos();
-        if (document.getElementById("selectAllCheckbox").checked) {
-            filtered.forEach(v => selectedVideoIds.add(v.id));
-        } else {
-            filtered.forEach(v => selectedVideoIds.delete(v.id));
-        }
-        renderTable();
-    }
-    
-    async function bulkMoveTier(newTier) {
-        if (selectedVideoIds.size === 0) { showToast("No videos selected", true); return; }
-        for (let id of selectedVideoIds) {
-            await updateVideoField(id, "tier_required", newTier);
-            const video = allVideos.find(v => v.id === id);
-            if (video) video.tier_required = newTier;
-        }
-        showToast(`Moved ${selectedVideoIds.size} videos to Tier ${newTier}`);
-        selectedVideoIds.clear();
-        updateStats();
-        renderTable();
-    }
-    
-    async function bulkMoveCategory(newCategory) {
-        if (selectedVideoIds.size === 0) { showToast("No videos selected", true); return; }
-        for (let id of selectedVideoIds) {
-            await updateVideoField(id, "category", newCategory);
-            const video = allVideos.find(v => v.id === id);
-            if (video) video.category = newCategory;
-        }
-        showToast(`Moved ${selectedVideoIds.size} videos to category: ${newCategory}`);
-        selectedVideoIds.clear();
-        renderCategoryList();
-        renderTable();
-    }
-    
-    async function bulkDeleteSelected() {
-        if (selectedVideoIds.size === 0) { showToast("Select videos first", true); return; }
-        if (!confirm(`⚠️ DELETE ${selectedVideoIds.size} videos permanently?`)) return;
-        for (let id of selectedVideoIds) {
-            await deleteVideo(id);
-            allVideos = allVideos.filter(v => v.id !== id);
-        }
-        showToast(`Deleted ${selectedVideoIds.size} videos`);
-        selectedVideoIds.clear();
-        updateStats();
-        renderCategoryList();
-        renderTable();
-    }
-    
-    async function addNewCategory() {
-        const input = document.getElementById("newCategoryName");
-        const newCat = input.value.trim();
-        if (!newCat) return;
-        if (categories.includes(newCat)) {
-            showToast("Category already exists", true);
-            return;
-        }
-        categories.push(newCat);
-        saveCategories();
-        input.value = "";
-        showToast(`✅ Category "${newCat}" added`);
-    }
-    
-    function showToast(msg, isError = false) {
-        const toast = document.createElement("div");
-        toast.className = "toast-msg";
-        toast.innerText = msg;
-        if (isError) toast.style.borderLeftColor = "#f87171";
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2500);
-    }
-    
-    function checkAdminPassword() {
-        const inputPass = document.getElementById("adminMasterPass").value;
-        if (inputPass === ADMIN_PASSWORD) {
-            document.getElementById("adminAuthScreen").style.display = "none";
-            document.getElementById("adminDashboard").style.display = "block";
-            initSupabase();
-            loadCategories();
-            loadVideos().then(() => {
-                renderTable();
-            }).catch(err => {
-                alert("Supabase error: " + err.message);
-            });
-        } else {
-            document.getElementById("authError").innerText = "Wrong password.";
-        }
-    }
-    
-    // Event listeners
-    document.getElementById("authenticateAdminBtn")?.addEventListener("click", checkAdminPassword);
-    document.getElementById("adminLogoutBtn")?.addEventListener("click", () => location.reload());
-    document.getElementById("selectAllCheckbox")?.addEventListener("change", toggleSelectAll);
-    document.getElementById("applyBulkMoveBtn")?.addEventListener("click", () => {
-        const tierVal = document.getElementById("bulkTierMoveSelect").value;
-        const catVal = document.getElementById("bulkCategoryMoveSelect").value;
-        if (tierVal) bulkMoveTier(parseInt(tierVal));
-        else if (catVal) bulkMoveCategory(catVal);
-        else showToast("Select a tier or category to move to", true);
-    });
-    document.getElementById("bulkDeleteBtn")?.addEventListener("click", bulkDeleteSelected);
-    document.getElementById("addCategoryBtn")?.addEventListener("click", addNewCategory);
-    document.getElementById("searchInput")?.addEventListener("input", (e) => {
-        searchQuery = e.target.value;
-        renderTable();
-    });
-    document.querySelectorAll(".admin-tab").forEach(tab => {
-        tab.addEventListener("click", () => {
-            document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
-            tab.classList.add("active");
-            currentFilterTier = tab.getAttribute("data-tier");
-            currentFilterCategory = null;
-            renderTable();
-            renderCategoryList();
-        });
-    });
-    
-    function escapeHtml(str) {
-        if (!str) return "";
-        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
-    }
+  }
+  selectedIds.clear();
+  updateStats();
+  renderTable();
+  toast(`✅ Updated ${done} videos`);
+}
+
+async function bulkDelete(){
+  if(!selectedIds.size){ toast("Select some videos first", "info"); return; }
+  if(!confirm(`Permanently delete ${selectedIds.size} videos?`)) return;
+  let done = 0;
+  for(const id of selectedIds){
+    const {error} = await sb.from("lessons").delete().eq("id", id);
+    if(!error){ allVideos = allVideos.filter(v => v.id !== id); done++; }
+  }
+  selectedIds.clear();
+  updateStats();
+  renderTable();
+  toast(`Deleted ${done} videos`);
+}
+
+// ─── SELECTION ─────────────────────────────────────────────
+function toggleOne(cb){
+  const id = parseInt(cb.getAttribute("data-id"));
+  if(cb.checked) selectedIds.add(id);
+  else           selectedIds.delete(id);
+  cb.closest("tr").classList.toggle("selected", cb.checked);
+  updateSelCount();
+  syncHeaderCheck();
+}
+
+function toggleSelectAll(masterCb){
+  document.querySelectorAll(".vcheck").forEach(cb => {
+    cb.checked = masterCb.checked;
+    const id = parseInt(cb.getAttribute("data-id"));
+    if(masterCb.checked) selectedIds.add(id);
+    else                 selectedIds.delete(id);
+    cb.closest("tr").classList.toggle("selected", masterCb.checked);
+  });
+  updateSelCount();
+}
+
+function clearSelection(){
+  selectedIds.clear();
+  document.querySelectorAll(".vcheck").forEach(cb => { cb.checked = false; cb.closest("tr").classList.remove("selected"); });
+  syncHeaderCheck();
+  updateSelCount();
+}
+
+function syncHeaderCheck(){
+  const checks = document.querySelectorAll(".vcheck");
+  const allChecked = checks.length > 0 && [...checks].every(c => c.checked);
+  document.getElementById("headerCheck").checked  = allChecked;
+  document.getElementById("selectAll").checked    = allChecked;
+}
+
+function updateSelCount(){
+  document.getElementById("selCount").innerText = selectedIds.size + " selected";
+}
+
+// ─── AUTO CATEGORY ─────────────────────────────────────────
+function autoCategory(title){
+  const t = title.toLowerCase();
+  if(t.includes("unlock your incredible") || t.includes("unlock -")) return "Unlock Your Incredible Self";
+  if(t.includes("morning routine"))        return "Morning Routine";
+  if(t.includes("group coaching"))         return "Group Coaching & Mentoring";
+  if(t.includes("goal setting") || t.includes("goal set")) return "Goal Setting";
+  if(t.includes("emotional clearing"))     return "Emotional Clearing";
+  if(t.includes("health") || t.includes("healing") || t.includes("pain & healing")) return "Health & Healing";
+  if(t.includes("relationship") || t.includes("attachment")) return "Relationships";
+  if(t.includes("coaching lesson") || t.includes("world class coach") || t.includes("state elicitation")) return "World Class Coach Training";
+  if(t.includes("free introduction") || t.includes("nlp for beginners") || t.includes("feeling stuck - free")) return "Free Introductions";
+  if(t.includes("meditation") || t.includes("womb") || t.includes("gift process")) return "Meditations & Processes";
+  if(t.includes("seminar") || t.includes("holistic health webinar") || t.includes("life skills") || t.includes("nsr")) return "2 Day Seminars";
+  if(t.includes("nlp"))                    return "NLP Masterclass";
+  return "Bonus Resources";
+}
+
+// ─── SEARCH ────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  let searchTimer;
+  document.getElementById("searchInput").addEventListener("input", e => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      searchQuery = e.target.value;
+      currentPage = 1;
+      renderTable();
+    }, 250);
+  });
+});
+
+// ─── TOAST ─────────────────────────────────────────────────
+function toast(msg, type="ok"){
+  const el = document.createElement("div");
+  el.className = `toast toast-${type}`;
+  el.innerText = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2500);
+}
+
+function esc(s){ return s ? s.replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])) : ""; }
 </script>
 </body>
 </html>
