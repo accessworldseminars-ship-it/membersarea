@@ -3,78 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AccessWorld Members Area</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#1A2744;min-height:100vh;padding:20px}
+body{font-family:Arial,sans-serif;background:#1A2744;min-height:100vh;padding:20px}
 .container{max-width:1200px;margin:0 auto;background:#fff;border-radius:16px;padding:30px}
 .login-box{max-width:350px;margin:60px auto;text-align:center}
-.login-box h1{color:#1A2744;margin-bottom:8px;font-size:24px}
+.login-box h1{color:#1A2744;margin-bottom:8px}
 .login-box p{color:#666;margin-bottom:24px}
-input[type=email],input[type=password]{width:100%;padding:12px 14px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-size:15px;outline:none}
-input:focus{border-color:#1D9E75}
-.btn{border:none;padding:12px 20px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s}
-.btn-green{background:#1D9E75;color:#fff;width:100%}
-.btn-green:hover{background:#178a65}
-.btn-red{background:#dc3545;color:#fff;width:auto;padding:8px 20px;font-size:14px}
-.btn-red:hover{background:#c82333}
-.btn-gray{background:#6c757d;color:#fff;width:auto;padding:8px 18px;font-size:14px}
-.btn-gold{background:#C9A84C;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
-.btn-gold:hover{background:#b8933f}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #eee}
-.header h1{font-size:22px;color:#1A2744}
-.tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid #eee}
-.tab{padding:10px 20px;cursor:pointer;font-size:14px;font-weight:600;color:#888;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
-.tab.active{color:#1A2744;border-bottom-color:#C9A84C}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-.stat-card{background:#f7f7f7;border-radius:10px;padding:14px;text-align:center}
-.stat-num{font-size:28px;font-weight:700;color:#1A2744}
-.stat-lbl{font-size:12px;color:#888;margin-top:2px}
-.two-col{display:flex;gap:24px;min-height:500px}
-.left-menu{width:260px;flex-shrink:0;background:#f8f9fa;border-radius:12px;padding:16px;max-height:620px;overflow-y:auto}
-.left-menu h4{margin-bottom:14px;color:#1A2744;font-size:14px;text-transform:uppercase;letter-spacing:.5px}
-.menu-item{padding:12px 14px;margin-bottom:6px;border-radius:8px;cursor:pointer;transition:all .2s;font-weight:500;color:#1A2744;font-size:14px;display:flex;align-items:center;justify-content:space-between}
-.menu-item:hover{background:#e8f9f1}
+input{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px}
+button{background:#1D9E75;color:#fff;border:none;padding:12px;border-radius:8px;cursor:pointer;width:100%;font-size:16px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.logout-btn{background:#dc3545;width:auto;padding:8px 20px}
+.two-col{display:flex;gap:24px}
+.left-menu{width:260px;background:#f8f9fa;border-radius:12px;padding:16px}
+.menu-item{padding:12px;margin-bottom:6px;border-radius:8px;cursor:pointer;background:#f0f0f0}
 .menu-item.active{background:#1D9E75;color:#fff}
-.menu-item.active .menu-count{color:rgba(255,255,255,.7)}
-.menu-left{display:flex;align-items:center;gap:8px}
-.menu-count{font-size:12px;color:#aaa}
-.watched-count{font-size:11px;background:#C9A84C;color:#fff;padding:1px 6px;border-radius:10px;margin-left:4px}
-.right-col{flex:1;min-width:0}
-.cat-header{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #eee}
-.cat-header h2{font-size:18px;color:#1A2744}
-.cat-header p{font-size:13px;color:#888;margin-top:4px}
-.vid-item{padding:14px;margin-bottom:8px;border:1px solid #eee;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
-.vid-item:hover{background:#f0fdf9;border-color:#1D9E75}
-.vid-item.active{background:#e8f9f1;border-left:4px solid #1D9E75}
-.vid-info{flex:1;min-width:0}
-.vid-title{font-weight:600;color:#1A2744;font-size:15px}
-.vid-desc{color:#888;font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vid-meta{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.tick{color:#1D9E75;font-size:18px;font-weight:700}
-.play-icon{color:#1D9E75;font-size:20px}
-.player-box{margin-top:16px;background:#f8f9fa;border-radius:12px;padding:20px;display:none}
+.right-col{flex:1}
+.vid-item{padding:14px;margin-bottom:8px;border:1px solid #eee;border-radius:8px;cursor:pointer}
+.vid-item:hover{background:#f0fdf9}
+.vid-title{font-weight:600}
+.vid-desc{color:#888;font-size:13px;margin-top:4px}
+.player-box{display:none;margin-top:20px;padding:20px;background:#f8f9fa;border-radius:12px}
 .player-box.on{display:block}
-.player-box h3{color:#1A2744;font-size:17px;margin-bottom:8px}
-.player-desc{color:#555;font-size:14px;line-height:1.6;margin-bottom:14px}
-.player-box iframe{width:100%;height:400px;border:none;border-radius:8px;background:#000}
-.player-actions{display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
-.watched-label{font-size:13px;color:#1D9E75;font-weight:600}
-.empty{text-align:center;color:#aaa;padding:60px 20px;font-size:14px}
-.note-form{background:#fffdf5;border:1px solid #e8ddb0;border-radius:10px;padding:16px;margin-bottom:16px}
-.note-form input[type=text]{width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px;outline:none}
-.note-form input[type=text]:focus{border-color:#C9A84C}
-textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:14px;line-height:1.6;resize:vertical;min-height:100px;outline:none;font-family:inherit}
-textarea:focus{border-color:#1D9E75}
-.note-card{background:#fffdf5;border:1px solid #e8ddb0;border-radius:8px;padding:14px;margin-bottom:10px}
-.note-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
-.note-title{font-size:13px;font-weight:700;color:#1A2744}
-.note-date{font-size:11px;color:#aaa}
-.note-body{font-size:13px;color:#444;line-height:1.5;white-space:pre-wrap}
-.note-del{background:none;border:1px solid #ddd;color:#aaa;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;margin-top:8px}
-.note-del:hover{background:#fee;color:#c00;border-color:#f99}
-.error{color:red;font-size:13px;margin-top:8px}
-@media(max-width:700px){.two-col{flex-direction:column}.left-menu{width:100%;max-height:200px}.stats{grid-template-columns:repeat(3,1fr)}}
+.player-box iframe{width:100%;height:400px;border:none;border-radius:8px}
+.error{color:red;margin-top:10px}
 </style>
 </head>
 <body>
@@ -82,114 +36,65 @@ textarea:focus{border-color:#1D9E75}
 
 <div id="login-section">
   <div class="login-box">
-    <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" style="height:60px;margin-bottom:16px" onerror="this.style.display='none'">
     <h1>AccessWorld Seminars</h1>
     <p>Member Portal</p>
-    <input type="email" id="email" placeholder="Email address">
+    <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
-    <button class="btn btn-green" onclick="login()">Sign In</button>
+    <button onclick="login()">Sign In</button>
     <div id="login-error" class="error"></div>
   </div>
 </div>
 
 <div id="dashboard" style="display:none">
   <div class="header">
-    <div style="display:flex;align-items:center;gap:12px">
-      <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" style="height:38px" onerror="this.style.display='none'">
-      <h1>AccessWorld Library</h1>
+    <h1>AccessWorld Library</h1>
+    <button class="logout-btn" onclick="logout()">Sign Out</button>
+  </div>
+  <div class="two-col">
+    <div class="left-menu">
+      <h4>Categories</h4>
+      <div id="cat-menu"></div>
     </div>
-    <div style="display:flex;gap:10px;align-items:center">
-      <span id="tier-badge" style="background:#1D9E75;color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600"></span>
-      <button class="btn btn-red" onclick="logout()">Sign Out</button>
-    </div>
-  </div>
-
-  <div class="stats">
-    <div class="stat-card"><div class="stat-num" id="s-total">0</div><div class="stat-lbl">Videos</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-watched">0</div><div class="stat-lbl">Watched</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-notes">0</div><div class="stat-lbl">Notes</div></div>
-  </div>
-
-  <div class="tabs">
-    <div class="tab active" id="tab-lib-btn" onclick="showTab('library')">📚 Library</div>
-    <div class="tab" id="tab-notes-btn" onclick="showTab('notes')">📝 My Notes</div>
-  </div>
-
-  <div id="tab-library">
-    <div class="two-col">
-      <div class="left-menu">
-        <h4>📁 Categories</h4>
-        <div id="cat-menu"></div>
-      </div>
-      <div class="right-col">
-        <div class="cat-header">
-          <h2 id="cat-title">← Pick a category</h2>
-          <p id="cat-subtitle">Choose a section from the menu on the left</p>
-        </div>
-        <div id="vid-list"></div>
-        <div id="player-box" class="player-box">
-          <h3 id="p-title"></h3>
-          <div class="player-desc" id="p-desc"></div>
-          <iframe id="p-iframe" src="" allowfullscreen></iframe>
-          <div class="player-actions">
-            <button class="btn-gold" id="p-watch-btn" onclick="toggleWatched()">✓ Mark as watched</button>
-            <button class="btn btn-gray" onclick="closePlayer()">✕ Close</button>
-            <span class="watched-label" id="p-watch-label"></span>
-          </div>
-        </div>
+    <div class="right-col">
+      <h3 id="cat-title">Select a category</h3>
+      <div id="vid-list"></div>
+      <div id="player-box" class="player-box">
+        <h3 id="p-title"></h3>
+        <p id="p-desc"></p>
+        <iframe id="p-iframe" src=""></iframe>
+        <button onclick="closePlayer()" style="margin-top:10px;width:auto;padding:8px 16px">Close</button>
       </div>
     </div>
   </div>
-
-  <div id="tab-notes" style="display:none">
-    <div class="note-form">
-      <input type="text" id="n-title" placeholder="Note title — e.g. Emotional Clearing, Session 2">
-      <textarea id="n-body" placeholder="Write your notes here — key insights, where you're up to, what resonated..."></textarea>
-      <button class="btn-gold" style="margin-top:8px" onclick="saveNote()">Save Note</button>
-    </div>
-    <div id="notes-list"></div>
-  </div>
 </div>
 
-</div>
 <script>
 const SB_URL = "https://zwwodopezadqjazhajmx.supabase.co";
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-let lessons = [], watched = {}, notes = [], currentVideoId = null, currentCat = null, currentUserTier = 1;
+let lessons = [];
+let currentUserTier = 1;
 
 const CATS = [
-  {id:"unlock", icon:"🌟", name:"Unlock Your Incredible Self", kw:["unlock","incredible"]},
-  {id:"coaching", icon:"👥", name:"Group Coaching", kw:["coach","group"]},
-  {id:"goals", icon:"🎯", name:"Goal Setting", kw:["goal"]},
-  {id:"emotional", icon:"💚", name:"Emotional Clearing", kw:["emotional","clearing","gift","grey"]},
-  {id:"morning", icon:"🌅", name:"Morning Routine", kw:["morning","routine"]},
-  {id:"strategic", icon:"🎯", name:"Strategic Visioning", kw:["strategic","visioning"]},
-  {id:"nlp", icon:"🧠", name:"NLP Masterclass", kw:["nlp"]},
-  {id:"intro", icon:"🎓", name:"Free Introductions", kw:["free","intro"]},
-  {id:"health", icon:"🏥", name:"Health & Healing", kw:["health","healing"]},
-  {id:"coachingcert", icon:"📜", name:"Coaching Certification", kw:["coaching lesson","coach yourself","world class coach","state elicitation"]},
-  {id:"meditation", icon:"🧘", name:"Meditations", kw:["meditation","breath","gift","womb","freedom"]},
-  {id:"bonus", icon:"🎁", name:"Bonus Resources", kw:["blue hat","excitement"]},
-  {id:"other", icon:"📁", name:"Other Content", kw:[]},
+  {id:"unlock", name:"Unlock Your Incredible Self", kw:["unlock","incredible"]},
+  {id:"coaching", name:"Group Coaching", kw:["coach","group"]},
+  {id:"emotional", name:"Emotional Clearing", kw:["emotional","clearing","gift","grey"]},
+  {id:"morning", name:"Morning Routine", kw:["morning","routine"]},
+  {id:"strategic", name:"Strategic Visioning", kw:["strategic","visioning"]},
+  {id:"nlp", name:"NLP Masterclass", kw:["nlp"]},
+  {id:"intro", name:"Free Introductions", kw:["free","intro"]},
+  {id:"coachingcert", name:"Coaching Certification", kw:["coaching lesson","coach yourself","world class coach"]},
+  {id:"meditation", name:"Meditations", kw:["meditation","breath","gift","womb","freedom"]},
 ];
 
 function catFor(title){
   const t = title.toLowerCase();
   for(const c of CATS){
-    if(c.id==="other") continue;
     if(c.kw.some(k => t.includes(k))) return c.name;
   }
-  return "Other Content";
+  return "Other";
 }
-
-function loadLocal(){
-  watched = JSON.parse(localStorage.getItem("aw_watched")||"{}");
-  notes = JSON.parse(localStorage.getItem("aw_notes")||"[]");
-}
-function saveWatched(){ localStorage.setItem("aw_watched",JSON.stringify(watched)); }
-function saveNotes(){ localStorage.setItem("aw_notes",JSON.stringify(notes)); }
 
 async function login(){
   const email = document.getElementById("email").value;
@@ -202,18 +107,16 @@ async function login(){
   const {data: profile} = await sb.from("profiles").select("membership_tier").eq("email", email).single();
   currentUserTier = profile?.membership_tier || 1;
   
-  document.getElementById("tier-badge").innerText = `Tier ${currentUserTier} Member`;
-  await boot();
+  await loadContent();
 }
 
-async function boot(){
-  loadLocal();
-  // IMPORTANT: Load ALL lessons - NO filter on tier_required
-  const {data,error} = await sb.from("lessons").select("*").order("sort_order");
+async function loadContent(){
+  // Load ALL lessons - NO filter
+  const {data, error} = await sb.from("lessons").select("*").order("sort_order");
   if(error){ console.error(error); return; }
   lessons = data||[];
   
-  console.log("Total lessons loaded:", lessons.length);
+  console.log("Total lessons:", lessons.length);
   console.log("Tier 1:", lessons.filter(l => l.tier_required === 1).length);
   console.log("Tier 2:", lessons.filter(l => l.tier_required === 2).length);
   console.log("Tier 3:", lessons.filter(l => l.tier_required === 3).length);
@@ -221,167 +124,68 @@ async function boot(){
   document.getElementById("login-section").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
   buildMenu();
-  updateStats();
 }
 
 function buildMenu(){
   const menu = document.getElementById("cat-menu");
   let html = "";
   for(const c of CATS){
-    // Show ALL videos user has access to
     const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required <= currentUserTier);
     if(!vids.length) continue;
-    const wc = vids.filter(l => watched[l.id]).length;
-    html += `<div class="menu-item" id="mi-${c.id}" onclick="selectCat('${c.id}')">
-      <div class="menu-left"><span>${c.icon}</span><span>${c.name}</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
-      <span class="menu-count">${vids.length}</span>
-    </div>`;
+    html += `<div class="menu-item" onclick="showCategory('${c.name}')">${c.name} (${vids.length})</div>`;
   }
   menu.innerHTML = html;
 }
 
-function selectCat(catId){
-  const c = CATS.find(x=>x.id===catId);
-  if(!c) return;
-  closePlayer();
-  document.querySelectorAll(".menu-item").forEach(m=>m.classList.remove("active"));
-  const mi = document.getElementById("mi-"+catId);
-  if(mi) mi.classList.add("active");
+function showCategory(catName){
+  document.querySelectorAll(".menu-item").forEach(m => m.classList.remove("active"));
+  event.target.classList.add("active");
   
-  const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required <= currentUserTier);
-  document.getElementById("cat-title").innerText = c.icon + " " + c.name;
-  document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
+  const vids = lessons.filter(l => catFor(l.title) === catName && l.tier_required <= currentUserTier);
+  document.getElementById("cat-title").innerText = catName;
   
   let html = "";
-  vids.forEach(l=>{
-    const desc = l.description ? l.description.substring(0,90) + (l.description.length > 90 ? "..." : "") : "Click to watch";
-    const isW = watched[l.id];
-    html += `<div class="vid-item" id="vi-${l.id}" onclick="selectVideo(${l.id})">
-      <div class="vid-info">
-        <div class="vid-title">${esc(l.title)}</div>
-        <div class="vid-desc">${esc(desc)}</div>
-      </div>
-      <div class="vid-meta">
-        ${isW ? '<span class="tick">✓</span>' : ""}
-        <span class="play-icon">▶</span>
-      </div>
+  vids.forEach(v => {
+    html += `<div class="vid-item" onclick="playVideo(${v.id})">
+      <div class="vid-title">${v.title}</div>
+      <div class="vid-desc">${v.description ? v.description.substring(0,80) : "Click to watch"}</div>
     </div>`;
   });
   document.getElementById("vid-list").innerHTML = html;
 }
 
-function selectVideo(id){
-  const v = lessons.find(x=>x.id===id);
+function playVideo(id){
+  const v = lessons.find(l => l.id === id);
   if(!v) return;
+  
   if(v.tier_required > currentUserTier){
-    alert(`This content requires Tier ${v.tier_required} access. Please upgrade your membership.`);
+    alert(`This content requires Tier ${v.tier_required}. Please upgrade.`);
     return;
   }
-  currentVideoId = id;
-  
-  document.querySelectorAll(".vid-item").forEach(x=>x.classList.remove("active"));
-  const vi = document.getElementById("vi-"+id);
-  if(vi) vi.classList.add("active");
   
   document.getElementById("p-title").innerText = v.title;
   document.getElementById("p-desc").innerText = v.description || "";
-  
   const iframe = document.getElementById("p-iframe");
   iframe.src = "";
-  setTimeout(() => { iframe.src = v.google_drive_embed_url || ""; }, 60);
+  setTimeout(() => { iframe.src = v.google_drive_embed_url || ""; }, 100);
   
-  const isW = watched[id];
-  const btn = document.getElementById("p-watch-btn");
-  const lbl = document.getElementById("p-watch-label");
-  btn.textContent = isW ? "✓ Watched" : "✓ Mark as watched";
-  btn.style.background = isW ? "#1D9E75" : "#C9A84C";
-  lbl.textContent = isW ? "Completed!" : "";
-  
-  const box = document.getElementById("player-box");
-  box.classList.add("on");
-  box.scrollIntoView({behavior: "smooth", block: "start"});
-}
-
-function toggleWatched(){
-  if(!currentVideoId) return;
-  if(watched[currentVideoId]){ delete watched[currentVideoId]; }
-  else { watched[currentVideoId] = true; }
-  saveWatched();
-  
-  const isW = watched[currentVideoId];
-  const btn = document.getElementById("p-watch-btn");
-  const lbl = document.getElementById("p-watch-label");
-  btn.textContent = isW ? "✓ Watched" : "✓ Mark as watched";
-  btn.style.background = isW ? "#1D9E75" : "#C9A84C";
-  lbl.textContent = isW ? "Completed!" : "";
-  
-  const vi = document.getElementById("vi-"+currentVideoId);
-  if(vi){
-    const meta = vi.querySelector(".vid-meta");
-    const existing = meta.querySelector(".tick");
-    if(isW && !existing){
-      const t = document.createElement("span");
-      t.className = "tick";
-      t.textContent = "✓";
-      meta.insertBefore(t, meta.firstChild);
-    } else if(!isW && existing){ existing.remove(); }
-  }
-  buildMenu();
-  updateStats();
+  document.getElementById("player-box").classList.add("on");
 }
 
 function closePlayer(){
   document.getElementById("player-box").classList.remove("on");
   document.getElementById("p-iframe").src = "";
-  currentVideoId = null;
-  document.querySelectorAll(".vid-item").forEach(x=>x.classList.remove("active"));
 }
 
-function showTab(tab){
-  document.getElementById("tab-library").style.display = tab === "library" ? "block" : "none";
-  document.getElementById("tab-notes").style.display = tab === "notes" ? "block" : "none";
-  document.getElementById("tab-lib-btn").className = "tab" + (tab === "library" ? " active" : "");
-  document.getElementById("tab-notes-btn").className = "tab" + (tab === "notes" ? " active" : "");
+async function logout(){
+  await sb.auth.signOut();
+  location.reload();
 }
 
-function saveNote(){
-  const title = document.getElementById("n-title").value.trim();
-  const body = document.getElementById("n-body").value.trim();
-  if(!body){ alert("Please write something."); return; }
-  notes.unshift({id: Date.now(), title: title || "Untitled note", body: body, date: new Date().toLocaleDateString("en-AU")});
-  saveNotes();
-  document.getElementById("n-title").value = "";
-  document.getElementById("n-body").value = "";
-  renderNotes();
-  updateStats();
-}
-
-function deleteNote(id){
-  if(!confirm("Delete this note?")) return;
-  notes = notes.filter(n => n.id !== id);
-  saveNotes();
-  renderNotes();
-  updateStats();
-}
-
-function renderNotes(){
-  const list = document.getElementById("notes-list");
-  if(!notes.length){ list.innerHTML = '<div class="empty">No notes yet.</div>'; return; }
-  list.innerHTML = notes.map(n => `<div class="note-card"><div class="note-hdr"><div class="note-title">${esc(n.title)}</div><div class="note-date">${n.date}</div></div><div class="note-body">${esc(n.body)}</div><button class="note-del" onclick="deleteNote(${n.id})">Delete</button></div>`).join("");
-}
-
-function updateStats(){
-  const visibleCount = lessons.filter(l => l.tier_required <= currentUserTier).length;
-  document.getElementById("s-total").textContent = visibleCount;
-  document.getElementById("s-watched").textContent = Object.keys(watched).length;
-  document.getElementById("s-notes").textContent = notes.length;
-}
-
-function esc(s){ if(!s) return ""; return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-async function logout(){ await sb.auth.signOut(); location.reload(); }
-
-window.onload = async() => { const {data: {user}} = await sb.auth.getUser(); if(user) await boot(); };
+window.onload = async () => {
+  const {data: {user}} = await sb.auth.getUser();
+  if(user) await loadContent();
+};
 </script>
 </body>
 </html>
