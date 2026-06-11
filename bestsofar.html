@@ -6,20 +6,13 @@
 <title>AccessWorld – Member Portal</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     background: linear-gradient(145deg, #0F172A 0%, #111827 100%);
     font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     padding: 24px 20px;
   }
-
-  /* main card container */
   .portal {
     max-width: 1400px;
     margin: 0 auto;
@@ -27,10 +20,7 @@
     border-radius: 2rem;
     box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.4);
     overflow: hidden;
-    transition: all 0.2s;
   }
-
-  /* login panel */
   .login-panel {
     display: flex;
     align-items: center;
@@ -38,7 +28,6 @@
     min-height: 85vh;
     background: #ffffff;
   }
-
   .login-card {
     background: white;
     padding: 44px 40px;
@@ -49,13 +38,7 @@
     border: 1px solid rgba(201, 168, 76, 0.3);
     box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
   }
-
-  .login-card img {
-    height: 68px;
-    object-fit: contain;
-    margin-bottom: 16px;
-  }
-
+  .login-card img { height: 68px; object-fit: contain; margin-bottom: 16px; }
   .login-card h1 {
     font-size: 28px;
     font-weight: 700;
@@ -65,18 +48,8 @@
     color: transparent;
     letter-spacing: -0.3px;
   }
-
-  .login-card p {
-    color: #5b6e8c;
-    margin: 10px 0 28px;
-    font-size: 14px;
-  }
-
-  .input-field {
-    margin-bottom: 18px;
-    text-align: left;
-  }
-
+  .login-card p { color: #5b6e8c; margin: 10px 0 28px; font-size: 14px; }
+  .input-field { margin-bottom: 18px; text-align: left; }
   .input-field label {
     font-size: 12px;
     font-weight: 600;
@@ -85,7 +58,6 @@
     display: block;
     letter-spacing: 0.3px;
   }
-
   .input-field input {
     width: 100%;
     padding: 14px 16px;
@@ -95,25 +67,18 @@
     transition: 0.2s;
     background: #fefefe;
   }
-
   .input-field input:focus {
     outline: none;
     border-color: #C9A84C;
     box-shadow: 0 0 0 3px rgba(201,168,76,0.2);
   }
-
   .btn {
     border: none;
     border-radius: 40px;
     font-weight: 700;
     cursor: pointer;
     transition: 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
   }
-
   .btn-primary {
     background: #1D9E75;
     color: white;
@@ -122,395 +87,87 @@
     font-size: 15px;
     box-shadow: 0 6px 14px rgba(29,158,117,0.3);
   }
-
-  .btn-primary:hover {
-    background: #157f5c;
-    transform: translateY(-1px);
-  }
-
+  .btn-primary:hover { background: #157f5c; transform: translateY(-1px); }
   .btn-outline-gold {
     background: transparent;
     border: 1.5px solid #C9A84C;
     color: #C9A84C;
     padding: 8px 18px;
     font-weight: 600;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: 0.2s;
   }
-
   .btn-outline-gold:hover {
     background: #C9A84C;
     color: #1A2744;
   }
+  .error-message { color: #dc3c4c; font-size: 13px; margin-top: 16px; }
 
-  .error-message {
-    color: #dc3c4c;
-    font-size: 13px;
-    margin-top: 16px;
-  }
-
-  /* dashboard header */
   .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 32px;
-    background: white;
-    border-bottom: 1px solid #edf2f7;
-    flex-wrap: wrap;
-    gap: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 32px; background: white; border-bottom: 1px solid #edf2f7;
   }
-
-  .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .logo-area img {
-    height: 44px;
-  }
-
-  .logo-area h2 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1A2744;
-    letter-spacing: -0.2px;
-  }
-
+  .logo-area { display: flex; align-items: center; gap: 14px; }
+  .logo-area img { height: 44px; }
+  .logo-area h2 { font-size: 22px; font-weight: 700; color: #1A2744; }
   .tier-badge {
-    background: #1D9E75;
-    padding: 6px 18px;
-    border-radius: 40px;
-    font-size: 12px;
-    font-weight: 700;
-    color: white;
+    background: #1D9E75; padding: 6px 18px; border-radius: 40px;
+    font-size: 12px; font-weight: 700; color: white;
   }
-
   .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
     padding: 24px 32px 0 32px;
   }
-
   .stat-card {
-    background: #F9FAFE;
-    border-radius: 1.5rem;
-    padding: 18px 12px;
-    text-align: center;
-    border: 1px solid #eef2f8;
+    background: #F9FAFE; border-radius: 1.5rem; padding: 18px 12px;
+    text-align: center; border: 1px solid #eef2f8;
   }
+  .stat-number { font-size: 36px; font-weight: 800; color: #1A2744; }
+  .stat-label { font-size: 12px; color: #62748c; margin-top: 6px; }
 
-  .stat-number {
-    font-size: 36px;
-    font-weight: 800;
-    color: #1A2744;
-    line-height: 1.2;
-  }
-
-  .stat-label {
-    font-size: 12px;
-    color: #62748c;
-    margin-top: 6px;
-    font-weight: 500;
-  }
-
-  /* tabs */
-  .tabs-row {
-    display: flex;
-    gap: 6px;
-    padding: 20px 32px 0 32px;
-    border-bottom: 1px solid #edf2f7;
-    background: white;
-  }
-
+  .tabs-row { display: flex; gap: 6px; padding: 20px 32px 0; border-bottom: 1px solid #edf2f7; background: white; flex-wrap: wrap; }
   .tab-btn {
-    background: transparent;
-    border: none;
-    padding: 10px 24px;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    color: #8a99b0;
-    border-radius: 40px;
-    transition: 0.2s;
+    background: transparent; border: none; padding: 10px 24px; font-weight: 700;
+    font-size: 14px; cursor: pointer; color: #8a99b0; border-radius: 40px;
   }
+  .tab-btn.active { background: #1A2744; color: white; }
 
-  .tab-btn.active {
-    background: #1A2744;
-    color: white;
-  }
-
-  /* main content */
-  .content-area {
-    padding: 28px 32px 32px 32px;
-    background: white;
-  }
-
-  .two-columns {
-    display: flex;
-    gap: 28px;
-    flex-wrap: wrap;
-  }
-
-  .sidebar {
-    width: 280px;
-    flex-shrink: 0;
-    background: #F9FAFE;
-    border-radius: 1.5rem;
-    padding: 18px 14px;
-    max-height: 620px;
-    overflow-y: auto;
-  }
-
-  .sidebar h4 {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: #8a99b0;
-    margin-bottom: 14px;
-  }
-
+  .content-area { padding: 28px 32px 32px; background: white; }
+  .two-columns { display: flex; gap: 28px; flex-wrap: wrap; }
+  .sidebar { width: 280px; flex-shrink: 0; background: #F9FAFE; border-radius: 1.5rem; padding: 18px 14px; max-height: 620px; overflow-y: auto; }
   .category-item {
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: 0.2s;
-    font-weight: 600;
-    font-size: 13px;
-    color: #2c3e66;
+    padding: 10px 12px; margin-bottom: 6px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; font-weight: 600; font-size: 13px; color: #2c3e66;
   }
+  .category-item:hover { background: #eef2fa; }
+  .category-item.active { background: #1A2744; color: white; }
+  .cat-count { background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 30px; font-size: 11px; }
 
-  .category-item:hover {
-    background: #eef2fa;
-  }
-
-  .category-item.active {
-    background: #1A2744;
-    color: white;
-  }
-
-  .cat-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .cat-count {
-    background: rgba(0,0,0,0.05);
-    padding: 2px 8px;
-    border-radius: 30px;
-    font-size: 11px;
-  }
-
-  .active .cat-count {
-    background: rgba(255,255,255,0.2);
-  }
-
-  .main-panel {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .category-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1A2744;
-    margin-bottom: 6px;
-  }
-
-  .category-desc {
-    font-size: 13px;
-    color: #6f7d98;
-    margin-bottom: 18px;
-    border-left: 3px solid #C9A84C;
-    padding-left: 12px;
-  }
-
-  .progress-block {
-    margin-bottom: 24px;
-  }
-
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #2c3e66;
-  }
-
-  .progress-track {
-    background: #e4e9f2;
-    border-radius: 30px;
-    height: 8px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    background: linear-gradient(90deg, #1D9E75, #C9A84C);
-    width: 0%;
-    height: 100%;
-    border-radius: 30px;
-    transition: width 0.3s;
-  }
-
-  .video-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 460px;
-    overflow-y: auto;
-    padding-right: 6px;
-  }
-
+  .main-panel { flex: 1; }
+  .category-title { font-size: 24px; font-weight: 700; color: #1A2744; margin-bottom: 6px; }
+  .video-list { display: flex; flex-direction: column; gap: 10px; max-height: 460px; overflow-y: auto; }
   .video-card {
-    background: white;
-    border: 1.5px solid #eef2f8;
-    border-radius: 18px;
-    padding: 14px 18px;
-    cursor: pointer;
-    transition: 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    background: white; border: 1.5px solid #eef2f8; border-radius: 18px;
+    padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between;
   }
+  .video-card:hover { border-color: #C9A84C; }
+  .video-card.active-video { border-left: 5px solid #1D9E75; background: #F2F9F5; }
 
-  .video-card:hover {
-    border-color: #C9A84C;
-    background: #FFFDF5;
-  }
-
-  .video-card.active-video {
-    background: #F2F9F5;
-    border-left: 5px solid #1D9E75;
-  }
-
-  .video-info h4 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1f2e4a;
-  }
-
-  .video-info p {
-    font-size: 12px;
-    color: #7a89a4;
-    margin-top: 4px;
-  }
-
-  .watch-badge {
-    font-size: 20px;
-    font-weight: 800;
-    color: #1D9E75;
-  }
-
-  /* player panel */
-  .player-panel {
-    margin-top: 24px;
-    background: #F9FAFE;
-    border-radius: 1.5rem;
-    padding: 22px;
-    display: none;
-    border: 1px solid #eef2f8;
-  }
-
-  .player-panel.show {
-    display: block;
-    animation: fadeSlide 0.2s ease;
-  }
-
-  @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(8px);}
-    to { opacity: 1; transform: translateY(0);}
-  }
-
-  .player-title {
-    font-size: 20px;
-    font-weight: 800;
-    color: #0b1a2e;
-  }
-
-  .player-desc {
-    font-size: 14px;
-    color: #3f4e6b;
-    line-height: 1.55;
-    margin: 12px 0 16px;
-  }
-
-  iframe {
-    width: 100%;
-    height: 400px;
-    border-radius: 1.2rem;
-    background: #0a0f1c;
-    border: none;
-  }
-
-  .player-actions {
-    display: flex;
-    gap: 16px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  /* notes section */
-  .notes-wrapper {
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .note-form-card {
-    background: #fffdf5;
-    border: 1px solid #e8ddb0;
-    border-radius: 1.5rem;
-    padding: 24px;
-    margin-bottom: 28px;
-  }
-
-  .note-input, .note-textarea {
-    width: 100%;
-    padding: 14px;
-    border-radius: 24px;
-    border: 1.5px solid #e2e8f0;
-    margin-bottom: 14px;
-    font-family: inherit;
-  }
-
-  .note-textarea {
-    min-height: 110px;
-    resize: vertical;
-  }
-
-  .note-item {
-    background: white;
-    border: 1px solid #eeddb0;
-    border-radius: 1.2rem;
-    padding: 18px;
-    margin-bottom: 14px;
-  }
-
-  .locked-info {
-    text-align: center;
-    padding: 80px 20px;
-    background: #F9FAFE;
-    border-radius: 2rem;
-  }
+  .player-panel { margin-top: 24px; background: #F9FAFE; border-radius: 1.5rem; padding: 22px; display: none; }
+  .player-panel.show { display: block; }
+  iframe { width: 100%; height: 400px; border-radius: 1.2rem; border: none; }
 
   @media (max-width: 760px) {
     .stats-grid { grid-template-columns: repeat(2,1fr); }
-    .sidebar { width: 100%; max-height: 240px; }
+    .sidebar { width: 100%; }
     .two-columns { flex-direction: column; }
     iframe { height: 240px; }
-    .tabs-row { padding: 12px 20px; }
-    .content-area { padding: 20px; }
   }
 </style>
 </head>
 <body>
-
 <div class="portal">
   <!-- LOGIN VIEW -->
   <div id="loginView">
@@ -525,24 +182,25 @@
         </div>
         <div class="input-field">
           <label>Password</label>
-          <input type="password" id="loginPassword" placeholder="••••••••">
+          <input type="password" id="loginPassword" placeholder="••••••••" 
+                 onkeydown="if(event.key==='Enter') handleLogin()">
         </div>
-        <button class="btn btn-primary" id="loginBtn">Sign In →</button>
+        <button class="btn btn-primary" onclick="handleLogin()">Sign In →</button>
         <div id="loginErrorMsg" class="error-message"></div>
       </div>
     </div>
   </div>
 
-  <!-- DASHBOARD (hidden until login) -->
+  <!-- DASHBOARD -->
   <div id="dashboardView" style="display: none;">
     <div class="dashboard-header">
       <div class="logo-area">
-        <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" alt="logo" onerror="this.style.display='none'">
+        <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" alt="logo">
         <h2>AccessWorld Library</h2>
       </div>
-      <div style="display: flex; gap: 12px; align-items: center;">
+      <div style="display:flex; gap:12px; align-items:center;">
         <span id="userTierBadge" class="tier-badge">Tier 1</span>
-        <button id="logoutBtn" class="btn-outline-gold" style="padding:6px 18px;">Sign Out</button>
+        <button onclick="logout()" class="btn-outline-gold">Sign Out</button>
       </div>
     </div>
 
@@ -564,84 +222,84 @@
 </div>
 
 <script>
-  // --------------------------------------------------------------
-  // SUPABASE CONFIG (replace with your anon key)
-  // --------------------------------------------------------------
   const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";  // <-- IMPORTANT: REPLACE
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
+  const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // ---------- GLOBAL STATE ----------
   let allVideos = [];
   let watchedMap = {};
   let userNotes = [];
-  let currentUserTier = 1;       // 1,2,3 (full access if >=3)
-  let activeTab = "tier1";
+  let currentUserTier = 1;
   let activeCategoryId = null;
   let activeVideoId = null;
-  let currentTierCache = {};
 
-  // ---------- CATEGORIES (keyword based, matches your library) ----------
   const CATEGORIES = [
     { id: "unlock", name: "🌟 Unlock Yourself", tier: 1, kw: ["unlock your incredible", "artistry explained", "listen to the attendees"] },
     { id: "morning", name: "🌅 Morning Routine", tier: 1, kw: ["morning routine"] },
-    { id: "group_early", name: "👥 Group Coaching (22-23)", tier: 1, kw: ["group coaching - aug 2022", "jun 2022", "oct 2023", "goal setting"] },
-    { id: "emotional", name: "💚 Emotional Clearing", tier: 1, kw: ["emotional clearing", "gift process", "yelling", "ball and fire"] },
-    { id: "nlp_basic", name: "🧠 NLP Basics", tier: 1, kw: ["nlp basics", "take full control", "confidence to succeed"] },
-    { id: "health1", name: "🏥 Health & Healing", tier: 1, kw: ["acid alkaline", "health & energy"] },
+    { id: "group", name: "👥 Group Coaching & Mentoring", tier: 1, kw: ["group coaching", "goal setting", "jan 2024", "apr 2024", "feb 2025", "mar 2025", "jan 2026"] },
+    { id: "emotional", name: "💚 Emotional Clearing", tier: 1, kw: ["emotional clearing", "gift process", "yelling", "ball and fire", "grey room", "ultimate freedom"] },
+    { id: "health", name: "🏥 Health & Healing", tier: 1, kw: ["acid alkaline", "health & energy", "pain & healing", "healing sadness", "holistic health"] },
+    { id: "nlp_basic", name: "🧠 NLP Basics", tier: 1, kw: ["nlp basics", "take full control", "confidence to succeed", "strategic visioning"] },
     { id: "intro", name: "🎓 Free Introductions", tier: 2, kw: ["free introduction", "nlp for beginners", "money mindset", "feeling stuck"] },
-    { id: "nlp_state", name: "🧠 NLP State & Foundation", tier: 2, kw: ["nlp state elicitation", "nlp foundation principles"] },
     { id: "wcc", name: "📜 World Class Coach Training", tier: 2, kw: ["coaching lesson", "how to become a world class coach"] },
-    { id: "nlp_master", name: "🧠 NLP Masterclass", tier: 3, kw: ["nlp - nlp", "collapse anchors", "incantations", "grey room", "self image"] },
-    { id: "gc2024", name: "👥 Group Coaching 2024", tier: 3, kw: ["group coaching 2024", "020224", "080724"] },
-    { id: "gc2025", name: "👥 Group Coaching 2025", tier: 3, kw: ["group coaching 2025", "010425", "140225"] },
-    { id: "gc2026", name: "👥 Group Coaching 2026", tier: 3, kw: ["group coaching 2026", "020126", "090126"] },
-    { id: "adv_sem", name: "🎪 Advanced Seminars", tier: 3, kw: ["emotional mastery", "holistic health", "life skills", "nsr"] },
-    { id: "meditation", name: "🧘 Meditations & Audio", tier: 0, kw: ["guided breath", "the gift", "ultimate freedom", "dancing with fear", "blue hat", "excitement meditation"] }
+    { id: "adv_sem", name: "🎪 Advanced Seminars", tier: 3, kw: ["emotional mastery seminar", "holistic health webinar", "day 1", "day 2"] },
+    { id: "meditation", name: "🧘 Meditations & Audio", tier: 1, kw: ["meditation", "the gift", "guided breath"] }
   ];
 
   function getCategoryForVideo(video) {
     const title = (video.title || "").toLowerCase();
     for (let cat of CATEGORIES) {
-      if (cat.kw.some(k => title.includes(k))) return cat;
+      if (cat.kw.some(k => title.includes(k.toLowerCase()))) return cat;
     }
-    return { id: "other", name: "📁 Other Content", tier: video.tier_required };
+    return { id: "other", name: "📁 Other Content", tier: video.tier_required || 1 };
   }
 
-  // ---------- LOCALSTORAGE ----------
   function loadLocal() {
-    const w = localStorage.getItem("aw_watched");
-    const n = localStorage.getItem("aw_notes");
-    if (w) watchedMap = JSON.parse(w);
-    if (n) userNotes = JSON.parse(n);
+    if (localStorage.getItem("aw_watched")) watchedMap = JSON.parse(localStorage.getItem("aw_watched"));
+    if (localStorage.getItem("aw_notes")) userNotes = JSON.parse(localStorage.getItem("aw_notes"));
   }
   function persistWatched() { localStorage.setItem("aw_watched", JSON.stringify(watchedMap)); }
   function persistNotes() { localStorage.setItem("aw_notes", JSON.stringify(userNotes)); }
 
-  // ---------- AUTH & BOOT ----------
   async function handleLogin() {
     const email = document.getElementById("loginEmail").value.trim();
     const pwd = document.getElementById("loginPassword").value;
     const errDiv = document.getElementById("loginErrorMsg");
     errDiv.innerText = "";
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
-    if (error) { errDiv.innerText = error.message; return; }
-    
-    // retrieve membership tier (profiles table optional)
+
+    if (!email || !pwd) {
+      errDiv.innerText = "Please enter email and password";
+      return;
+    }
+
+    errDiv.innerText = "Signing in...";
+    errDiv.style.color = "#1D9E75";
+
+    const { data, error } = await sbClient.auth.signInWithPassword({ email, password: pwd });
+    if (error) {
+      errDiv.style.color = "#dc3c4c";
+      errDiv.innerText = error.message;
+      return;
+    }
+
     let userTier = 1;
     try {
-      const { data: prof } = await supabase.from("profiles").select("membership_tier").eq("email", email).maybeSingle();
+      const { data: prof } = await sbClient.from("profiles").select("membership_tier").eq("email", email).maybeSingle();
       userTier = prof?.membership_tier || 1;
-    } catch(e) { console.warn("profiles table missing, default tier 1"); }
+    } catch(e) { console.warn("No profiles table or error", e); }
+
     currentUserTier = Math.min(userTier, 3);
-    if (currentUserTier >= 4) currentUserTier = 3;
     document.getElementById("userTierBadge").innerText = currentUserTier >= 3 ? "Full Access" : `Tier ${currentUserTier}`;
+
     await loadVideosAndStart();
   }
 
   async function loadVideosAndStart() {
-    const { data, error } = await supabase.from("lessons").select("*").order("sort_order", { ascending: true });
-    if (error) { alert("Failed to load videos: " + error.message); return; }
+    const { data, error } = await sbClient.from("lessons").select("*").order("sort_order", { ascending: true });
+    if (error) {
+      alert("Failed to load library: " + error.message);
+      return;
+    }
     allVideos = data || [];
     document.getElementById("loginView").style.display = "none";
     document.getElementById("dashboardView").style.display = "block";
@@ -649,224 +307,110 @@
     switchTab("tier1");
   }
 
-  async function logout() {
-    await supabase.auth.signOut();
+  function logout() {
+    sbClient.auth.signOut();
     location.reload();
   }
 
   function updateStatistics() {
-    const accessible = allVideos.filter(v => v.tier_required <= currentUserTier);
-    const watchedCount = Object.keys(watchedMap).length;
+    const accessible = allVideos.filter(v => (v.tier_required || 1) <= currentUserTier);
     document.getElementById("totalVideosStat").innerText = accessible.length;
-    document.getElementById("watchedStat").innerText = watchedCount;
+    document.getElementById("watchedStat").innerText = Object.keys(watchedMap).length;
     document.getElementById("notesCountStat").innerText = userNotes.length;
   }
 
-  // ---------- RENDER TIER VIEW (categories + videos) ----------
   function renderTierView(tierNum) {
     if (tierNum > currentUserTier) {
-      document.getElementById("dynamicContent").innerHTML = `<div class="locked-info"><span style="font-size:48px;">🔒</span><h2>Tier ${tierNum} Locked</h2><p>Upgrade your membership to unlock this content.</p><button class="btn-outline-gold" onclick="alert('Contact support@accessworldseminars.com')">Request upgrade</button></div>`;
+      document.getElementById("dynamicContent").innerHTML = `<div style="text-align:center;padding:80px 20px;background:#F9FAFE;border-radius:2rem;"><h2>🔒 Tier ${tierNum} Locked</h2><p>Upgrade to unlock this content.</p></div>`;
       return;
     }
-    const tierVideos = allVideos.filter(v => v.tier_required === tierNum);
-    if (!tierVideos.length) {
-      document.getElementById("dynamicContent").innerHTML = `<div class="locked-info">✨ No videos available for Tier ${tierNum} yet.</div>`;
-      return;
-    }
+
+    const tierVideos = allVideos.filter(v => (v.tier_required || 1) === tierNum);
     const groups = {};
     tierVideos.forEach(v => {
       const cat = getCategoryForVideo(v);
       if (!groups[cat.id]) groups[cat.id] = { ...cat, videos: [] };
       groups[cat.id].videos.push(v);
     });
-    let categoriesArray = Object.values(groups);
-    if (!activeCategoryId || !groups[activeCategoryId]) activeCategoryId = categoriesArray[0]?.id;
+
+    let cats = Object.values(groups);
+    if (!activeCategoryId || !groups[activeCategoryId]) activeCategoryId = cats[0]?.id;
     const currentCat = groups[activeCategoryId];
-    const watchedInCat = currentCat?.videos.filter(v => watchedMap[v.id]).length || 0;
-    const catPercent = currentCat?.videos.length ? Math.round((watchedInCat / currentCat.videos.length) * 100) : 0;
-    
-    let leftHtml = `<div class="sidebar"><h4>📂 Categories</h4>`;
-    categoriesArray.forEach(cat => {
-      leftHtml += `<div class="category-item ${activeCategoryId === cat.id ? 'active' : ''}" data-cat-id="${cat.id}">
-        <div class="cat-left"><span>${cat.name.split(' ')[0]}</span> ${cat.name}</div>
-        <div class="cat-count">${cat.videos.length}</div>
-      </div>`;
+
+    let html = `<div class="two-columns">`;
+    html += `<div class="sidebar"><h4 style="padding:0 4px 10px;color:#1A2744;">Categories</h4>`;
+    cats.forEach(cat => {
+      html += `<div class="category-item ${activeCategoryId === cat.id ? 'active' : ''}" data-id="${cat.id}">${cat.name} <span class="cat-count">${cat.videos.length}</span></div>`;
     });
-    leftHtml += `</div>`;
-    
-    let rightHtml = `<div class="main-panel">
-      <div class="category-title">${currentCat?.name || "Library"}</div>
-      <div class="category-desc">${currentCat?.videos.length || 0} session${currentCat?.videos.length !== 1 ? 's' : ''} · ${watchedInCat} completed</div>
-      <div class="progress-block"><div class="progress-label"><span>Category progress</span><span>${catPercent}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${catPercent}%"></div></div></div>
-      <div class="video-list" id="videoListContainer"></div>
-      <div id="playerPanel" class="player-panel"></div>
-    </div>`;
-    document.getElementById("dynamicContent").innerHTML = `<div class="two-columns">${leftHtml}${rightHtml}</div>`;
-    
-    // attach category click handlers
-    document.querySelectorAll(".category-item").forEach(el => {
-      el.addEventListener("click", () => {
-        activeCategoryId = el.getAttribute("data-cat-id");
+    html += `</div><div class="main-panel">`;
+
+    if (currentCat) {
+      html += `<div class="category-title">${currentCat.name}</div>`;
+      html += `<p style="color:#8a99b0;font-size:13px;margin-bottom:14px;">${currentCat.videos.length} video${currentCat.videos.length !== 1 ? 's' : ''}</p>`;
+      html += `<div class="video-list" id="videoList">`;
+      currentCat.videos.forEach(v => {
+        html += `<div class="video-card ${activeVideoId === v.id ? 'active-video' : ''}" data-id="${v.id}">
+          <div><strong>${escapeHtml(v.title)}</strong></div>
+          <div style="color:#8a99b0;font-size:18px;">${watchedMap[v.id] ? '✅' : '▶️'}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    } else {
+      html += `<div style="padding:60px 20px;text-align:center;color:#8a99b0;">No videos in this category yet.</div>`;
+    }
+    html += `</div></div>`;
+    document.getElementById("dynamicContent").innerHTML = html;
+
+    document.querySelectorAll('.category-item').forEach(el => {
+      el.addEventListener('click', () => {
+        activeCategoryId = el.getAttribute('data-id');
+        activeVideoId = null;
         renderTierView(tierNum);
       });
     });
-    // populate video list
-    const container = document.getElementById("videoListContainer");
-    if (currentCat?.videos.length) {
-      container.innerHTML = currentCat.videos.map(v => `
-        <div class="video-card ${activeVideoId === v.id ? 'active-video' : ''}" data-video-id="${v.id}">
-          <div class="video-info"><h4>${escapeHtml(v.title)}</h4><p>${v.description ? v.description.substring(0, 70) + "…" : "Click to watch"}</p></div>
-          <div class="watch-badge">${watchedMap[v.id] ? "✓" : "▶"}</div>
-        </div>
-      `).join("");
-      document.querySelectorAll(".video-card").forEach(card => {
-        card.addEventListener("click", (e) => {
-          const vid = parseInt(card.getAttribute("data-video-id"));
-          activeVideoId = vid;
-          renderTierView(tierNum);
-          showPlayer(vid, tierNum);
-        });
+
+    document.querySelectorAll('.video-card').forEach(el => {
+      el.addEventListener('click', () => {
+        activeVideoId = parseInt(el.getAttribute('data-id'));
+        watchedMap[activeVideoId] = true;
+        persistWatched();
+        updateStatistics();
+        renderTierView(tierNum);
       });
+    });
+  }
+
+  function escapeHtml(text) {
+    return text ? text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]) : '';
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+    activeCategoryId = null;
+
+    if (tab === "notes") {
+      document.getElementById("dynamicContent").innerHTML = `<div style="padding:40px;text-align:center;color:#8a99b0;">Notes tab coming soon...</div>`;
     } else {
-      container.innerHTML = '<div class="locked-info" style="padding:40px;">✨ No videos in this category.</div>';
-    }
-    if (activeVideoId) showPlayer(activeVideoId, tierNum);
-  }
-  
-  async function showPlayer(videoId, tierNum) {
-    const video = allVideos.find(v => v.id === videoId);
-    if (!video) return;
-    const isWatched = !!watchedMap[video.id];
-    const playerDiv = document.getElementById("playerPanel");
-    if (!playerDiv) return;
-    playerDiv.classList.add("show");
-    playerDiv.innerHTML = `
-      <div class="player-title">${escapeHtml(video.title)}</div>
-      <div class="player-desc">${escapeHtml(video.description || "No description provided.")}</div>
-      <iframe src="${getEmbedUrl(video.google_drive_embed_url || video.video_url || "")}" allowfullscreen></iframe>
-      <div class="player-actions">
-        <button class="btn-outline-gold" id="watchToggleBtn">${isWatched ? "✓ Watched" : "Mark as watched"}</button>
-        <button class="btn-outline-gold" id="closePlayerBtn">Close</button>
-      </div>
-      <div style="margin-top:20px;"><textarea id="videoNoteArea" rows="2" style="width:100%; border-radius:20px; padding:12px;" placeholder="Add private notes..."></textarea>
-      <button id="saveVideoNoteBtn" style="margin-top:8px; background:#1D9E75; border:none; padding:8px 20px; border-radius:30px; color:white;">Save Note</button></div>
-    `;
-    const existingNote = userNotes.find(n => n.id === video.id);
-    if (existingNote) document.getElementById("videoNoteArea").value = existingNote.text;
-    document.getElementById("watchToggleBtn")?.addEventListener("click", () => {
-      if (watchedMap[video.id]) delete watchedMap[video.id];
-      else watchedMap[video.id] = true;
-      persistWatched();
-      updateStatistics();
-      renderTierView(tierNum);
-    });
-    document.getElementById("closePlayerBtn")?.addEventListener("click", () => {
-      playerDiv.classList.remove("show");
-      activeVideoId = null;
-      renderTierView(tierNum);
-    });
-    document.getElementById("saveVideoNoteBtn")?.addEventListener("click", () => {
-      const noteText = document.getElementById("videoNoteArea").value.trim();
-      if (!noteText) return;
-      const idx = userNotes.findIndex(n => n.id === video.id);
-      const noteObj = { id: video.id, title: video.title, text: noteText, updatedAt: new Date().toISOString() };
-      if (idx !== -1) userNotes[idx] = noteObj;
-      else userNotes.push(noteObj);
-      persistNotes();
-      updateStatistics();
-      alert("Note saved");
-    });
-  }
-  
-  function getEmbedUrl(url) {
-    if (!url) return "";
-    if (url.includes("drive.google.com")) return url;
-    if (url.includes("youtu.be") || url.includes("youtube.com")) {
-      const match = url.match(/(?:youtu\.be\/|youtube.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
-      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
-    }
-    return url;
-  }
-  
-  // ---------- NOTES TAB (FULL PAGE) ----------
-  function renderNotesTab() {
-    let html = `<div class="notes-wrapper">
-      <button id="backToTierBtn" class="btn-outline-gold" style="margin-bottom:24px;">← Back to Library</button>
-      <div class="note-form-card">
-        <h3>✏️ Add a Note</h3>
-        <input type="text" id="newNoteTitle" class="note-input" placeholder="Title (e.g. NLP breakthrough)">
-        <textarea id="newNoteBody" class="note-textarea" placeholder="Your insights, questions, or progress..."></textarea>
-        <button id="createNoteBtn" class="btn-primary" style="width:auto; padding:8px 24px;">Save Note</button>
-      </div>
-      <div id="notesListContainer"></div>
-    </div>`;
-    document.getElementById("dynamicContent").innerHTML = html;
-    document.getElementById("backToTierBtn")?.addEventListener("click", () => switchTab("tier1"));
-    document.getElementById("createNoteBtn")?.addEventListener("click", () => {
-      const title = document.getElementById("newNoteTitle").value.trim();
-      const body = document.getElementById("newNoteBody").value.trim();
-      if (!body) return;
-      userNotes.unshift({ id: Date.now(), title: title || "Quick note", text: body, updatedAt: new Date().toISOString() });
-      persistNotes();
-      renderNotesTab();
-      updateStatistics();
-    });
-    const notesContainer = document.getElementById("notesListContainer");
-    if (userNotes.length === 0) notesContainer.innerHTML = '<div class="locked-info">📭 No notes yet. Take notes while watching sessions.</div>';
-    else {
-      notesContainer.innerHTML = userNotes.map(n => `
-        <div class="note-item">
-          <div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(n.title)}</strong><span style="font-size:11px;">${new Date(n.updatedAt).toLocaleDateString()}</span></div>
-          <div style="margin-top:8px; white-space:pre-wrap;">${escapeHtml(n.text)}</div>
-          <button class="delete-note-btn" data-id="${n.id}" style="margin-top:12px; background:#f1f3f7; border:none; border-radius:30px; padding:6px 16px;">Delete</button>
-        </div>
-      `).join("");
-      document.querySelectorAll(".delete-note-btn").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          const id = parseInt(btn.getAttribute("data-id"));
-          userNotes = userNotes.filter(n => n.id !== id);
-          persistNotes();
-          renderNotesTab();
-          updateStatistics();
-        });
-      });
+      const tier = parseInt(tab.replace('tier',''));
+      renderTierView(tier);
     }
   }
-  
-  function switchTab(tabId) {
-    activeTab = tabId;
-    activeVideoId = null;
-    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-    const targetBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
-    if (targetBtn) targetBtn.classList.add("active");
-    if (tabId === "notes") renderNotesTab();
-    else if (tabId === "tier1") renderTierView(1);
-    else if (tabId === "tier2") renderTierView(2);
-    else if (tabId === "tier3") renderTierView(3);
-  }
-  
-  function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]); }
-  
-  // ---------- EVENT LISTENERS ----------
-  document.getElementById("loginBtn")?.addEventListener("click", handleLogin);
-  document.getElementById("logoutBtn")?.addEventListener("click", logout);
-  document.getElementById("tabContainer")?.addEventListener("click", (e) => {
-    const btn = e.target.closest(".tab-btn");
-    if (btn && btn.getAttribute("data-tab")) switchTab(btn.getAttribute("data-tab"));
+
+  document.getElementById("tabContainer").addEventListener("click", e => {
+    if (e.target.dataset.tab) switchTab(e.target.dataset.tab);
   });
-  
-  // Auto session restore
+
   window.onload = async () => {
     loadLocal();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await sbClient.auth.getUser();
     if (user) {
-      let userTier = 1;
+      let tier = 1;
       try {
-        const { data: prof } = await supabase.from("profiles").select("membership_tier").eq("email", user.email).maybeSingle();
-        userTier = prof?.membership_tier || 1;
-      } catch(e) {}
-      currentUserTier = Math.min(userTier, 3);
-      if (currentUserTier >= 4) currentUserTier = 3;
+        const { data: p } = await sbClient.from("profiles").select("membership_tier").eq("email", user.email).maybeSingle();
+        tier = p?.membership_tier || 1;
+      } catch(e){}
+      currentUserTier = Math.min(tier, 3);
       document.getElementById("userTierBadge").innerText = currentUserTier >= 3 ? "Full Access" : `Tier ${currentUserTier}`;
       await loadVideosAndStart();
     }
