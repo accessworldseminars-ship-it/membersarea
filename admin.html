@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>AccessWorld Admin Console</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccessWorld Admin - Full Control</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -24,7 +25,7 @@
             margin: 0 auto;
         }
 
-        /* header & auth */
+        /* Login */
         .login-overlay {
             min-height: 100vh;
             display: flex;
@@ -41,7 +42,6 @@
             max-width: 420px;
             text-align: center;
             border: 1px solid #2d3748;
-            box-shadow: 0 25px 40px -12px black;
         }
 
         .login-card h1 {
@@ -51,12 +51,6 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            margin-bottom: 8px;
-        }
-
-        .login-card p {
-            color: #9ca3af;
-            margin-bottom: 28px;
         }
 
         .admin-input {
@@ -68,13 +62,6 @@
             color: white;
             font-size: 15px;
             margin-bottom: 18px;
-            outline: none;
-            transition: 0.2s;
-        }
-
-        .admin-input:focus {
-            border-color: #C9A84C;
-            box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.3);
         }
 
         .btn-admin {
@@ -84,30 +71,10 @@
             border-radius: 40px;
             font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
             color: #0f111a;
-            font-size: 15px;
         }
 
-        .btn-admin:hover {
-            background: #e0bc60;
-            transform: translateY(-1px);
-        }
-
-        .btn-outline-danger {
-            background: transparent;
-            border: 1px solid #ef4444;
-            color: #fca5a5;
-            padding: 8px 18px;
-            border-radius: 30px;
-        }
-
-        .btn-outline-danger:hover {
-            background: #ef4444;
-            color: white;
-        }
-
-        /* dashboard header */
+        /* Admin Header */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -116,7 +83,6 @@
             flex-wrap: wrap;
             gap: 16px;
             background: #111827cc;
-            backdrop-filter: blur(8px);
             padding: 16px 28px;
             border-radius: 60px;
             border: 1px solid #2d3748;
@@ -133,16 +99,14 @@
             padding: 6px 18px;
             border-radius: 60px;
             font-size: 13px;
-            font-weight: 500;
         }
 
         .stat-pill span {
             color: #C9A84C;
             font-weight: 800;
-            margin-right: 6px;
         }
 
-        /* tabs */
+        /* Tabs */
         .admin-tabs {
             display: flex;
             gap: 12px;
@@ -159,7 +123,6 @@
             color: #9ca3af;
             cursor: pointer;
             border-radius: 40px;
-            transition: 0.2s;
         }
 
         .admin-tab.active {
@@ -167,7 +130,64 @@
             color: #0a0f1c;
         }
 
-        /* table */
+        /* Category Editor Section */
+        .category-editor {
+            background: #111827;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid #2d3748;
+        }
+
+        .category-editor h3 {
+            margin-bottom: 16px;
+            color: #C9A84C;
+        }
+
+        .category-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .cat-badge {
+            background: #1f2937;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #374151;
+        }
+
+        .cat-badge:hover {
+            background: #2d3748;
+        }
+
+        .cat-badge.selected {
+            background: #C9A84C;
+            color: #0a0f1c;
+            border-color: #C9A84C;
+        }
+
+        .new-cat-input {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        .new-cat-input input {
+            background: #1f2937;
+            border: 1px solid #374151;
+            padding: 10px 16px;
+            border-radius: 40px;
+            color: white;
+            flex: 1;
+        }
+
+        /* Table */
         .table-container {
             background: #111827;
             border-radius: 28px;
@@ -183,10 +203,9 @@
         }
 
         th, td {
-            padding: 16px 14px;
+            padding: 14px 12px;
             text-align: left;
             border-bottom: 1px solid #253041;
-            vertical-align: middle;
         }
 
         th {
@@ -203,30 +222,33 @@
             cursor: grab;
             font-size: 18px;
             color: #6b7a8f;
-            user-select: none;
         }
 
-        .drag-handle:active {
-            cursor: grabbing;
-        }
-
-        .title-edit {
+        .title-input {
             background: #0f1724;
             border: 1px solid #334155;
             padding: 8px 12px;
             border-radius: 20px;
             color: white;
-            width: 280px;
-            font-size: 13px;
+            width: 260px;
         }
 
-        .tier-select {
+        .cat-select {
             background: #0f1724;
             border: 1px solid #C9A84C;
             padding: 6px 12px;
             border-radius: 30px;
             color: white;
-            font-weight: 500;
+            min-width: 160px;
+        }
+
+        .tier-select-admin {
+            background: #0f1724;
+            border: 1px solid #334155;
+            padding: 6px 12px;
+            border-radius: 30px;
+            color: white;
+            width: 80px;
         }
 
         .sort-input {
@@ -239,11 +261,6 @@
             text-align: center;
         }
 
-        .action-icons {
-            display: flex;
-            gap: 12px;
-        }
-
         .save-icon, .delete-icon {
             background: none;
             border: none;
@@ -251,21 +268,10 @@
             cursor: pointer;
             padding: 4px 8px;
             border-radius: 30px;
-            transition: 0.2s;
         }
 
-        .save-icon {
-            color: #22c55e;
-        }
-        .delete-icon {
-            color: #f87171;
-        }
-        .save-icon:hover {
-            background: #22c55e20;
-        }
-        .delete-icon:hover {
-            background: #ef444420;
-        }
+        .save-icon { color: #22c55e; }
+        .delete-icon { color: #f87171; }
 
         .bulk-bar {
             background: #0f1724;
@@ -291,7 +297,6 @@
             background: #C9A84C;
             color: black;
             font-weight: 700;
-            border: none;
         }
 
         .search-filter {
@@ -303,24 +308,17 @@
             width: 240px;
         }
 
-        .checkbox-col {
-            width: 30px;
-        }
-
         .toast-msg {
             position: fixed;
             bottom: 28px;
             right: 28px;
             background: #1f2a3e;
-            backdrop-filter: blur(12px);
             padding: 12px 24px;
             border-radius: 60px;
             color: #C9A84C;
             font-weight: 600;
             border-left: 4px solid #C9A84C;
             z-index: 999;
-            transition: 0.2s;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
     </style>
 </head>
@@ -328,10 +326,10 @@
 <div id="adminAuthScreen" class="login-overlay">
     <div class="login-card">
         <h1>⚙️ Admin Portal</h1>
-        <p>Secure access · Manage videos, tiers & content</p>
+        <p>Full control · Categories, Tiers, Videos</p>
         <input type="password" id="adminMasterPass" class="admin-input" placeholder="Enter admin password">
         <button class="btn-admin" id="authenticateAdminBtn">Unlock Console</button>
-        <div id="authError" style="color:#f87171; margin-top: 16px; font-size:13px;"></div>
+        <div id="authError" style="color:#f87171; margin-top: 16px;"></div>
     </div>
 </div>
 
@@ -340,15 +338,28 @@
         <div class="admin-header">
             <div style="display: flex; align-items:center; gap:12px;">
                 <span style="font-size:28px;">🎛️</span>
-                <h2 style="font-weight:700;">AccessWorld Admin</h2>
+                <h2>AccessWorld Admin - Full Control</h2>
             </div>
             <div class="stats-badge">
-                <div class="stat-pill"><span>📹</span> <span id="totalVideosCount">0</span> videos</div>
+                <div class="stat-pill"><span>📹</span> <span id="totalVideosCount">0</span></div>
                 <div class="stat-pill"><span>⭐</span> Tier1: <span id="t1Count">0</span></div>
                 <div class="stat-pill"><span>🚀</span> Tier2: <span id="t2Count">0</span></div>
                 <div class="stat-pill"><span>🏆</span> Tier3: <span id="t3Count">0</span></div>
                 <button id="adminLogoutBtn" style="background:#2d3748; border:none; border-radius:30px; padding:6px 18px; color:#ddd; cursor:pointer;">Sign out</button>
             </div>
+        </div>
+
+        <!-- Category Management Section -->
+        <div class="category-editor">
+            <h3>📁 Category Management</h3>
+            <div class="category-grid" id="categoryList">
+                <!-- Categories will load here -->
+            </div>
+            <div class="new-cat-input">
+                <input type="text" id="newCategoryName" placeholder="New category name (e.g., 'Advanced NLP')">
+                <button class="btn-admin" id="addCategoryBtn" style="padding:10px 24px;">+ Add Category</button>
+            </div>
+            <p style="font-size:12px; color:#6b7a8f; margin-top:12px;">💡 Click a category to filter videos. Use the dropdown in the table to reassign videos to categories.</p>
         </div>
 
         <div class="admin-tabs">
@@ -359,7 +370,7 @@
         </div>
 
         <div class="bulk-bar">
-            <div style="display: flex; align-items:center; gap:8px;">
+            <div style="display: flex; gap:8px;">
                 <input type="checkbox" id="selectAllCheckbox">
                 <label>Select all</label>
             </div>
@@ -369,19 +380,30 @@
                 <option value="2">Tier 2</option>
                 <option value="3">Tier 3</option>
             </select>
-            <button id="applyBulkMoveBtn">Apply move</button>
-            <button id="bulkDeleteBtn" style="background:#7f1a1a; color:#ffb3b3;">🗑️ Delete selected</button>
+            <select id="bulkCategoryMoveSelect">
+                <option value="">Move selected to category…</option>
+            </select>
+            <button id="applyBulkMoveBtn">Apply Move</button>
+            <button id="bulkDeleteBtn" style="background:#7f1a1a;">🗑️ Delete selected</button>
             <input type="text" id="searchInput" class="search-filter" placeholder="🔍 Filter by title...">
-            <span style="font-size:12px; margin-left:auto;">💡 Drag ⋮⋮ to reorder → auto-save</span>
         </div>
 
         <div class="table-container">
             <table id="videoAdminTable">
                 <thead>
-                    <tr><th style="width:30px"></th><th style="width:30px"></th><th>ID</th><th>Title</th><th>Tier</th><th>Sort</th><th>Actions</th></tr>
+                    <tr>
+                        <th style="width:30px"></th>
+                        <th style="width:30px"></th>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Tier</th>
+                        <th>Sort</th>
+                        <th>Actions</th>
+                    </tr>
                 </thead>
                 <tbody id="adminTableBody">
-                    <tr><td colspan="7" style="text-align:center; padding:60px;">Loading videos from Supabase...</td></tr>
+                    <tr><td colspan="8" style="text-align:center; padding:60px;">Loading videos...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -389,44 +411,138 @@
 </div>
 
 <script>
-    // ======================== SUPABASE CONFIG ===========================
+    // ======================== CONFIGURATION ===========================
     const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";   // REPLACE WITH YOUR ACTUAL KEY
-    const ADMIN_PASSWORD = "AccessWorldAdmin2025";     // CHANGE THIS
-        
-    let supabaseClient;
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";  // REPLACE THIS
+    const ADMIN_PASSWORD = "AccessWorldAdmin2025";
+    
+    let supabase;
     let allVideos = [];
     let currentFilterTier = "all";
     let searchQuery = "";
     let selectedVideoIds = new Set();
     let sortableInstance = null;
+    let categories = [];  // Store custom categories
     
-    // helpers
-    function showToast(message, isError = false) {
-        const toast = document.createElement("div");
-        toast.className = "toast-msg";
-        toast.innerText = message;
-        if (isError) toast.style.borderLeftColor = "#f87171";
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2800);
-    }
+    // Default categories
+    const DEFAULT_CATEGORIES = [
+        "NLP Masterclass", "Morning Routine", "Coaching 2024", "Coaching 2025", 
+        "Coaching 2026", "Emotional Clearing", "Health & Healing", "Relationships",
+        "Goal Setting", "World Class Coach Training", "Free Introductions",
+        "Meditations & Processes", "2 Day Seminar", "Bonus Resources", "Other"
+    ];
     
-    // init supabase
     function initSupabase() {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
     
-    async function loadVideosFromSupabase() {
-        const { data, error } = await supabaseClient
+    function loadCategories() {
+        const saved = localStorage.getItem("aw_categories");
+        if (saved) {
+            categories = JSON.parse(saved);
+        } else {
+            categories = [...DEFAULT_CATEGORIES];
+            localStorage.setItem("aw_categories", JSON.stringify(categories));
+        }
+        renderCategoryList();
+        populateCategoryDropdowns();
+    }
+    
+    function saveCategories() {
+        localStorage.setItem("aw_categories", JSON.stringify(categories));
+        renderCategoryList();
+        populateCategoryDropdowns();
+        renderTable();
+    }
+    
+    function renderCategoryList() {
+        const container = document.getElementById("categoryList");
+        if (!container) return;
+        let html = `<div class="cat-badge ${currentFilterTier === 'all' && !searchQuery ? 'selected' : ''}" onclick="filterByCategory(null)">📂 All Videos</div>`;
+        categories.forEach(cat => {
+            const count = allVideos.filter(v => v.category === cat).length;
+            html += `<div class="cat-badge" data-cat="${cat}" onclick="filterByCategory('${cat.replace(/'/g, "\\'")}')">
+                        ${cat} <span style="opacity:0.6; font-size:11px;">(${count})</span>
+                    </div>`;
+        });
+        container.innerHTML = html;
+    }
+    
+    function filterByCategory(category) {
+        currentFilterCategory = category;
+        renderTable();
+        // Update UI highlight
+        document.querySelectorAll('.cat-badge').forEach(el => {
+            el.classList.remove('selected');
+            if (el.getAttribute('data-cat') === category) el.classList.add('selected');
+            if (!category && el.getAttribute('data-cat') === null) el.classList.add('selected');
+        });
+    }
+    
+    function populateCategoryDropdowns() {
+        const bulkSelect = document.getElementById("bulkCategoryMoveSelect");
+        if (!bulkSelect) return;
+        bulkSelect.innerHTML = '<option value="">Move selected to category…</option>';
+        categories.forEach(cat => {
+            bulkSelect.innerHTML += `<option value="${cat.replace(/"/g, '&quot;')}">${cat}</option>`;
+        });
+    }
+    
+    async function loadVideos() {
+        const { data, error } = await supabase
             .from("lessons")
             .select("*")
             .order("sort_order", { ascending: true });
         if (error) throw error;
-        allVideos = data || [];
+        
+        // Load custom categories from metadata or use auto-detection
+        for (let v of data) {
+            if (!v.category) {
+                // Auto-detect category from title using keywords
+                v.category = detectCategoryFromTitle(v.title);
+            }
+        }
+        allVideos = data;
+        updateStats();
+        renderCategoryList();
         return allVideos;
     }
     
-    function updateStatsUI() {
+    function detectCategoryFromTitle(title) {
+        const t = (title || "").toLowerCase();
+        const categoryMap = [
+            { cat: "NLP Masterclass", kw: ["nlp", "unlock the power of stories", "arcing energy", "collapse anchors", "incantations", "grey room"] },
+            { cat: "Morning Routine", kw: ["morning routine"] },
+            { cat: "Coaching 2024", kw: ["2024", "group coaching 2024"] },
+            { cat: "Coaching 2025", kw: ["2025", "group coaching 2025"] },
+            { cat: "Coaching 2026", kw: ["2026", "group coaching 2026"] },
+            { cat: "Emotional Clearing", kw: ["emotional clearing", "gift process", "yelling", "ball and fire", "ultimate freedom", "womb of eternity"] },
+            { cat: "Health & Healing", kw: ["health", "healing", "acid alkaline"] },
+            { cat: "Relationships", kw: ["relationship", "attachment"] },
+            { cat: "Goal Setting", kw: ["goal setting"] },
+            { cat: "World Class Coach Training", kw: ["coaching lesson", "world class coach", "learning to coach yourself"] },
+            { cat: "Free Introductions", kw: ["free introduction", "nlp for beginners", "confidence to succeed", "money mindset", "feeling stuck"] },
+            { cat: "Meditations & Processes", kw: ["meditation", "guided breath", "the gift", "dancing with fear", "blue hat"] },
+            { cat: "2 Day Seminar", kw: ["emotional mastery seminar", "holistic health webinar", "life skills", "nsr"] }
+        ];
+        for (let map of categoryMap) {
+            if (map.kw.some(k => t.includes(k))) return map.cat;
+        }
+        return "Other";
+    }
+    
+    async function updateVideoField(id, field, value) {
+        const { error } = await supabase.from("lessons").update({ [field]: value }).eq("id", id);
+        if (error) throw error;
+    }
+    
+    async function deleteVideo(id) {
+        const { error } = await supabase.from("lessons").delete().eq("id", id);
+        if (error) throw error;
+        selectedVideoIds.delete(id);
+    }
+    
+    function updateStats() {
         const total = allVideos.length;
         const t1 = allVideos.filter(v => v.tier_required === 1).length;
         const t2 = allVideos.filter(v => v.tier_required === 2).length;
@@ -437,142 +553,150 @@
         document.getElementById("t3Count").innerText = t3;
     }
     
-    function filterVideos() {
+    function getFilteredVideos() {
         let filtered = [...allVideos];
         if (currentFilterTier !== "all") {
             filtered = filtered.filter(v => v.tier_required === parseInt(currentFilterTier));
         }
-        if (searchQuery.trim() !== "") {
+        if (currentFilterCategory) {
+            filtered = filtered.filter(v => v.category === currentFilterCategory);
+        }
+        if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
             filtered = filtered.filter(v => (v.title || "").toLowerCase().includes(q));
         }
-        // keep original sort_order but allow client side search only
         filtered.sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0));
         return filtered;
     }
     
+    let currentFilterCategory = null;
+    
     function renderTable() {
-        const filtered = filterVideos();
+        const filtered = getFilteredVideos();
         const tbody = document.getElementById("adminTableBody");
         if (!filtered.length) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:48px;">✨ No videos match criteria</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:48px;">No videos found</td></tr>';
             return;
         }
+        
         let html = "";
         filtered.forEach(video => {
             const isSelected = selectedVideoIds.has(video.id);
             html += `
                 <tr data-id="${video.id}" data-sort-order="${video.sort_order || 0}">
                     <td class="drag-handle">⋮⋮</td>
-                    <td class="checkbox-col"><input type="checkbox" class="video-checkbox" data-id="${video.id}" ${isSelected ? "checked" : ""}></td>
+                    <td><input type="checkbox" class="video-checkbox" data-id="${video.id}" ${isSelected ? "checked" : ""}></td>
                     <td>${video.id}</td>
-                    <td><input type="text" class="title-edit" id="title-${video.id}" value="${escapeHtml(video.title || "")}" style="width:100%"></td>
+                    <td><input type="text" class="title-input" id="title-${video.id}" value="${escapeHtml(video.title || "")}"></td>
                     <td>
-                        <select class="tier-select" id="tier-${video.id}">
-                            <option value="1" ${video.tier_required === 1 ? "selected" : ""}>Tier 1</option>
-                            <option value="2" ${video.tier_required === 2 ? "selected" : ""}>Tier 2</option>
-                            <option value="3" ${video.tier_required === 3 ? "selected" : ""}>Tier 3</option>
+                        <select class="cat-select" id="cat-${video.id}" data-original-cat="${video.category || 'Other'}">
+                            ${categories.map(cat => `<option value="${escapeHtml(cat)}" ${(video.category === cat) ? "selected" : ""}>${escapeHtml(cat)}</option>`).join('')}
                         </select>
                     </td>
-                    <td><input type="number" class="sort-input" id="sort-${video.id}" value="${video.sort_order || 0}" step="1"></td>
-                    <td class="action-icons">
-                        <button class="save-icon" data-id="${video.id}" title="Save changes">💾</button>
-                        <button class="delete-icon" data-id="${video.id}" title="Delete permanently">🗑️</button>
+                    <td>
+                        <select class="tier-select-admin" id="tier-${video.id}">
+                            <option value="1" ${video.tier_required === 1 ? "selected" : ""}>T1</option>
+                            <option value="2" ${video.tier_required === 2 ? "selected" : ""}>T2</option>
+                            <option value="3" ${video.tier_required === 3 ? "selected" : ""}>T3</option>
+                        </select>
+                    </td>
+                    <td><input type="number" class="sort-input" id="sort-${video.id}" value="${video.sort_order || 0}"></td>
+                    <td>
+                        <button class="save-icon" data-id="${video.id}">💾</button>
+                        <button class="delete-icon" data-id="${video.id}">🗑️</button>
                     </td>
                 </tr>
             `;
         });
         tbody.innerHTML = html;
         
-        // attach checkbox events
-        document.querySelectorAll(".video-checkbox").forEach(cb => {
-            cb.addEventListener("change", (e) => {
-                const vid = parseInt(cb.getAttribute("data-id"));
-                if (cb.checked) selectedVideoIds.add(vid);
-                else selectedVideoIds.delete(vid);
-                updateSelectAllCheckbox();
-            });
-        });
-        
-        // attach save buttons
+        // Attach save handlers
         document.querySelectorAll(".save-icon").forEach(btn => {
             btn.addEventListener("click", async (e) => {
                 const id = parseInt(btn.getAttribute("data-id"));
                 const newTitle = document.getElementById(`title-${id}`).value;
+                const newCat = document.getElementById(`cat-${id}`).value;
                 const newTier = parseInt(document.getElementById(`tier-${id}`).value);
                 const newSort = parseInt(document.getElementById(`sort-${id}`).value);
-                await updateVideoInDB(id, { title: newTitle, tier_required: newTier, sort_order: newSort });
-                showToast(`✅ Video ${id} updated`);
-                await refreshData();
+                
+                await updateVideoField(id, "title", newTitle);
+                await updateVideoField(id, "category", newCat);
+                await updateVideoField(id, "tier_required", newTier);
+                await updateVideoField(id, "sort_order", newSort);
+                
+                // Update local array
+                const video = allVideos.find(v => v.id === id);
+                if (video) {
+                    video.title = newTitle;
+                    video.category = newCat;
+                    video.tier_required = newTier;
+                    video.sort_order = newSort;
+                }
+                showToast(`✅ Video ${id} saved`);
+                updateStats();
+                renderCategoryList();
+                renderTable();
             });
         });
         
-        // attach delete
+        // Attach delete handlers
         document.querySelectorAll(".delete-icon").forEach(btn => {
             btn.addEventListener("click", async (e) => {
                 const id = parseInt(btn.getAttribute("data-id"));
-                if (confirm(`⚠️ Permanently delete video ID ${id}? This cannot be undone.`)) {
-                    await deleteVideoById(id);
+                if (confirm(`⚠️ Permanently delete video ID ${id}?`)) {
+                    await deleteVideo(id);
+                    allVideos = allVideos.filter(v => v.id !== id);
+                    selectedVideoIds.delete(id);
                     showToast(`Deleted video ${id}`);
-                    await refreshData();
+                    updateStats();
+                    renderCategoryList();
+                    renderTable();
                 }
             });
         });
         
-        // reattach sortable
+        // Attach checkbox handlers
+        document.querySelectorAll(".video-checkbox").forEach(cb => {
+            cb.addEventListener("change", (e) => {
+                const id = parseInt(cb.getAttribute("data-id"));
+                if (cb.checked) selectedVideoIds.add(id);
+                else selectedVideoIds.delete(id);
+                updateSelectAllCheckbox();
+            });
+        });
+        
+        // Reattach sortable
         if (sortableInstance) sortableInstance.destroy();
         const tbodyEl = document.getElementById("adminTableBody");
         sortableInstance = new Sortable(tbodyEl, {
             handle: ".drag-handle",
             animation: 200,
             onEnd: async () => {
-                // after reorder, get all rows and update sort_order based on new index
                 const rows = document.querySelectorAll("#adminTableBody tr");
-                const updates = [];
                 for (let i = 0; i < rows.length; i++) {
-                    const row = rows[i];
-                    const id = parseInt(row.getAttribute("data-id"));
-                    const newSort = i + 1;   // 1-indexed
-                    updates.push({ id, sort_order: newSort });
-                    const inputField = document.getElementById(`sort-${id}`);
-                    if (inputField) inputField.value = newSort;
+                    const id = parseInt(rows[i].getAttribute("data-id"));
+                    const newSort = i + 1;
+                    await updateVideoField(id, "sort_order", newSort);
+                    const video = allVideos.find(v => v.id === id);
+                    if (video) video.sort_order = newSort;
+                    const input = document.getElementById(`sort-${id}`);
+                    if (input) input.value = newSort;
                 }
-                for (let up of updates) {
-                    await supabaseClient.from("lessons").update({ sort_order: up.sort_order }).eq("id", up.id);
-                }
-                showToast(`📌 Sort order saved (${updates.length} videos)`);
-                await refreshData();
+                showToast(`📌 Sort order updated`);
+                renderTable();
             }
         });
         updateSelectAllCheckbox();
     }
     
-    async function updateVideoInDB(id, changes) {
-        const { error } = await supabaseClient.from("lessons").update(changes).eq("id", id);
-        if (error) throw error;
-    }
-    
-    async function deleteVideoById(id) {
-        const { error } = await supabaseClient.from("lessons").delete().eq("id", id);
-        if (error) throw error;
-        selectedVideoIds.delete(id);
-    }
-    
-    async function refreshData() {
-        await loadVideosFromSupabase();
-        updateStatsUI();
-        renderTable();
-    }
-    
     function updateSelectAllCheckbox() {
-        const filtered = filterVideos();
+        const filtered = getFilteredVideos();
         const allChecked = filtered.length > 0 && filtered.every(v => selectedVideoIds.has(v.id));
-        const selectAllBox = document.getElementById("selectAllCheckbox");
-        if (selectAllBox) selectAllBox.checked = allChecked;
+        document.getElementById("selectAllCheckbox").checked = allChecked;
     }
     
     function toggleSelectAll() {
-        const filtered = filterVideos();
+        const filtered = getFilteredVideos();
         if (document.getElementById("selectAllCheckbox").checked) {
             filtered.forEach(v => selectedVideoIds.add(v.id));
         } else {
@@ -581,92 +705,118 @@
         renderTable();
     }
     
-    async function bulkMoveToTier(targetTier) {
+    async function bulkMoveTier(newTier) {
         if (selectedVideoIds.size === 0) { showToast("No videos selected", true); return; }
-        if (!targetTier) return;
-        const ids = Array.from(selectedVideoIds);
-        for (let id of ids) {
-            await supabaseClient.from("lessons").update({ tier_required: targetTier }).eq("id", id);
+        for (let id of selectedVideoIds) {
+            await updateVideoField(id, "tier_required", newTier);
+            const video = allVideos.find(v => v.id === id);
+            if (video) video.tier_required = newTier;
         }
-        showToast(`Moved ${ids.length} videos to Tier ${targetTier}`);
+        showToast(`Moved ${selectedVideoIds.size} videos to Tier ${newTier}`);
         selectedVideoIds.clear();
-        await refreshData();
+        updateStats();
+        renderTable();
+    }
+    
+    async function bulkMoveCategory(newCategory) {
+        if (selectedVideoIds.size === 0) { showToast("No videos selected", true); return; }
+        for (let id of selectedVideoIds) {
+            await updateVideoField(id, "category", newCategory);
+            const video = allVideos.find(v => v.id === id);
+            if (video) video.category = newCategory;
+        }
+        showToast(`Moved ${selectedVideoIds.size} videos to category: ${newCategory}`);
+        selectedVideoIds.clear();
+        renderCategoryList();
+        renderTable();
     }
     
     async function bulkDeleteSelected() {
         if (selectedVideoIds.size === 0) { showToast("Select videos first", true); return; }
         if (!confirm(`⚠️ DELETE ${selectedVideoIds.size} videos permanently?`)) return;
-        const ids = Array.from(selectedVideoIds);
-        for (let id of ids) {
-            await supabaseClient.from("lessons").delete().eq("id", id);
+        for (let id of selectedVideoIds) {
+            await deleteVideo(id);
+            allVideos = allVideos.filter(v => v.id !== id);
         }
-        showToast(`Deleted ${ids.length} videos`);
+        showToast(`Deleted ${selectedVideoIds.size} videos`);
         selectedVideoIds.clear();
-        await refreshData();
+        updateStats();
+        renderCategoryList();
+        renderTable();
     }
     
-    // auth
+    async function addNewCategory() {
+        const input = document.getElementById("newCategoryName");
+        const newCat = input.value.trim();
+        if (!newCat) return;
+        if (categories.includes(newCat)) {
+            showToast("Category already exists", true);
+            return;
+        }
+        categories.push(newCat);
+        saveCategories();
+        input.value = "";
+        showToast(`✅ Category "${newCat}" added`);
+    }
+    
+    function showToast(msg, isError = false) {
+        const toast = document.createElement("div");
+        toast.className = "toast-msg";
+        toast.innerText = msg;
+        if (isError) toast.style.borderLeftColor = "#f87171";
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+    
     function checkAdminPassword() {
         const inputPass = document.getElementById("adminMasterPass").value;
         if (inputPass === ADMIN_PASSWORD) {
             document.getElementById("adminAuthScreen").style.display = "none";
             document.getElementById("adminDashboard").style.display = "block";
             initSupabase();
-            loadVideosFromSupabase().then(() => {
-                updateStatsUI();
+            loadCategories();
+            loadVideos().then(() => {
                 renderTable();
             }).catch(err => {
                 alert("Supabase error: " + err.message);
             });
         } else {
-            document.getElementById("authError").innerText = "Wrong password. Access denied.";
+            document.getElementById("authError").innerText = "Wrong password.";
         }
     }
     
-    // search & filter
-    document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("authenticateAdminBtn")?.addEventListener("click", checkAdminPassword);
-        document.getElementById("adminLogoutBtn")?.addEventListener("click", () => {
-            location.reload();
-        });
-        // dynamic elements will be attached after render
+    // Event listeners
+    document.getElementById("authenticateAdminBtn")?.addEventListener("click", checkAdminPassword);
+    document.getElementById("adminLogoutBtn")?.addEventListener("click", () => location.reload());
+    document.getElementById("selectAllCheckbox")?.addEventListener("change", toggleSelectAll);
+    document.getElementById("applyBulkMoveBtn")?.addEventListener("click", () => {
+        const tierVal = document.getElementById("bulkTierMoveSelect").value;
+        const catVal = document.getElementById("bulkCategoryMoveSelect").value;
+        if (tierVal) bulkMoveTier(parseInt(tierVal));
+        else if (catVal) bulkMoveCategory(catVal);
+        else showToast("Select a tier or category to move to", true);
     });
-    
-    // attach global listeners after dashboard shows (delegation)
-    document.addEventListener("change", (e) => {
-        if (e.target.id === "selectAllCheckbox") toggleSelectAll();
+    document.getElementById("bulkDeleteBtn")?.addEventListener("click", bulkDeleteSelected);
+    document.getElementById("addCategoryBtn")?.addEventListener("click", addNewCategory);
+    document.getElementById("searchInput")?.addEventListener("input", (e) => {
+        searchQuery = e.target.value;
+        renderTable();
     });
-    document.addEventListener("click", (e) => {
-        if (e.target.id === "applyBulkMoveBtn") {
-            const tierVal = document.getElementById("bulkTierMoveSelect").value;
-            if (tierVal) bulkMoveToTier(parseInt(tierVal));
-            else showToast("Select a target tier", true);
-        }
-        if (e.target.id === "bulkDeleteBtn") bulkDeleteSelected();
-        if (e.target.classList?.contains("admin-tab")) {
+    document.querySelectorAll(".admin-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
             document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
-            e.target.classList.add("active");
-            currentFilterTier = e.target.getAttribute("data-tier");
-            selectedVideoIds.clear();
+            tab.classList.add("active");
+            currentFilterTier = tab.getAttribute("data-tier");
+            currentFilterCategory = null;
             renderTable();
-        }
-        if (e.target.id === "searchInput") return;
-    });
-    document.addEventListener("input", (e) => {
-        if (e.target.id === "searchInput") {
-            searchQuery = e.target.value;
-            selectedVideoIds.clear();
-            renderTable();
-        }
+            renderCategoryList();
+        });
     });
     
     function escapeHtml(str) {
         if (!str) return "";
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
     }
-    
-    // ensure drag&drop persist after re-render
-    window.refreshData = refreshData;
 </script>
 </body>
 </html>
