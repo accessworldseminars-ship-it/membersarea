@@ -26,10 +26,6 @@ input:focus{border-color:#1D9E75}
 .tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid #eee}
 .tab{padding:10px 20px;cursor:pointer;font-size:14px;font-weight:600;color:#888;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
 .tab.active{color:#1A2744;border-bottom-color:#C9A84C}
-.tier-tabs{display:flex;gap:10px;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #eee;flex-wrap:wrap}
-.tier-tab{background:#f0f0f0;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;transition:all .2s}
-.tier-tab:hover{background:#e0e0e0}
-.tier-tab.active{background:#1D9E75;color:#fff}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
 .stat-card{background:#f7f7f7;border-radius:10px;padding:14px;text-align:center}
 .stat-num{font-size:28px;font-weight:700;color:#1A2744}
@@ -44,6 +40,8 @@ input:focus{border-color:#1D9E75}
 .menu-left{display:flex;align-items:center;gap:8px}
 .menu-count{font-size:12px;color:#aaa}
 .watched-count{font-size:11px;background:#C9A84C;color:#fff;padding:1px 6px;border-radius:10px;margin-left:4px}
+.lock-icon{font-size:12px;margin-left:4px}
+.upgrade-badge{background:#C9A84C;color:#1A2744;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:8px}
 .right-col{flex:1;min-width:0}
 .cat-header{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #eee}
 .cat-header h2{font-size:18px;color:#1A2744}
@@ -51,12 +49,18 @@ input:focus{border-color:#1D9E75}
 .vid-item{padding:14px;margin-bottom:8px;border:1px solid #eee;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
 .vid-item:hover{background:#f0fdf9;border-color:#1D9E75}
 .vid-item.active{background:#e8f9f1;border-left:4px solid #1D9E75}
+.vid-item.locked{background:#f9f9f9;opacity:0.7;cursor:not-allowed}
+.vid-item.locked:hover{background:#f9f9f9;border-color:#ddd}
 .vid-info{flex:1;min-width:0}
 .vid-title{font-weight:600;color:#1A2744;font-size:15px}
 .vid-desc{color:#888;font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vid-meta{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .tick{color:#1D9E75;font-size:18px;font-weight:700}
 .play-icon{color:#1D9E75;font-size:20px}
+.upgrade-message{background:#fff8e1;border-left:4px solid #C9A84C;padding:15px;margin-top:10px;border-radius:8px}
+.upgrade-message h4{color:#1A2744;margin-bottom:5px}
+.upgrade-message p{color:#666;font-size:13px}
+.upgrade-message button{background:#C9A84C;color:#1A2744;border:none;padding:8px 16px;border-radius:6px;margin-top:8px;cursor:pointer;font-weight:600}
 .player-box{margin-top:16px;background:#f8f9fa;border-radius:12px;padding:20px;display:none}
 .player-box.on{display:block}
 .player-box h3{color:#1A2744;font-size:17px;margin-bottom:8px}
@@ -102,7 +106,10 @@ textarea:focus{border-color:#1D9E75}
       <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" style="height:38px" onerror="this.style.display='none'">
       <h1>AccessWorld Library</h1>
     </div>
-    <button class="btn btn-red" onclick="logout()">Sign Out</button>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span id="tier-badge" style="background:#1D9E75;color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600"></span>
+      <button class="btn btn-red" onclick="logout()">Sign Out</button>
+    </div>
   </div>
 
   <div class="stats">
@@ -117,7 +124,6 @@ textarea:focus{border-color:#1D9E75}
   </div>
 
   <div id="tab-library">
-    <div id="tier-tabs" class="tier-tabs"></div>
     <div class="two-col">
       <div class="left-menu">
         <h4>📁 Categories</h4>
@@ -129,6 +135,11 @@ textarea:focus{border-color:#1D9E75}
           <p id="cat-subtitle">Choose a section from the menu on the left</p>
         </div>
         <div id="vid-list"></div>
+        <div id="upgrade-message" class="upgrade-message" style="display:none">
+          <h4>🔓 Unlock More Content</h4>
+          <p>You're seeing videos available at your current tier. Upgrade to access more advanced trainings, coaching certifications, and NLP masterclasses.</p>
+          <button onclick="contactUpgrade()">Contact us to Upgrade →</button>
+        </div>
         <div id="player-box" class="player-box">
           <h3 id="p-title"></h3>
           <div class="player-desc" id="p-desc"></div>
@@ -159,20 +170,22 @@ const SB_URL = "https://zwwodopezadqjazhajmx.supabase.co";
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-let lessons = [], watched = {}, notes = [], currentVideoId = null, currentCat = null, currentUserTier = 1, currentViewTier = 1;
+let lessons = [], watched = {}, notes = [], currentVideoId = null, currentUserTier = 1;
 
 const CATS = [
-  {id:"unlock",    icon:"🌟", name:"Unlock Your Incredible Self", kw:["unlock","incredible","acid","meditation","artistry","listen"]},
-  {id:"coaching",  icon:"👥", name:"Group Coaching",              kw:["coach","group"]},
-  {id:"goals",     icon:"🎯", name:"Goal Setting",                kw:["goal"]},
-  {id:"emotional", icon:"💚", name:"Emotional Clearing",          kw:["emotional","clearing","gift","grey","1.0","1.1","1.4","1.5","1.6","mental","faith","yelling","ball","disease"]},
-  {id:"morning",   icon:"🌅", name:"Morning Routine",             kw:["morning","routine"]},
-  {id:"strategic", icon:"🎯", name:"Strategic Visioning",         kw:["strategic","visioning"]},
-  {id:"nlp",       icon:"🧠", name:"NLP Masterclass",             kw:["nlp"]},
-  {id:"intro",     icon:"🎓", name:"Free Introductions",          kw:["free","intro","how to take full control","confidence","take full control"]},
-  {id:"health",    icon:"🏥", name:"Health & Healing",            kw:["health","healing"]},
-  {id:"coachingcert", icon:"📜", name:"Coaching Certification",   kw:["coaching lesson","coach yourself","world class coach","state elicitation"]},
-  {id:"other",     icon:"📁", name:"Other Content",               kw:[]},
+  {id:"unlock", icon:"🌟", name:"Unlock Your Incredible Self", kw:["unlock","incredible"]},
+  {id:"coaching", icon:"👥", name:"Group Coaching", kw:["coach","group"]},
+  {id:"goals", icon:"🎯", name:"Goal Setting", kw:["goal"]},
+  {id:"emotional", icon:"💚", name:"Emotional Clearing", kw:["emotional","clearing","gift","grey"]},
+  {id:"morning", icon:"🌅", name:"Morning Routine", kw:["morning","routine"]},
+  {id:"strategic", icon:"🎯", name:"Strategic Visioning", kw:["strategic","visioning"]},
+  {id:"nlp", icon:"🧠", name:"NLP Masterclass", kw:["nlp"]},
+  {id:"intro", icon:"🎓", name:"Free Introductions", kw:["free","intro"]},
+  {id:"health", icon:"🏥", name:"Health & Healing", kw:["health","healing"]},
+  {id:"coachingcert", icon:"📜", name:"Coaching Certification", kw:["coaching lesson","coach yourself","world class coach","state elicitation"]},
+  {id:"meditation", icon:"🧘", name:"Meditations", kw:["meditation","breath","gift","womb","freedom"]},
+  {id:"bonus", icon:"🎁", name:"Bonus Resources", kw:["blue hat","excitement"]},
+  {id:"other", icon:"📁", name:"Other Content", kw:[]},
 ];
 
 function catFor(title){
@@ -186,10 +199,10 @@ function catFor(title){
 
 function loadLocal(){
   watched = JSON.parse(localStorage.getItem("aw_watched")||"{}");
-  notes   = JSON.parse(localStorage.getItem("aw_notes")||"[]");
+  notes = JSON.parse(localStorage.getItem("aw_notes")||"[]");
 }
 function saveWatched(){ localStorage.setItem("aw_watched",JSON.stringify(watched)); }
-function saveNotes(){   localStorage.setItem("aw_notes",JSON.stringify(notes));   }
+function saveNotes(){ localStorage.setItem("aw_notes",JSON.stringify(notes)); }
 
 async function login(){
   const email = document.getElementById("email").value;
@@ -199,20 +212,11 @@ async function login(){
   const {data, error} = await sb.auth.signInWithPassword({email, password:pw});
   if(error){ errorDiv.innerText = error.message; return; }
   
-  const {data: profile, error: profileError} = await sb
-    .from("profiles")
-    .select("membership_tier")
-    .eq("email", email)
-    .single();
+  const {data: profile} = await sb.from("profiles").select("membership_tier").eq("email", email).single();
+  currentUserTier = profile?.membership_tier || 1;
   
-  if(profileError){
-    console.error("Profile error:", profileError);
-    currentUserTier = 1;
-  } else {
-    currentUserTier = profile.membership_tier || 1;
-  }
+  document.getElementById("tier-badge").innerText = `Tier ${currentUserTier} Member`;
   
-  currentViewTier = currentUserTier;
   await boot();
 }
 
@@ -223,60 +227,50 @@ async function boot(){
   lessons = data||[];
   document.getElementById("login-section").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
-  buildTierTabs();
   buildMenu();
   updateStats();
-}
-
-function buildTierTabs(){
-  const tabsContainer = document.getElementById("tier-tabs");
-  if(!tabsContainer) return;
-  let html = '<div class="tier-tabs">';
-  for(let tier = 1; tier <= currentUserTier; tier++){
-    const tierNames = {1:"🌱 Tier 1 - Foundation", 2:"🚀 Tier 2 - Coaching Certification", 3:"🏆 Tier 3 - NLP Mastery", 4:"👑 Tier 4 - Inner Circle"};
-    const activeClass = currentViewTier === tier ? 'active' : '';
-    html += `<button class="tier-tab ${activeClass}" onclick="switchTier(${tier})">${tierNames[tier] || `Tier ${tier}`}</button>`;
+  
+  // Show upgrade message for users not on max tier
+  const maxTierInDB = Math.max(...lessons.map(l => l.tier_required));
+  if(currentUserTier < maxTierInDB){
+    document.getElementById("upgrade-message").style.display = "block";
   }
-  html += '</div>';
-  tabsContainer.innerHTML = html;
-}
-
-function switchTier(tier){
-  currentViewTier = tier;
-  buildTierTabs();
-  buildMenu();
-  updateStats();
 }
 
 function buildMenu(){
   const menu = document.getElementById("cat-menu");
   let html = "";
   for(const c of CATS){
-    if(c.id==="other") continue;
-    const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required === currentViewTier);
+    const vids = lessons.filter(l => catFor(l.title) === c.name);
     if(!vids.length) continue;
     const wc = vids.filter(l => watched[l.id]).length;
+    const lockedCount = vids.filter(l => l.tier_required > currentUserTier).length;
+    const lockIcon = lockedCount > 0 ? `<span class="lock-icon">🔒${lockedCount}</span>` : "";
     html += `<div class="menu-item" id="mi-${c.id}" onclick="selectCat('${c.id}')">
-      <div class="menu-left"><span>${c.icon}</span><span>${c.name}</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
+      <div class="menu-left"><span>${c.icon}</span><span>${c.name}</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}${lockIcon}</div>
       <span class="menu-count">${vids.length}</span>
     </div>`;
   }
-  menu.innerHTML = html || '<div class="menu-item">No content for this tier</div>';
+  menu.innerHTML = html;
 }
 
 function selectCat(catId){
   const c = CATS.find(x=>x.id===catId);
   if(!c) return;
-  currentCat = catId;
   closePlayer();
   document.querySelectorAll(".menu-item").forEach(m=>m.classList.remove("active"));
   const mi = document.getElementById("mi-"+catId);
   if(mi) mi.classList.add("active");
-  const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required === currentViewTier);
+  
+  const vids = lessons.filter(l => catFor(l.title) === c.name);
+  const unlockedVids = vids.filter(l => l.tier_required <= currentUserTier);
+  const lockedVids = vids.filter(l => l.tier_required > currentUserTier);
+  
   document.getElementById("cat-title").innerText = c.icon + " " + c.name;
-  document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
+  document.getElementById("cat-subtitle").innerHTML = `${unlockedVids.length} available ${lockedVids.length > 0 ? `(+ ${lockedVids.length} locked - upgrade to Tier ${Math.min(...lockedVids.map(l=>l.tier_required))} to access)` : ""}`;
+  
   let html = "";
-  vids.forEach(l=>{
+  unlockedVids.forEach(l=>{
     const desc = l.description ? l.description.substring(0,90) + (l.description.length > 90 ? "..." : "") : "Click to watch";
     const isW = watched[l.id];
     html += `<div class="vid-item" id="vi-${l.id}" onclick="selectVideo(${l.id})">
@@ -290,30 +284,60 @@ function selectCat(catId){
       </div>
     </div>`;
   });
+  
+  lockedVids.forEach(l=>{
+    html += `<div class="vid-item locked" onclick="showUpgradeMessage()">
+      <div class="vid-info">
+        <div class="vid-title">🔒 ${esc(l.title)} <span class="upgrade-badge">Tier ${l.tier_required}</span></div>
+        <div class="vid-desc">Upgrade to Tier ${l.tier_required} to unlock this content</div>
+      </div>
+      <div class="vid-meta">
+        <span class="play-icon">🔒</span>
+      </div>
+    </div>`;
+  });
+  
   document.getElementById("vid-list").innerHTML = html;
 }
 
 function selectVideo(id){
   const v = lessons.find(x=>x.id===id);
   if(!v) return;
+  if(v.tier_required > currentUserTier){
+    showUpgradeMessage();
+    return;
+  }
   currentVideoId = id;
+  
   document.querySelectorAll(".vid-item").forEach(x=>x.classList.remove("active"));
   const vi = document.getElementById("vi-"+id);
   if(vi) vi.classList.add("active");
+  
   document.getElementById("p-title").innerText = v.title;
   document.getElementById("p-desc").innerText = v.description || "";
+  
   const iframe = document.getElementById("p-iframe");
   iframe.src = "";
   setTimeout(() => { iframe.src = v.google_drive_embed_url || ""; }, 60);
+  
   const isW = watched[id];
   const btn = document.getElementById("p-watch-btn");
   const lbl = document.getElementById("p-watch-label");
   btn.textContent = isW ? "✓ Watched" : "✓ Mark as watched";
   btn.style.background = isW ? "#1D9E75" : "#C9A84C";
   lbl.textContent = isW ? "Completed!" : "";
+  
   const box = document.getElementById("player-box");
   box.classList.add("on");
   box.scrollIntoView({behavior: "smooth", block: "start"});
+}
+
+function showUpgradeMessage(){
+  alert(`This content requires Tier ${Math.min(...lessons.filter(l => l.tier_required > currentUserTier).map(l=>l.tier_required))} access. Please contact us to upgrade your membership.`);
+}
+
+function contactUpgrade(){
+  window.location.href = "mailto:accessworldseminars@gmail.com?subject=Membership Upgrade Inquiry";
 }
 
 function toggleWatched(){
@@ -321,12 +345,14 @@ function toggleWatched(){
   if(watched[currentVideoId]){ delete watched[currentVideoId]; }
   else { watched[currentVideoId] = true; }
   saveWatched();
+  
   const isW = watched[currentVideoId];
   const btn = document.getElementById("p-watch-btn");
   const lbl = document.getElementById("p-watch-label");
   btn.textContent = isW ? "✓ Watched" : "✓ Mark as watched";
   btn.style.background = isW ? "#1D9E75" : "#C9A84C";
   lbl.textContent = isW ? "Completed!" : "";
+  
   const vi = document.getElementById("vi-"+currentVideoId);
   if(vi){
     const meta = vi.querySelector(".vid-meta");
@@ -360,7 +386,7 @@ function saveNote(){
   const title = document.getElementById("n-title").value.trim();
   const body = document.getElementById("n-body").value.trim();
   if(!body){ alert("Please write something."); return; }
-  notes.unshift({id: Date.now(), title: title || "Untitled note", body: body, date: new Date().toLocaleDateString("en-AU", {day: "numeric", month: "short", year: "numeric"})});
+  notes.unshift({id: Date.now(), title: title || "Untitled note", body: body, date: new Date().toLocaleDateString("en-AU")});
   saveNotes();
   document.getElementById("n-title").value = "";
   document.getElementById("n-body").value = "";
@@ -383,8 +409,8 @@ function renderNotes(){
 }
 
 function updateStats(){
-  const visibleCount = lessons.filter(l => l.tier_required === currentViewTier).length;
-  document.getElementById("s-total").textContent = visibleCount;
+  const unlockedCount = lessons.filter(l => l.tier_required <= currentUserTier).length;
+  document.getElementById("s-total").textContent = unlockedCount;
   document.getElementById("s-watched").textContent = Object.keys(watched).length;
   document.getElementById("s-notes").textContent = notes.length;
 }
@@ -392,6 +418,10 @@ function updateStats(){
 function esc(s){ if(!s) return ""; return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
 async function logout(){ await sb.auth.signOut(); location.reload(); }
+
+function contactUpgrade(){
+  window.location.href = "mailto:accessworldseminars@gmail.com?subject=Membership Upgrade Inquiry";
+}
 
 window.onload = async() => { const {data: {user}} = await sb.auth.getUser(); if(user) await boot(); };
 </script>
