@@ -141,18 +141,32 @@ const sb = window.supabase.createClient(SB_URL, SB_KEY);
 let lessons = [], watched = {}, notes = [], currentVideoId = null, currentUserTier = 1, currentTierTab = 1;
 
 const CATS = [
-  {id:"unlock", icon:"🌟", name:"Unlock Your Incredible Self", kw:["unlock","incredible"]},
-  {id:"coaching", icon:"👥", name:"Group Coaching and Mentoring", kw:["coach","group","mentoring"]},
-  {id:"goals", icon:"🎯", name:"Goal Setting", kw:["goal"]},
-  {id:"emotional", icon:"💚", name:"Emotional Clearing", kw:["emotional","clearing","gift","grey","joshua roy","seminar leader","disease","sickness","mental rehearsal","faith continuum","gray room","yelling therapy","bull and fire","final thoughts"]},
+  {id:"unlock", icon:"🌟", name:"Unlock Your Incredible Self", 
+   kw:["unlock","incredible","listen to attendees","acid alkaline","artistry explained","physical preparation"]},
+  
   {id:"morning", icon:"🌅", name:"Morning Routine", kw:["morning","routine"]},
+  
+  {id:"coaching", icon:"👥", name:"Group Coaching and Mentoring", kw:["coach","group","mentoring"]},
+  
+  {id:"goals", icon:"🎯", name:"Goal Setting", kw:["goal"]},
+  
+  {id:"emotional", icon:"💚", name:"Emotional Clearing", 
+   kw:["emotional","clearing","gift","grey","joshua roy","seminar leader","disease","sickness","mental rehearsal",
+       "faith continuum","gray room","yelling therapy","bull and fire","final thoughts","express yourself","ball and fire"]},
+  
   {id:"nlp", icon:"🧠", name:"NLP Masterclass", kw:["nlp","strategic","visioning","masks"]},
-  {id:"intro", icon:"🎓", name:"Free Introductions", kw:["free","intro","introduction"]},
+  
+  {id:"intro", icon:"🎓", name:"Free Introductions", 
+   kw:["free","intro","introduction","confidence to succeed","full control of your uc mind","take full control of your mind","nlp basics"]},
+  
   {id:"health", icon:"🏥", name:"Health & Healing", kw:["health","healing"]},
+  
   {id:"coachingcert", icon:"📜", name:"Coaching Certification", kw:["coaching lesson","coach yourself","world class coach","state elicitation"]},
+  
   {id:"meditation", icon:"🧘", name:"Meditations", kw:["meditation","breath","gift","womb","freedom"]},
+  
   {id:"bonus", icon:"🎁", name:"Bonus Resources", kw:["blue hat","excitement"]},
-  {id:"other", icon:"📁", name:"Other Content", kw:[]},
+  {id:"other", icon:"📁", name:"Bonus Resources", kw:[]}
 ];
 
 function catFor(title){
@@ -161,7 +175,7 @@ function catFor(title){
     if(c.id==="other") continue;
     if(c.kw.some(k => t.includes(k))) return c.name;
   }
-  return "Other Content";
+  return "Bonus Resources";
 }
 
 function loadLocal(){
@@ -208,22 +222,17 @@ function getTierProgress(tier){
 
 function showTierTab(tier){
   currentTierTab = tier;
-  
   document.querySelectorAll('.tier-tab').forEach(t => {
     t.classList.toggle('active', parseInt(t.dataset.tier) === tier);
   });
 
   const contentArea = document.getElementById("tier-content");
-  
   if(tier > currentUserTier){
     contentArea.innerHTML = `
       <div class="upgrade-box">
         <h2>🔒 Tier ${tier} Content</h2>
         <p style="font-size:17px;max-width:620px;margin:20px auto;">
-          This tier is for more advanced training. We strongly recommend completing <strong>Tier 1</strong> first — especially the <strong>Morning Routine</strong> — before moving forward.
-        </p>
-        <p style="color:#1D9E75;font-weight:600;margin:20px 0;">
-          Build your foundation for true mastery of mind and life.
+          This tier is for more advanced training. We strongly recommend completing <strong>Tier 1</strong> first — especially the <strong>Morning Routine</strong>.
         </p>
         <button class="btn btn-gold" onclick="contactUpgrade()">
           Contact Joshua Roy for Upgrade Options
@@ -231,14 +240,12 @@ function showTierTab(tier){
       </div>`;
     return;
   }
-
   renderTierContent(tier);
 }
 
 function renderTierContent(tier){
   const progress = getTierProgress(tier);
   const contentArea = document.getElementById("tier-content");
-  
   let html = `
     <div style="margin-bottom:16px;">
       <strong>Tier ${tier} Progress</strong>
@@ -268,7 +275,6 @@ function renderTierContent(tier){
         </div>
       </div>
     </div>`;
-  
   contentArea.innerHTML = html;
   buildTierMenu(tier);
 }
@@ -276,12 +282,10 @@ function renderTierContent(tier){
 function buildTierMenu(tier){
   const menuContainer = document.getElementById(`cat-menu-tier${tier}`);
   if(!menuContainer) return;
-  
   let html = "";
   for(const c of CATS){
     const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required === tier);
     if(!vids.length) continue;
-
     const wc = vids.filter(l => watched[l.id]).length;
     html += `<div class="menu-item" id="mi-${c.id}-t${tier}" onclick="selectCat('${c.id}', ${tier})">
       <div class="menu-left"><span>${c.icon}</span><span>${c.name}</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
@@ -295,12 +299,9 @@ function selectCat(catId, tier){
   const c = CATS.find(x=>x.id===catId);
   if(!c) return;
   closePlayer();
-  
   const vids = lessons.filter(l => catFor(l.title) === c.name && l.tier_required === tier);
-  
   document.getElementById("cat-title").innerText = c.icon + " " + c.name;
   document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
-
   let html = "";
   vids.forEach(l => {
     const desc = l.description ? l.description.substring(0,90) + (l.description.length > 90 ? "..." : "") : "Click to watch";
@@ -319,6 +320,7 @@ function selectCat(catId, tier){
   document.getElementById("vid-list").innerHTML = html || '<div class="empty">No videos in this category yet.</div>';
 }
 
+// Keep the rest of the functions unchanged (selectVideo, toggleWatched, etc.)
 function selectVideo(id){
   const v = lessons.find(x=>x.id===id);
   if(!v) return;
@@ -326,7 +328,6 @@ function selectVideo(id){
     alert(`This content requires Tier ${v.tier_required} access.`);
     return;
   }
-  
   currentVideoId = id;
   document.querySelectorAll(".vid-item").forEach(x=>x.classList.remove("active"));
   const vi = document.getElementById("vi-"+id);
@@ -354,10 +355,8 @@ function toggleWatched(){
   if(!currentVideoId) return;
   if(watched[currentVideoId]) delete watched[currentVideoId];
   else watched[currentVideoId] = true;
-  
   saveWatched();
   const isW = watched[currentVideoId];
-  
   const btn = document.getElementById("p-watch-btn");
   const lbl = document.getElementById("p-watch-label");
   btn.textContent = isW ? "✓ Watched" : "✓ Mark as watched";
@@ -373,7 +372,6 @@ function toggleWatched(){
       meta.insertBefore(tick, meta.firstChild);
     } else if(!isW && tick) tick.remove();
   }
-  
   buildTierMenu(currentTierTab);
   updateStats();
 }
@@ -393,11 +391,10 @@ function showTab(tab){
   document.getElementById("tier-content").style.display = tab === "notes" ? "none" : "block";
   document.getElementById("tab-notes").style.display = tab === "notes" ? "block" : "none";
   document.getElementById("tab-notes-btn").classList.toggle("active", tab === "notes");
-  
-  if(tab !== "notes") showTierTab(currentTierTab); // refresh current tier when switching back
+  if(tab !== "notes") showTierTab(currentTierTab);
 }
 
-function saveNote(){ /* unchanged */ 
+function saveNote(){
   const title = document.getElementById("n-title").value.trim();
   const body = document.getElementById("n-body").value.trim();
   if(!body){ alert("Please write something."); return; }
@@ -409,7 +406,7 @@ function saveNote(){ /* unchanged */
   updateStats();
 }
 
-function deleteNote(id){ /* unchanged */ 
+function deleteNote(id){
   if(!confirm("Delete this note?")) return;
   notes = notes.filter(n => n.id !== id);
   saveNotes();
