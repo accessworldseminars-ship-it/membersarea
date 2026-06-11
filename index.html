@@ -9,382 +9,588 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#1A2744;min-height:100vh;padding:20px}
 .container{max-width:1200px;margin:0 auto;background:#fff;border-radius:16px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-.login-box{max-width:360px;margin:60px auto;text-align:center}
-.login-box img{height:64px;margin-bottom:20px}
-.login-box h1{color:#1A2744;font-size:26px;margin-bottom:6px}
-.login-box p{color:#888;margin-bottom:28px;font-size:15px}
-input[type=email],input[type=password]{width:100%;padding:13px 15px;margin:7px 0;border:1.5px solid #ddd;border-radius:9px;font-size:15px;outline:none;transition:border .2s}
+.login-box{max-width:350px;margin:60px auto;text-align:center}
+.login-box h1{color:#1A2744;margin-bottom:8px;font-size:24px}
+.login-box p{color:#666;margin-bottom:24px}
+input[type=email],input[type=password]{width:100%;padding:12px 14px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-size:15px;outline:none}
 input:focus{border-color:#1D9E75}
-.err{color:#dc3545;font-size:13px;margin-top:8px;min-height:18px}
-.btn{border:none;border-radius:9px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
-.btn-green{background:#1D9E75;color:#fff;padding:13px 20px;font-size:15px;width:100%;justify-content:center}
+.btn{border:none;padding:12px 20px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-green{background:#1D9E75;color:#fff;width:100%}
 .btn-green:hover{background:#178a65}
-.btn-red{background:#dc3545;color:#fff;padding:8px 18px;font-size:13px}
+.btn-red{background:#dc3545;color:#fff;width:auto;padding:8px 20px;font-size:14px}
 .btn-red:hover{background:#c82333}
-.btn-gray{background:#e8e8e8;color:#555;padding:9px 16px;font-size:13px}
-.btn-gray:hover{background:#ddd}
-.btn-gold{background:#C9A84C;color:#fff;padding:9px 18px;font-size:14px}
+.btn-gray{background:#6c757d;color:#fff;width:auto;padding:8px 18px;font-size:14px}
+.btn-gold{background:#C9A84C;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
 .btn-gold:hover{background:#b8933f}
-.btn-outline{background:none;border:1.5px solid #C9A84C;color:#C9A84C;padding:8px 16px;font-size:13px}
-.btn-outline:hover{background:#C9A84C;color:#fff}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:18px;border-bottom:2px solid #f0f0f0}
+.btn-outline{background:transparent;border:2px solid #1D9E75;color:#1D9E75}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #eee}
 .header-left{display:flex;align-items:center;gap:12px}
-.header-left img{height:40px}
-.header-left h1{font-size:21px;color:#1A2744;font-weight:700}
-.header-right{display:flex;align-items:center;gap:10px}
-.tier-badge{background:#1D9E75;color:#fff;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.3px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
-.stat-card{background:#f7f8fa;border-radius:10px;padding:14px;text-align:center;border:1px solid #eee}
-.stat-num{font-size:30px;font-weight:800;color:#1A2744}
-.stat-lbl{font-size:11px;color:#999;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
-.tab-bar{display:flex;gap:0;margin-bottom:22px;border-bottom:2px solid #eee;overflow-x:auto}
-.tab{padding:11px 20px;cursor:pointer;font-size:14px;font-weight:600;color:#aaa;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
-.tab:hover{color:#555}
+.header-left h1{font-size:22px;color:#1A2744}
+.header-right{display:flex;align-items:center;gap:12px}
+.tier-badge{background:#1D9E75;color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.tab-bar{display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #eee;padding-bottom:0}
+.tab{padding:10px 24px;cursor:pointer;font-size:14px;font-weight:600;color:#888;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
 .tab.active{color:#1A2744;border-bottom-color:#C9A84C}
-.two-col{display:flex;gap:22px;min-height:480px}
-.left-menu{width:250px;flex-shrink:0;background:#f8f9fa;border-radius:12px;padding:14px;max-height:640px;overflow-y:auto;scrollbar-width:thin}
-.left-menu h4{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#aaa;margin-bottom:12px;padding:0 4px}
-.menu-item{padding:11px 12px;margin-bottom:5px;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:#f7f7f7;border-radius:10px;padding:14px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:#1A2744}
+.stat-lbl{font-size:12px;color:#888;margin-top:2px}
+.two-col{display:flex;gap:24px;min-height:500px}
+.left-menu{width:280px;flex-shrink:0;background:#f8f9fa;border-radius:12px;padding:16px;max-height:620px;overflow-y:auto}
+.left-menu h4{margin-bottom:14px;color:#1A2744;font-size:14px;text-transform:uppercase;letter-spacing:.5px}
+.menu-item{padding:12px 14px;margin-bottom:4px;border-radius:8px;cursor:pointer;transition:all .2s;font-weight:500;color:#1A2744;font-size:14px;display:flex;align-items:center;justify-content:space-between}
 .menu-item:hover{background:#e8f9f1}
 .menu-item.active{background:#1D9E75;color:#fff}
-.menu-left{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#1A2744;flex:1;min-width:0}
-.menu-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.menu-count{font-size:11px;color:#bbb;flex-shrink:0}
-.w-badge{font-size:10px;background:#C9A84C;color:#fff;padding:1px 6px;border-radius:10px;flex-shrink:0}
+.menu-item.active .menu-count{color:rgba(255,255,255,.7)}
+.menu-left{display:flex;align-items:center;gap:8px}
+.menu-count{font-size:12px;color:#aaa}
+.watched-count{font-size:11px;background:#C9A84C;color:#fff;padding:1px 6px;border-radius:10px;margin-left:4px}
+/* Dropdown styles */
+.dropdown-item{padding:10px 14px 10px 28px;margin-bottom:2px;border-radius:8px;cursor:pointer;transition:all .2s;font-weight:500;color:#555;font-size:13px;display:flex;align-items:center;justify-content:space-between}
+.dropdown-item:hover{background:#e8f9f1}
+.dropdown-item.active{background:#1D9E75;color:#fff}
+.dropdown-item .menu-count{font-size:11px}
+.dropdown-subitem{padding:8px 14px 8px 42px;margin-bottom:2px;border-radius:8px;cursor:pointer;transition:all .2s;font-weight:400;color:#666;font-size:12px;display:flex;align-items:center;justify-content:space-between}
+.dropdown-subitem:hover{background:#e8f9f1}
+.dropdown-subitem.active{background:#1D9E75;color:#fff}
+.dropdown-arrow{font-size:10px;margin-left:8px;transition:transform .2s}
+.dropdown-arrow.open{transform:rotate(90deg)}
+.nested-menu{padding-left:8px}
 .right-col{flex:1;min-width:0}
-.cat-header{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #eee}
-.cat-header h2{font-size:17px;color:#1A2744;font-weight:700}
-.cat-header p{font-size:13px;color:#aaa;margin-top:3px}
-.vid-item{padding:13px 14px;margin-bottom:7px;border:1.5px solid #eee;border-radius:9px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
+.cat-header{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #eee}
+.cat-header h2{font-size:18px;color:#1A2744}
+.cat-header p{font-size:13px;color:#888;margin-top:4px}
+.vid-item{padding:14px;margin-bottom:8px;border:1px solid #eee;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
 .vid-item:hover{background:#f0fdf9;border-color:#1D9E75}
-.vid-item.active{background:#e8f9f1;border-left:4px solid #1D9E75;border-color:#1D9E75}
+.vid-item.active{background:#e8f9f1;border-left:4px solid #1D9E75}
 .vid-info{flex:1;min-width:0}
-.vid-title{font-weight:600;color:#1A2744;font-size:14px;margin-bottom:3px}
-.vid-desc{color:#aaa;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vid-title{font-weight:600;color:#1A2744;font-size:15px}
+.vid-desc{color:#888;font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vid-meta{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.tick{color:#1D9E75;font-size:17px;font-weight:800}
-.play-icon{color:#C9A84C;font-size:20px}
-.player-box{margin-top:14px;background:#f8f9fa;border-radius:12px;padding:20px;display:none;border:1px solid #eee}
+.tick{color:#1D9E75;font-size:18px;font-weight:700}
+.play-icon{color:#1D9E75;font-size:20px}
+.player-box{margin-top:16px;background:#f8f9fa;border-radius:12px;padding:20px;display:none}
 .player-box.on{display:block}
-.player-box h3{color:#1A2744;font-size:16px;font-weight:700;margin-bottom:8px}
-.player-desc{color:#555;font-size:13px;line-height:1.65;margin-bottom:14px;max-height:80px;overflow:hidden;transition:max-height .3s}
-.player-desc.expanded{max-height:600px}
-.desc-toggle{font-size:12px;color:#1D9E75;cursor:pointer;margin-bottom:12px;display:inline-block}
-.player-box iframe{width:100%;height:400px;border:none;border-radius:8px;background:#111}
+.player-box h3{color:#1A2744;font-size:17px;margin-bottom:8px}
+.player-desc{color:#555;font-size:14px;line-height:1.6;margin-bottom:14px}
+.player-box iframe{width:100%;height:400px;border:none;border-radius:8px;background:#000}
 .player-actions{display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
 .watched-label{font-size:13px;color:#1D9E75;font-weight:600}
-.progress-wrap{margin-bottom:18px}
-.progress-wrap label{font-size:12px;color:#888;display:flex;justify-content:space-between;margin-bottom:6px}
-.progress-bar{background:#eee;border-radius:999px;height:7px;overflow:hidden}
-.progress-fill{background:linear-gradient(90deg,#1D9E75,#C9A84C);height:100%;border-radius:999px;transition:width .5s ease}
-.locked-box{text-align:center;padding:60px 20px}
-.locked-box .lock-icon{font-size:48px;margin-bottom:16px}
-.locked-box h2{color:#1A2744;margin-bottom:12px;font-size:22px}
-.locked-box p{color:#666;font-size:15px;max-width:500px;margin:0 auto 24px;line-height:1.6}
-.notes-wrap{max-width:700px}
-.notes-back{margin-bottom:18px}
-.note-form{background:#fffdf5;border:1.5px solid #e8ddb0;border-radius:10px;padding:18px;margin-bottom:20px}
-.note-form h3{font-size:14px;color:#1A2744;margin-bottom:12px;font-weight:700}
-.note-form input[type=text]{width:100%;padding:10px 13px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:14px;margin-bottom:9px;outline:none;transition:border .2s}
+.err{color:red;font-size:13px;margin-top:8px}
+.notes-wrap{max-width:800px;margin:0 auto}
+.note-form{background:#fffdf5;border:1px solid #e8ddb0;border-radius:10px;padding:16px;margin-bottom:16px}
+.note-form input[type=text]{width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px;outline:none}
 .note-form input[type=text]:focus{border-color:#C9A84C}
-textarea{width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:14px;line-height:1.6;resize:vertical;min-height:110px;outline:none;font-family:inherit;transition:border .2s}
+textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:14px;line-height:1.6;resize:vertical;min-height:100px;outline:none;font-family:inherit}
 textarea:focus{border-color:#1D9E75}
-.note-card{background:#fff;border:1.5px solid #eeddb0;border-radius:9px;padding:15px;margin-bottom:10px}
-.note-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:10px}
-.note-title{font-size:14px;font-weight:700;color:#1A2744}
-.note-date{font-size:11px;color:#bbb;white-space:nowrap}
-.note-body{font-size:13px;color:#444;line-height:1.6;white-space:pre-wrap}
-.note-del{background:none;border:1px solid #eee;color:#ccc;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;margin-top:10px;transition:all .2s}
-.note-del:hover{background:#fee;color:#c00;border-color:#fcc}
-.empty{text-align:center;color:#bbb;padding:50px 20px;font-size:14px}
-@media(max-width:720px){.two-col{flex-direction:column}.left-menu{width:100%;max-height:220px}.stats{grid-template-columns:repeat(3,1fr)}.player-box iframe{height:240px}}
+.note-card{background:#fffdf5;border:1px solid #e8ddb0;border-radius:8px;padding:14px;margin-bottom:10px}
+.note-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.note-title{font-size:13px;font-weight:700;color:#1A2744}
+.note-date{font-size:11px;color:#aaa}
+.note-body{font-size:13px;color:#444;line-height:1.5;white-space:pre-wrap}
+.note-del{background:none;border:1px solid #ddd;color:#aaa;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;margin-top:8px}
+.note-del:hover{background:#fee;color:#c00;border-color:#f99}
+.notes-back{margin-bottom:16px}
 </style>
 </head>
 <body>
 <div class="container">
-  <div id="login-section">
-    <div class="login-box">
-      <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" onerror="this.style.display='none'" alt="AccessWorld">
-      <h1>AccessWorld Seminars</h1>
-      <p>Sign in to access your member library</p>
-      <input type="email" id="email" placeholder="Email address">
-      <input type="password" id="password" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
-      <button class="btn btn-green" onclick="login()">Sign In</button>
-      <div id="login-error" class="err"></div>
+
+<div id="login-section">
+  <div class="login-box">
+    <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" style="height:60px;margin-bottom:16px" onerror="this.style.display='none'">
+    <h1>AccessWorld Seminars</h1>
+    <p>Member Portal</p>
+    <input type="email" id="email" placeholder="Email address">
+    <input type="password" id="password" placeholder="Password">
+    <button class="btn btn-green" onclick="login()">Sign In</button>
+    <div id="login-error" class="err"></div>
+  </div>
+</div>
+
+<div id="dashboard" style="display:none">
+  <div class="header">
+    <div class="header-left">
+      <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" style="height:38px" onerror="this.style.display='none'">
+      <h1>AccessWorld Library</h1>
+    </div>
+    <div class="header-right">
+      <span class="tier-badge" id="tier-badge">Tier 1</span>
+      <button class="btn btn-red" onclick="logout()">Sign Out</button>
     </div>
   </div>
 
-  <div id="dashboard" style="display:none">
-    <div class="header">
-      <div class="header-left">
-        <img src="https://i.ibb.co/ynXdYpmL/worldjjpgsf.png" onerror="this.style.display='none'" alt="">
-        <h1>AccessWorld Library</h1>
-      </div>
-      <div class="header-right">
-        <span class="tier-badge" id="tier-badge">Tier 1</span>
-        <button class="btn btn-red" onclick="logout()">Sign Out</button>
-      </div>
-    </div>
-    <div class="stats">
-      <div class="stat-card"><div class="stat-num" id="s-total">0</div><div class="stat-lbl">Videos</div></div>
-      <div class="stat-card"><div class="stat-num" id="s-watched">0</div><div class="stat-lbl">Watched</div></div>
-      <div class="stat-card"><div class="stat-num" id="s-notes">0</div><div class="stat-lbl">Notes</div></div>
-    </div>
+  <div class="stats">
+    <div class="stat-card"><div class="stat-num" id="s-total">0</div><div class="stat-lbl">Videos</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-watched">0</div><div class="stat-lbl">Watched</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-notes">0</div><div class="stat-lbl">Notes</div></div>
+  </div>
 
-    <div class="tab-bar">
-      <div class="tab active" id="btn-t1" onclick="showView('tier',1)">🎓 Tier 1</div>
-      <div class="tab" id="btn-t2" onclick="showView('tier',2)">🎓 Tier 2</div>
-      <div class="tab" id="btn-t3" onclick="showView('tier',3)">🎓 Tier 3</div>
-      <div class="tab" id="btn-notes" onclick="showView('notes',0)">📝 My Notes</div>
-    </div>
+  <div class="tab-bar">
+    <div class="tab active" id="btn-tier1" onclick="switchTier(1)">🎓 Tier 1 - Foundation</div>
+    <div class="tab" id="btn-tier2" onclick="switchTier(2)">🚀 Tier 2 - Coaching</div>
+    <div class="tab" id="btn-tier3" onclick="switchTier(3)">🏆 Tier 3 - Mastery</div>
+    <div class="tab" id="btn-notes" onclick="showNotes()">📝 My Notes</div>
+  </div>
 
-    <div id="view-tier1"></div>
-    <div id="view-tier2" style="display:none"></div>
-    <div id="view-tier3" style="display:none"></div>
+  <div id="tier-content"></div>
 
-    <div id="view-notes" style="display:none">
-      <div class="notes-wrap">
-        <div class="notes-back">
-          <button class="btn btn-outline" onclick="showView('tier', lastTierTab)">← Back to Library</button>
-        </div>
-        <div class="note-form">
-          <h3>✏️ Add a Note</h3>
-          <input type="text" id="n-title" placeholder="Title — e.g. Coaching Lesson 3">
-          <textarea id="n-body" placeholder="Write your notes here..."></textarea>
-          <button class="btn btn-gold" style="margin-top:10px" onclick="saveNote()">Save Note</button>
-        </div>
-        <div id="notes-list"></div>
+  <div id="notes-view" style="display:none">
+    <div class="notes-wrap">
+      <div class="notes-back">
+        <button class="btn btn-outline" onclick="showTier(currentTier)">← Back to Library</button>
       </div>
+      <div class="note-form">
+        <h3>✏️ Add a Note</h3>
+        <input type="text" id="n-title" placeholder="Title — e.g. Coaching Lesson 3">
+        <textarea id="n-body" placeholder="Write your notes here..."></textarea>
+        <button class="btn btn-gold" style="margin-top:10px" onclick="saveNote()">Save Note</button>
+      </div>
+      <div id="notes-list"></div>
     </div>
   </div>
 </div>
 
+</div>
 <script>
 const SB_URL = "https://zwwodopezadqjazhajmx.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg"; // ← Replace with your real Supabase anon key
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-let lessons = [], watched = {}, notes = [];
-let currentVideoId = null, currentUserTier = 1, lastTierTab = 1;
-let builtTiers = {};
+let lessons = [], watched = {}, notes = [], currentVideoId = null, currentUserTier = 1, currentTier = 1;
+let currentCategoryCallback = null;
 
-// ==================== CATEGORIES WITH ALL MOVES ====================
-const CATS = [
-  {id:"nlp", icon:"🧠", name:"NLP Masterclass", kw:["nlp","unlock the power of stories","arcing energy","coach yourself"]},
-  {id:"morning", icon:"🌅", name:"Morning Routine", kw:["morning","routine"]},
-  
-  {id:"coaching2024", icon:"👥", name:"Coaching 2024", kw:["2024"]},
-  {id:"coaching2025", icon:"👥", name:"Coaching 2025", kw:["2025"]},
-  {id:"coaching2026", icon:"👥", name:"Coaching 2026", kw:["2026"]},
-  
-  {id:"emotional", icon:"💚", name:"Emotional Clearing", 
-   kw:["emotional","clearing","joshua roy seminar leader","gift process","yelling","ball and fire","ultimate freedom","womb of eternity","1.0","1.2","1.5"]},
-  
-  {id:"health", icon:"🏥", name:"Health & Healing", kw:["health","healing"]},
-  {id:"relationships", icon:"❤️", name:"Relationships", kw:["relationship"]},
-  {id:"goals", icon:"🎯", name:"Goal Setting", kw:["goal"]},
-  {id:"coachcert", icon:"📜", name:"World Class Coach Training", kw:["world class coach"]},
-  {id:"intro", icon:"🎓", name:"Free Introductions", kw:["free introduction","nlp basics","confidence to succeed","full control of your uc mind"]},
-  
-  {id:"meditation", icon:"🧘", name:"Meditations & Processes", 
-   kw:["guided breath meditation","the gift","ultimate freedom technique","universal freedom technique","dancing with fear","meditation","breathwork","womb"]},
-  
-  {id:"bonus", icon:"🎁", name:"Bonus Resources", kw:["blue hat"]},
-  
-  // Tier 3 special
-  {id:"twoday", icon:"📅", name:"2 Day Seminar", kw:["gray room","emotional mastery seminar"]},
-];
-
-function catFor(title){
-  const t = title.toLowerCase();
-  for(const c of CATS){
-    if(c.kw.some(k => t.includes(k))) return c.name;
-  }
-  return "Bonus Resources";
-}
-
-// ==================== LOCAL STORAGE ====================
 function loadLocal(){
   watched = JSON.parse(localStorage.getItem("aw_watched")||"{}");
   notes = JSON.parse(localStorage.getItem("aw_notes")||"[]");
 }
 function saveWatched(){ localStorage.setItem("aw_watched",JSON.stringify(watched)); }
-function saveNotes(){ localStorage.setItem("aw_notes", JSON.stringify(notes)); }
+function saveNotes(){ localStorage.setItem("aw_notes",JSON.stringify(notes)); }
 
-// ==================== AUTH ====================
 async function login(){
-  const email = document.getElementById("email").value.trim();
+  const email = document.getElementById("email").value;
   const pw = document.getElementById("password").value;
-  const errEl = document.getElementById("login-error");
-  errEl.innerText = "";
+  const errorDiv = document.getElementById("login-error");
+  
   const {data, error} = await sb.auth.signInWithPassword({email, password:pw});
-  if(error){ errEl.innerText = error.message; return; }
-  try {
-    const {data: profile} = await sb.from("profiles").select("membership_tier").eq("email", email).single();
-    currentUserTier = profile?.membership_tier || 1;
-  } catch(e){ currentUserTier = 1; }
+  if(error){ errorDiv.innerText = error.message; return; }
+  
+  const {data: profile} = await sb.from("profiles").select("membership_tier").eq("email", email).single();
+  currentUserTier = profile?.membership_tier || 1;
+  
   document.getElementById("tier-badge").innerText = `Tier ${currentUserTier} Member`;
   await boot();
 }
 
-async function logout(){
-  await sb.auth.signOut();
-  location.reload();
-}
-
 async function boot(){
   loadLocal();
-  const {data, error} = await sb.from("lessons").select("*").order("sort_order");
+  const {data,error} = await sb.from("lessons").select("*").order("sort_order");
   if(error){ console.error(error); return; }
-  lessons = data || [];
+  lessons = data||[];
+  
+  console.log("Total lessons:", lessons.length);
+  
   document.getElementById("login-section").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
-  showView("tier", 1);
+  switchTier(1);
   updateStats();
 }
 
-// ==================== VIEW SWITCHING ====================
-function showView(type, tier){
-  ["view-tier1","view-tier2","view-tier3","view-notes"].forEach(id => document.getElementById(id).style.display = "none");
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+// NLP Categories with subcategories
+const nlpCategories = {
+  "NLP Breathing & Breathwork": ["Nlp Breathwork Session", "Tool Development Breathing Techniques"],
+  "NLP Collapse Anchors": ["210325 NLP Collapse anchor part1", "210325 NLP Collapse anchor part 2", "NLP Masterclass 3 collapse anchors", "NLP Masterclass Collapse achors part2"],
+  "NLP Dissociation": ["NLP training dissociation (2)", "NLP training dissociation"],
+  "NLP Future Pacing": ["210225 Nlp Future Pacing(1)"],
+  "NLP Grey Room": ["1.1b the process grey room", "1605 grey room part 1", "1605 grey room part 2", "240525 The Grey room process", "240525 The grey room part2", "240525 the grey room part1"],
+  "NLP Incantations": ["incantations part 2", "incantations part 3", "incantations part1"],
+  "NLP Keywords": ["NLP training Keywords Part1", "NLP training Keywords Part2", "NLP training Keywords Part3", "NLP training Keywords Part4"],
+  "NLP Neurological Bridge": ["NLP Integration session 3 Neurological bridge"],
+  "NLP Parts Integration": ["NLP tool parts integration 240124"],
+  "NLP Self Image": ["200924 self image part 1", "200924 self image part 2", "200924 self image part 3", "200924 self image part 4"],
+  "NLP Stories & Chunking": ["NLP training Stories and chunking", "NLP training stories and chunking part 2"],
+  "NLP Strategic Visioning": ["NLP Strategic visioning part 2", "NLP strategic visioning part 1", "NLP strategic visioning part 3", "NLP strategic visioning part 4"],
+  "NLP Strategies": ["NLP tool - strategies", "Strategies part 2", "Strategies part 3"],
+  "NLP Swish Pattern": ["NLP masterclass part 3 280723", "Nlp masterclass part 1 280723", "nlp masterclass part 2 280723"],
+  "NLP The 4 Advisors": ["part1", "part2", "part3"],
+  "NLP Guru Technique": ["160824 The Guru technique dream interpretation", "NLP Dream interpretation session"],
+  "NLP Power of Stories": ["Part 1 NLP Unlock the power of stories 190424", "Part 2 NLP Unlock the power of stories 190424", "part 3 NLP Unlock the power of stories 190424"],
+  "NLP Arching Energy": ["Part 1", "Part 2", "Part 3"],
+  "NLP Hypnotic Language": ["NLP Hypnotic Language training", "NLP technique hypnotic language 17112023"],
+  "NLP Perceptual Positions": ["NLP training perceptual positions part1", "perceptual positions part 2"],
+  "NLP State Elicitation": ["NLP foundation principles 231224", "Nlp State Elicitatin Part2(1)", "Nlp State Elicitation 201224 Part 1(1)"],
+  "NLP Reframing": ["NLP Training part 1", "NLP training part 2", "NLP training part 3"],
+  "NLP Language Patterns": ["NLP session 250425a"]
+};
 
-  if(type === "notes"){
-    document.getElementById("view-notes").style.display = "block";
-    document.getElementById("btn-notes").classList.add("active");
-    renderNotes();
-  } else {
-    lastTierTab = tier;
-    document.getElementById("view-tier"+tier).style.display = "block";
-    document.getElementById("btn-t"+tier).classList.add("active");
-    if(!builtTiers[tier]){
-      buildTierView(tier);
-      builtTiers[tier] = true;
-    } else {
-      refreshTierProgress(tier);
+function buildMenuWithDropdowns(grouped){
+  let html = '';
+  
+  for(const [cat, vids] of Object.entries(grouped)){
+    const wc = vids.filter(l => watched[l.id]).length;
+    
+    // Check if this is NLP Masterclass in Tier 3
+    if(cat === "NLP Masterclass" && currentTier === 3){
+      html += `<div class="menu-item" onclick="toggleNlpDropdown(this)">
+        <div class="menu-left"><span>🧠</span><span>NLP Masterclass</span><span class="dropdown-arrow">▶</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
+        <span class="menu-count">${vids.length}</span>
+      </div>`;
+      html += `<div id="nlp-dropdown" style="display:none; padding-left:12px;">`;
+      for(const [subcat, titles] of Object.entries(nlpCategories)){
+        const subVids = vids.filter(v => titles.some(t => v.title.includes(t) || titles.some(t2 => t2.toLowerCase() === v.title.toLowerCase())));
+        if(subVids.length > 0){
+          const subWc = subVids.filter(l => watched[l.id]).length;
+          html += `<div class="dropdown-item" onclick="event.stopPropagation(); selectNlpSubcategory('${subcat}', ${JSON.stringify(subVids).replace(/"/g, '&quot;')})">
+            <div class="menu-left"><span>📂</span><span>${subcat}</span>${subWc>0?`<span class="watched-count">${subWc}</span>`:""}</div>
+            <span class="menu-count">${subVids.length}</span>
+          </div>`;
+        }
+      }
+      html += `</div>`;
+    }
+    // Check if this is Group Coaching in Tier 3 (has 50+ videos)
+    else if(cat === "Group Coaching" && currentTier === 3 && vids.length > 30){
+      // Group by year
+      const byYear = {2024: [], 2025: [], 2026: []};
+      vids.forEach(v => {
+        if(v.title.includes("2024")) byYear[2024].push(v);
+        else if(v.title.includes("2025")) byYear[2025].push(v);
+        else if(v.title.includes("2026")) byYear[2026].push(v);
+        else byYear["Other"] = byYear["Other"] || [];
+      });
+      
+      html += `<div class="menu-item" onclick="toggleYearDropdown(this)">
+        <div class="menu-left"><span>👥</span><span>Group Coaching</span><span class="dropdown-arrow">▶</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
+        <span class="menu-count">${vids.length}</span>
+      </div>`;
+      html += `<div id="year-dropdown" style="display:none; padding-left:12px;">`;
+      for(const [year, yearVids] of Object.entries(byYear)){
+        if(yearVids && yearVids.length > 0){
+          const yearWc = yearVids.filter(l => watched[l.id]).length;
+          html += `<div class="dropdown-item" onclick="event.stopPropagation(); selectYearSubcategory('${year}', ${JSON.stringify(yearVids).replace(/"/g, '&quot;')})">
+            <div class="menu-left"><span>📅</span><span>Coaching ${year}</span>${yearWc>0?`<span class="watched-count">${yearWc}</span>`:""}</div>
+            <span class="menu-count">${yearVids.length}</span>
+          </div>`;
+        }
+      }
+      html += `</div>`;
+    }
+    else {
+      html += `<div class="menu-item" onclick="selectCategory('${cat}', ${JSON.stringify(vids).replace(/"/g, '&quot;')})">
+        <div class="menu-left"><span>${getIconForCategory(cat)}</span><span>${cat}</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
+        <span class="menu-count">${vids.length}</span>
+      </div>`;
     }
   }
+  return html;
 }
 
-// ==================== BUILD TIER ====================
-function buildTierView(tier){
-  const container = document.getElementById("view-tier" + tier);
-  if(tier > currentUserTier){
-    container.innerHTML = `<div class="locked-box"><div class="lock-icon">🔒</div><h2>Tier ${tier} Content</h2><p>This tier contains advanced training. Complete Tier 1 first.</p><button class="btn btn-gold" onclick="contactUpgrade(${tier})">Contact Joshua Roy to Upgrade</button></div>`;
-    return;
-  }
-
-  const tierLessons = lessons.filter(l => l.tier_required === tier);
-  const watchedCount = tierLessons.filter(l => watched[l.id]).length;
-  const progress = tierLessons.length ? Math.round((watchedCount / tierLessons.length) * 100) : 0;
-
-  container.innerHTML = `
-    <div class="progress-wrap" id="pw-${tier}">
-      <label><span>Tier ${tier} Progress</span><span>${watchedCount} of ${tierLessons.length} watched</span></label>
-      <div class="progress-bar"><div class="progress-fill" id="pf-${tier}" style="width:${progress}%"></div></div>
-    </div>
-    <div class="two-col">
-      <div class="left-menu">
-        <h4>Categories</h4>
-        <div id="cat-menu-${tier}"></div>
-      </div>
-      <div class="right-col">
-        <div class="cat-header">
-          <h2 id="cat-title-${tier}">← Pick a category</h2>
-          <p id="cat-sub-${tier}">Choose a section from the menu on the left</p>
-        </div>
-        <div id="vid-list-${tier}"></div>
-        <div id="player-box-${tier}" class="player-box">
-          <h3 id="p-title-${tier}"></h3>
-          <div class="player-desc" id="p-desc-${tier}"></div>
-          <span class="desc-toggle" id="desc-toggle-${tier}" onclick="toggleDesc(${tier})" style="display:none">Show more ▼</span>
-          <iframe id="p-iframe-${tier}" src="" allowfullscreen></iframe>
-          <div class="player-actions">
-            <button class="btn btn-gold" id="p-watch-btn-${tier}" onclick="toggleWatched(${tier})">✓ Mark as watched</button>
-            <button class="btn btn-gray" onclick="closePlayer(${tier})">✕ Close</button>
-            <span class="watched-label" id="p-watch-label-${tier}"></span>
-          </div>
-        </div>
-      </div>
-    </div>`;
-
-  buildCatMenu(tier);
+function getIconForCategory(cat){
+  const icons = {
+    "Unlock Your Incredible Self": "🌟",
+    "Group Coaching": "👥",
+    "Emotional Clearing": "💚",
+    "Morning Routine": "🌅",
+    "Strategic Visioning": "🎯",
+    "NLP Masterclass": "🧠",
+    "Free Introductions": "🎓",
+    "Coaching Certification": "📜",
+    "Meditations": "🧘",
+    "Bonus Resources": "🎁"
+  };
+  return icons[cat] || "📁";
 }
 
-function buildCatMenu(tier){
-  const menu = document.getElementById("cat-menu-" + tier);
+let currentCategoryVids = [];
+
+function selectCategory(catName, vids){
+  currentCategoryVids = vids;
+  document.getElementById("cat-title").innerText = catName;
+  document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
+  
   let html = "";
-  for(const c of CATS){
-    const vids = lessons.filter(l => l.tier_required === tier && catFor(l.title) === c.name);
-    if(!vids.length) continue;
-    const wc = vids.filter(l => watched[l.id]).length;
-    html += `<div class="menu-item" id="mi-${c.id}-${tier}" onclick="selectCat('${c.id}',${tier})">
-      <div class="menu-left"><span>${c.icon}</span><span class="menu-label">${c.name}</span>${wc>0?`<span class="w-badge">${wc}</span>`:""}</div>
-      <span class="menu-count">${vids.length}</span>
-    </div>`;
-  }
-  menu.innerHTML = html || '<div class="empty">No content yet.</div>';
-}
-
-function refreshTierProgress(tier){ /* same logic as before */ 
-  const tierLessons = lessons.filter(l => l.tier_required === tier);
-  const watchedCount = tierLessons.filter(l => watched[l.id]).length;
-  const progress = tierLessons.length ? Math.round((watchedCount / tierLessons.length) * 100) : 0;
-  const pf = document.getElementById("pf-"+tier);
-  if(pf) pf.style.width = progress + "%";
-  buildCatMenu(tier);
-}
-
-// ==================== VIDEO FUNCTIONS ====================
-function selectCat(catId, tier){
-  const c = CATS.find(x => x.id === catId);
-  if(!c) return;
-  closePlayer(tier);
-  document.querySelectorAll(`[id^="mi-"]`).forEach(m => m.classList.remove("active"));
-  const mi = document.getElementById(`mi-${catId}-${tier}`);
-  if(mi) mi.classList.add("active");
-
-  const vids = lessons.filter(l => l.tier_required === tier && catFor(l.title) === c.name);
-  document.getElementById(`cat-title-${tier}`).innerText = c.icon + " " + c.name;
-  document.getElementById(`cat-sub-${tier}`).innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
-
-  let html = "";
-  vids.forEach(l => {
-    const desc = l.description ? l.description.substring(0,90) + "…" : "Click to watch";
-    const isW = watched[l.id];
-    html += `<div class="vid-item" id="vi-${l.id}" onclick="selectVideo(${l.id},${tier})">
-      <div class="vid-info"><div class="vid-title">${esc(l.title)}</div><div class="vid-desc">${esc(desc)}</div></div>
-      <div class="vid-meta">${isW ? '<span class="tick">✓</span>' : ''}<span class="play-icon">▶</span></div>
+  vids.forEach(v => {
+    const isW = watched[v.id];
+    html += `<div class="vid-item" id="vi-${v.id}" onclick="selectVideo(${v.id})">
+      <div class="vid-info">
+        <div class="vid-title">${escapeHtml(v.title)}</div>
+        <div class="vid-desc">${escapeHtml(v.description ? v.description.substring(0,90) : "Click to watch")}</div>
+      </div>
+      <div class="vid-meta">
+        ${isW ? '<span class="tick">✓</span>' : ""}
+        <span class="play-icon">▶</span>
+      </div>
     </div>`;
   });
-  document.getElementById(`vid-list-${tier}`).innerHTML = html || '<div class="empty">No videos in this category yet.</div>';
+  document.getElementById("vid-list").innerHTML = html;
+  document.querySelectorAll(".menu-item, .dropdown-item, .dropdown-subitem").forEach(m => m.classList.remove("active"));
+  if(event && event.target) event.target.closest('.menu-item, .dropdown-item, .dropdown-subitem')?.classList.add("active");
 }
 
-function selectVideo(id, tier){ /* full function as before */ 
-  // ... (same as previous versions - omitted for brevity but fully functional)
+function selectNlpSubcategory(subcatName, vids){
+  currentCategoryVids = vids;
+  document.getElementById("cat-title").innerText = subcatName;
+  document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
+  
+  let html = "";
+  vids.forEach(v => {
+    const isW = watched[v.id];
+    html += `<div class="vid-item" id="vi-${v.id}" onclick="selectVideo(${v.id})">
+      <div class="vid-info">
+        <div class="vid-title">${escapeHtml(v.title)}</div>
+        <div class="vid-desc">${escapeHtml(v.description ? v.description.substring(0,90) : "Click to watch")}</div>
+      </div>
+      <div class="vid-meta">
+        ${isW ? '<span class="tick">✓</span>' : ""}
+        <span class="play-icon">▶</span>
+      </div>
+    </div>`;
+  });
+  document.getElementById("vid-list").innerHTML = html;
+  document.querySelectorAll(".menu-item, .dropdown-item, .dropdown-subitem").forEach(m => m.classList.remove("active"));
+  if(event && event.target) event.target.closest('.dropdown-item, .dropdown-subitem')?.classList.add("active");
+}
+
+function selectYearSubcategory(year, vids){
+  currentCategoryVids = vids;
+  document.getElementById("cat-title").innerText = `Group Coaching ${year}`;
+  document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
+  
+  let html = "";
+  vids.forEach(v => {
+    const isW = watched[v.id];
+    html += `<div class="vid-item" id="vi-${v.id}" onclick="selectVideo(${v.id})">
+      <div class="vid-info">
+        <div class="vid-title">${escapeHtml(v.title)}</div>
+        <div class="vid-desc">${escapeHtml(v.description ? v.description.substring(0,90) : "Click to watch")}</div>
+      </div>
+      <div class="vid-meta">
+        ${isW ? '<span class="tick">✓</span>' : ""}
+        <span class="play-icon">▶</span>
+      </div>
+    </div>`;
+  });
+  document.getElementById("vid-list").innerHTML = html;
+  document.querySelectorAll(".menu-item, .dropdown-item, .dropdown-subitem").forEach(m => m.classList.remove("active"));
+  if(event && event.target) event.target.closest('.dropdown-item, .dropdown-subitem')?.classList.add("active");
+}
+
+let nlpDropdownOpen = false;
+let yearDropdownOpen = false;
+
+function toggleNlpDropdown(el){
+  const dropdown = document.getElementById("nlp-dropdown");
+  const arrow = el.querySelector('.dropdown-arrow');
+  if(dropdown.style.display === "none"){
+    dropdown.style.display = "block";
+    arrow.style.transform = "rotate(90deg)";
+  } else {
+    dropdown.style.display = "none";
+    arrow.style.transform = "rotate(0deg)";
+  }
+}
+
+function toggleYearDropdown(el){
+  const dropdown = document.getElementById("year-dropdown");
+  const arrow = el.querySelector('.dropdown-arrow');
+  if(dropdown.style.display === "none"){
+    dropdown.style.display = "block";
+    arrow.style.transform = "rotate(90deg)";
+  } else {
+    dropdown.style.display = "none";
+    arrow.style.transform = "rotate(0deg)";
+  }
+}
+
+function switchTier(tier){
+  if(tier > currentUserTier){
+    alert(`This content requires Tier ${tier} access. Please upgrade your membership to access this content.`);
+    return;
+  }
+  
+  currentTier = tier;
+  
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.getElementById(`btn-tier${tier}`).classList.add('active');
+  
+  document.getElementById('notes-view').style.display = 'none';
+  
+  buildTierContent(tier);
+  updateStats();
+}
+
+function buildTierContent(tier){
+  const container = document.getElementById('tier-content');
+  
+  const tierLessons = lessons.filter(l => l.tier_required === tier);
+  
+  const grouped = {};
+  tierLessons.forEach(l => {
+    let cat = getCategoryForTier(l.title, tier);
+    if(!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(l);
+  });
+  
+  let html = '<div class="two-col">';
+  html += '<div class="left-menu"><h4>📁 Categories</h4>';
+  html += buildMenuWithDropdowns(grouped);
+  html += '</div>';
+  
+  html += '<div class="right-col">';
+  html += '<div class="cat-header"><h2 id="cat-title">Select a category</h2><p id="cat-subtitle">Choose from the menu on the left</p></div>';
+  html += '<div id="vid-list"></div>';
+  html += '<div id="player-box" class="player-box">';
+  html += '<h3 id="p-title"></h3>';
+  html += '<div class="player-desc" id="p-desc"></div>';
+  html += '<iframe id="p-iframe" src="" allowfullscreen></iframe>';
+  html += '<div class="player-actions">';
+  html += '<button class="btn-gold" id="p-watch-btn" onclick="toggleWatched()">✓ Mark as watched</button>';
+  html += '<button class="btn btn-gray" onclick="closePlayer()">✕ Close</button>';
+  html += '<span class="watched-label" id="p-watch-label"></span>';
+  html += '</div></div></div></div>';
+  
+  container.innerHTML = html;
+}
+
+function getCategoryForTier(title, tier){
+  const t = title.toLowerCase();
+  if(t.includes("nlp") || t.includes("strategic visioning") || t.includes("grey room") || t.includes("anchors") || t.includes("swish")){
+    if(tier === 3) return "NLP Masterclass";
+    else return "NLP Masterclass";
+  }
+  if(t.includes("2024") || t.includes("2025") || t.includes("2026")){
+    if(tier === 3 && (t.includes("group") || t.includes("coach"))) return "Group Coaching";
+    else if(tier === 1 || tier === 2) return "Group Coaching";
+  }
+  if(t.includes("coaching lesson") || t.includes("coach yourself") || t.includes("world class coach") || t.includes("state elicitation")) return "Coaching Certification";
+  if(t.includes("unlock") || t.includes("incredible")) return "Unlock Your Incredible Self";
+  if(t.includes("group coaching") || t.includes("mentoring")) return "Group Coaching";
+  if(t.includes("emotional") || t.includes("clearing") || t.includes("gift") || t.includes("1.")) return "Emotional Clearing";
+  if(t.includes("morning") || t.includes("routine")) return "Morning Routine";
+  if(t.includes("free") || t.includes("intro") || t.includes("confidence") || t.includes("full control") || t.includes("nlp basics")) return "Free Introductions";
+  if(t.includes("meditation") || t.includes("breath") || t.includes("dancing") || t.includes("womb")) return "Meditations";
+  if(t.includes("blue hat") || t.includes("excitement")) return "Bonus Resources";
+  return "Other Content";
+}
+
+function selectVideo(id){
   const v = lessons.find(x => x.id === id);
   if(!v) return;
-  if(v.tier_required > currentUserTier){ alert("Upgrade required"); return; }
+  
+  if(v.tier_required > currentUserTier){
+    alert(`This content requires Tier ${v.tier_required} access. Please upgrade your membership.`);
+    return;
+  }
+  
   currentVideoId = id;
-  // ... rest of player logic
+  
+  document.querySelectorAll(".vid-item").forEach(x => x.classList.remove("active"));
+  const vi = document.getElementById("vi-"+id);
+  if(vi) vi.classList.add("active");
+  
+  document.getElementById("p-title").innerText = v.title;
+  document.getElementById("p-desc").innerText = v.description || "";
+  
+  const iframe = document.getElementById("p-iframe");
+  iframe.src = "";
+  setTimeout(() => { iframe.src = v.google_drive_embed_url || ""; }, 60);
+  
+  const isW = watched[id];
+  const btn = document.getElementById("p-watch-btn");
+  const lbl = document.getElementById("p-watch-label");
+  btn.textContent = isW ? "✓ Watched" : "✓ Mark as watched";
+  btn.style.background = isW ? "#1D9E75" : "#C9A84C";
+  lbl.textContent = isW ? "Completed!" : "";
+  
+  document.getElementById("player-box").classList.add("on");
 }
 
-function toggleWatched(tier){ /* same as before */ }
-function closePlayer(tier){ /* same as before */ }
-function toggleDesc(tier){ /* same as before */ }
+function toggleWatched(){
+  if(!currentVideoId) return;
+  if(watched[currentVideoId]){ delete watched[currentVideoId]; }
+  else { watched[currentVideoId] = true; }
+  saveWatched();
+  
+  const isW = watched[currentVideoId];
+  const btn = document.getElementById("p-watch-btn");
+  const lbl = document.getElementById("p-watch-label");
+  btn.textContent = isW ? "✓ Watched" : "✓ Mark as watched";
+  btn.style.background = isW ? "#1D9E75" : "#C9A84C";
+  lbl.textContent = isW ? "Completed!" : "";
+  
+  const vi = document.getElementById("vi-"+currentVideoId);
+  if(vi){
+    const meta = vi.querySelector(".vid-meta");
+    const existing = meta.querySelector(".tick");
+    if(isW && !existing){
+      const t = document.createElement("span");
+      t.className = "tick";
+      t.textContent = "✓";
+      meta.insertBefore(t, meta.firstChild);
+    } else if(!isW && existing){ existing.remove(); }
+  }
+  
+  buildTierContent(currentTier);
+  updateStats();
+}
 
-// ==================== NOTES & STATS ====================
-function saveNote(){ /* same as before */ }
-function renderNotes(){ /* same as before */ }
-function deleteNote(id){ /* same as before */ }
-function updateStats(){ /* same as before */ }
-function esc(s){ return !s ? "" : s.replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
-function contactUpgrade(tier){ window.location.href = `mailto:info@accessworldseminars.com?subject=Tier%20${tier}%20Upgrade`; }
+function closePlayer(){
+  document.getElementById("player-box").classList.remove("on");
+  document.getElementById("p-iframe").src = "";
+  currentVideoId = null;
+}
 
-// ==================== AUTO LOGIN ====================
-window.onload = async () => {
-  const {data:{user}} = await sb.auth.getUser();
-  if(user) await boot();
-};
+function showNotes(){
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.getElementById('btn-notes').classList.add('active');
+  document.getElementById('tier-content').innerHTML = '';
+  document.getElementById('notes-view').style.display = 'block';
+  renderNotes();
+}
+
+function showTier(tier){
+  document.getElementById('notes-view').style.display = 'none';
+  switchTier(tier);
+}
+
+function saveNote(){
+  const title = document.getElementById("n-title").value.trim();
+  const body = document.getElementById("n-body").value.trim();
+  if(!body){ alert("Please write something."); return; }
+  notes.unshift({id: Date.now(), title: title || "Untitled note", body: body, date: new Date().toLocaleDateString("en-AU")});
+  saveNotes();
+  document.getElementById("n-title").value = "";
+  document.getElementById("n-body").value = "";
+  renderNotes();
+  updateStats();
+}
+
+function deleteNote(id){
+  if(!confirm("Delete this note?")) return;
+  notes = notes.filter(n => n.id !== id);
+  saveNotes();
+  renderNotes();
+  updateStats();
+}
+
+function renderNotes(){
+  const list = document.getElementById("notes-list");
+  if(!notes.length){ list.innerHTML = '<div class="empty">No notes yet.</div>'; return; }
+  list.innerHTML = notes.map(n => `<div class="note-card"><div class="note-hdr"><div class="note-title">${escapeHtml(n.title)}</div><div class="note-date">${n.date}</div></div><div class="note-body">${escapeHtml(n.body)}</div><button class="note-del" onclick="deleteNote(${n.id})">Delete</button></div>`).join("");
+}
+
+function updateStats(){
+  const totalAccessible = lessons.filter(l => l.tier_required <= currentUserTier && l.tier_required === currentTier).length;
+  document.getElementById("s-total").textContent = totalAccessible;
+  document.getElementById("s-watched").textContent = Object.keys(watched).length;
+  document.getElementById("s-notes").textContent = notes.length;
+}
+
+function escapeHtml(s){ if(!s) return ""; return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+async function logout(){ await sb.auth.signOut(); location.reload(); }
+
+window.onload = async() => { const {data: {user}} = await sb.auth.getUser(); if(user) await boot(); };
 </script>
 </body>
 </html>
