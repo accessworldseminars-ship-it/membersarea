@@ -45,17 +45,10 @@ input:focus{border-color:#1D9E75}
 .menu-left{display:flex;align-items:center;gap:8px}
 .menu-count{font-size:12px;color:#aaa}
 .watched-count{font-size:11px;background:#C9A84C;color:#fff;padding:1px 6px;border-radius:10px;margin-left:4px}
-/* Dropdown styles */
 .dropdown-item{padding:10px 14px 10px 28px;margin-bottom:2px;border-radius:8px;cursor:pointer;transition:all .2s;font-weight:500;color:#555;font-size:13px;display:flex;align-items:center;justify-content:space-between}
 .dropdown-item:hover{background:#e8f9f1}
 .dropdown-item.active{background:#1D9E75;color:#fff}
-.dropdown-item .menu-count{font-size:11px}
-.dropdown-subitem{padding:8px 14px 8px 42px;margin-bottom:2px;border-radius:8px;cursor:pointer;transition:all .2s;font-weight:400;color:#666;font-size:12px;display:flex;align-items:center;justify-content:space-between}
-.dropdown-subitem:hover{background:#e8f9f1}
-.dropdown-subitem.active{background:#1D9E75;color:#fff}
 .dropdown-arrow{font-size:10px;margin-left:8px;transition:transform .2s}
-.dropdown-arrow.open{transform:rotate(90deg)}
-.nested-menu{padding-left:8px}
 .right-col{flex:1;min-width:0}
 .cat-header{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #eee}
 .cat-header h2{font-size:18px;color:#1A2744}
@@ -158,7 +151,6 @@ const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
 let lessons = [], watched = {}, notes = [], currentVideoId = null, currentUserTier = 1, currentTier = 1;
-let currentCategoryCallback = null;
 
 function loadLocal(){
   watched = JSON.parse(localStorage.getItem("aw_watched")||"{}");
@@ -189,6 +181,9 @@ async function boot(){
   lessons = data||[];
   
   console.log("Total lessons:", lessons.length);
+  console.log("Tier 1:", lessons.filter(l => l.tier_required === 1).length);
+  console.log("Tier 2:", lessons.filter(l => l.tier_required === 2).length);
+  console.log("Tier 3:", lessons.filter(l => l.tier_required === 3).length);
   
   document.getElementById("login-section").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
@@ -202,7 +197,7 @@ const nlpCategories = {
   "NLP Collapse Anchors": ["210325 NLP Collapse anchor part1", "210325 NLP Collapse anchor part 2", "NLP Masterclass 3 collapse anchors", "NLP Masterclass Collapse achors part2"],
   "NLP Dissociation": ["NLP training dissociation (2)", "NLP training dissociation"],
   "NLP Future Pacing": ["210225 Nlp Future Pacing(1)"],
-  "NLP Grey Room": ["1.1b the process grey room", "1605 grey room part 1", "1605 grey room part 2", "240525 The Grey room process", "240525 The grey room part2", "240525 the grey room part1"],
+  "NLP Grey Room": ["1605 grey room part 1", "1605 grey room part 2", "240525 The Grey room process", "240525 The grey room part2", "240525 the grey room part1"],
   "NLP Incantations": ["incantations part 2", "incantations part 3", "incantations part1"],
   "NLP Keywords": ["NLP training Keywords Part1", "NLP training Keywords Part2", "NLP training Keywords Part3", "NLP training Keywords Part4"],
   "NLP Neurological Bridge": ["NLP Integration session 3 Neurological bridge"],
@@ -223,74 +218,13 @@ const nlpCategories = {
   "NLP Language Patterns": ["NLP session 250425a"]
 };
 
-function buildMenuWithDropdowns(grouped){
-  let html = '';
-  
-  for(const [cat, vids] of Object.entries(grouped)){
-    const wc = vids.filter(l => watched[l.id]).length;
-    
-    // Check if this is NLP Masterclass in Tier 3
-    if(cat === "NLP Masterclass" && currentTier === 3){
-      html += `<div class="menu-item" onclick="toggleNlpDropdown(this)">
-        <div class="menu-left"><span>🧠</span><span>NLP Masterclass</span><span class="dropdown-arrow">▶</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
-        <span class="menu-count">${vids.length}</span>
-      </div>`;
-      html += `<div id="nlp-dropdown" style="display:none; padding-left:12px;">`;
-      for(const [subcat, titles] of Object.entries(nlpCategories)){
-        const subVids = vids.filter(v => titles.some(t => v.title.includes(t) || titles.some(t2 => t2.toLowerCase() === v.title.toLowerCase())));
-        if(subVids.length > 0){
-          const subWc = subVids.filter(l => watched[l.id]).length;
-          html += `<div class="dropdown-item" onclick="event.stopPropagation(); selectNlpSubcategory('${subcat}', ${JSON.stringify(subVids).replace(/"/g, '&quot;')})">
-            <div class="menu-left"><span>📂</span><span>${subcat}</span>${subWc>0?`<span class="watched-count">${subWc}</span>`:""}</div>
-            <span class="menu-count">${subVids.length}</span>
-          </div>`;
-        }
-      }
-      html += `</div>`;
-    }
-    // Check if this is Group Coaching in Tier 3 (has 50+ videos)
-    else if(cat === "Group Coaching" && currentTier === 3 && vids.length > 30){
-      // Group by year
-      const byYear = {2024: [], 2025: [], 2026: []};
-      vids.forEach(v => {
-        if(v.title.includes("2024")) byYear[2024].push(v);
-        else if(v.title.includes("2025")) byYear[2025].push(v);
-        else if(v.title.includes("2026")) byYear[2026].push(v);
-        else byYear["Other"] = byYear["Other"] || [];
-      });
-      
-      html += `<div class="menu-item" onclick="toggleYearDropdown(this)">
-        <div class="menu-left"><span>👥</span><span>Group Coaching</span><span class="dropdown-arrow">▶</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
-        <span class="menu-count">${vids.length}</span>
-      </div>`;
-      html += `<div id="year-dropdown" style="display:none; padding-left:12px;">`;
-      for(const [year, yearVids] of Object.entries(byYear)){
-        if(yearVids && yearVids.length > 0){
-          const yearWc = yearVids.filter(l => watched[l.id]).length;
-          html += `<div class="dropdown-item" onclick="event.stopPropagation(); selectYearSubcategory('${year}', ${JSON.stringify(yearVids).replace(/"/g, '&quot;')})">
-            <div class="menu-left"><span>📅</span><span>Coaching ${year}</span>${yearWc>0?`<span class="watched-count">${yearWc}</span>`:""}</div>
-            <span class="menu-count">${yearVids.length}</span>
-          </div>`;
-        }
-      }
-      html += `</div>`;
-    }
-    else {
-      html += `<div class="menu-item" onclick="selectCategory('${cat}', ${JSON.stringify(vids).replace(/"/g, '&quot;')})">
-        <div class="menu-left"><span>${getIconForCategory(cat)}</span><span>${cat}</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
-        <span class="menu-count">${vids.length}</span>
-      </div>`;
-    }
-  }
-  return html;
-}
-
 function getIconForCategory(cat){
   const icons = {
     "Unlock Your Incredible Self": "🌟",
-    "Group Coaching": "👥",
-    "Emotional Clearing": "💚",
     "Morning Routine": "🌅",
+    "Emotional Clearing": "💚",
+    "Goal Setting": "🎯",
+    "Group Coaching": "👥",
     "Strategic Visioning": "🎯",
     "NLP Masterclass": "🧠",
     "Free Introductions": "🎓",
@@ -301,10 +235,159 @@ function getIconForCategory(cat){
   return icons[cat] || "📁";
 }
 
-let currentCategoryVids = [];
+function getCategoryForTier(title, tier){
+  const t = title.toLowerCase();
+  
+  // Special handling for Tier 1
+  if(tier === 1){
+    if(t.includes("unlock") || t.includes("incredible")) return "Unlock Your Incredible Self";
+    if(t.includes("morning") || t.includes("routine")) return "Morning Routine";
+    if(t.includes("emotional") || t.includes("clearing") || t.includes("gift") || t.includes("1.0") || t.includes("1.1") || t.includes("1.2") || t.includes("1.4") || t.includes("1.5") || t.includes("1.6") || t.includes("1.1b the process grey room")) return "Emotional Clearing";
+    if(t.includes("goal setting")) return "Goal Setting";
+    if(t.includes("group coaching") || t.includes("coach") || (t.includes("202") && !t.includes("nlp"))) return "Group Coaching";
+    if(t.includes("strategic") || t.includes("visioning")) return "Strategic Visioning";
+    if(t.includes("free") || t.includes("intro") || t.includes("confidence") || t.includes("full control")) return "Free Introductions";
+    if(t.includes("nlp")) return "NLP Masterclass";
+    return "Other Content";
+  }
+  
+  // Tier 2 and Tier 3 categories
+  if(t.includes("nlp") || t.includes("strategic visioning") || t.includes("grey room") || t.includes("anchors") || t.includes("swish")){
+    if(tier === 3) return "NLP Masterclass";
+    else return "NLP Masterclass";
+  }
+  if(t.includes("2024") || t.includes("2025") || t.includes("2026")){
+    if(tier === 3 && (t.includes("group") || t.includes("coach"))) return "Group Coaching";
+    else if(tier === 1 || tier === 2) return "Group Coaching";
+  }
+  if(t.includes("coaching lesson") || t.includes("coach yourself") || t.includes("world class coach") || t.includes("state elicitation")) return "Coaching Certification";
+  if(t.includes("unlock") || t.includes("incredible")) return "Unlock Your Incredible Self";
+  if(t.includes("group coaching") || t.includes("mentoring")) return "Group Coaching";
+  if(t.includes("emotional") || t.includes("clearing") || t.includes("gift") || t.includes("1.")) return "Emotional Clearing";
+  if(t.includes("morning") || t.includes("routine")) return "Morning Routine";
+  if(t.includes("free") || t.includes("intro") || t.includes("confidence") || t.includes("full control") || t.includes("nlp basics")) return "Free Introductions";
+  if(t.includes("meditation") || t.includes("breath") || t.includes("dancing") || t.includes("womb")) return "Meditations";
+  if(t.includes("blue hat") || t.includes("excitement")) return "Bonus Resources";
+  if(t.includes("goal setting")) return "Goal Setting";
+  return "Other Content";
+}
+
+// Custom order for Tier 1 categories
+const tier1CategoryOrder = ["Unlock Your Incredible Self", "Morning Routine", "Emotional Clearing", "Goal Setting", "Group Coaching", "Strategic Visioning", "Free Introductions", "NLP Masterclass"];
+
+function buildTierContent(tier){
+  const container = document.getElementById('tier-content');
+  
+  const tierLessons = lessons.filter(l => l.tier_required === tier);
+  
+  const grouped = {};
+  tierLessons.forEach(l => {
+    let cat = getCategoryForTier(l.title, tier);
+    if(!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(l);
+  });
+  
+  let html = '<div class="two-col">';
+  html += '<div class="left-menu"><h4>📁 Categories</h4>';
+  
+  if(tier === 1){
+    // Display Tier 1 categories in custom order
+    for(const cat of tier1CategoryOrder){
+      const vids = grouped[cat];
+      if(vids && vids.length > 0){
+        const wc = vids.filter(l => watched[l.id]).length;
+        html += `<div class="menu-item" onclick="selectCategory('${cat}', ${JSON.stringify(vids).replace(/"/g, '&quot;')})">
+          <div class="menu-left"><span>${getIconForCategory(cat)}</span><span>${cat}</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
+          <span class="menu-count">${vids.length}</span>
+        </div>`;
+      }
+    }
+    // Add any remaining categories not in the order list
+    for(const [cat, vids] of Object.entries(grouped)){
+      if(!tier1CategoryOrder.includes(cat)){
+        const wc = vids.filter(l => watched[l.id]).length;
+        html += `<div class="menu-item" onclick="selectCategory('${cat}', ${JSON.stringify(vids).replace(/"/g, '&quot;')})">
+          <div class="menu-left"><span>${getIconForCategory(cat)}</span><span>${cat}</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
+          <span class="menu-count">${vids.length}</span>
+        </div>`;
+      }
+    }
+  } else {
+    // Tier 2 and Tier 3 - standard order with NLP dropdown
+    for(const [cat, vids] of Object.entries(grouped)){
+      const wc = vids.filter(l => watched[l.id]).length;
+      
+      if(cat === "NLP Masterclass" && tier === 3){
+        html += `<div class="menu-item" onclick="toggleNlpDropdown(this)">
+          <div class="menu-left"><span>🧠</span><span>NLP Masterclass</span><span class="dropdown-arrow">▶</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
+          <span class="menu-count">${vids.length}</span>
+        </div>`;
+        html += `<div id="nlp-dropdown" style="display:none; padding-left:12px;">`;
+        for(const [subcat, titles] of Object.entries(nlpCategories)){
+          const subVids = vids.filter(v => titles.some(t => v.title.includes(t) || titles.some(t2 => t2.toLowerCase() === v.title.toLowerCase())));
+          if(subVids.length > 0){
+            const subWc = subVids.filter(l => watched[l.id]).length;
+            html += `<div class="dropdown-item" onclick="event.stopPropagation(); selectNlpSubcategory('${subcat}', ${JSON.stringify(subVids).replace(/"/g, '&quot;')})">
+              <div class="menu-left"><span>📂</span><span>${subcat}</span>${subWc>0?`<span class="watched-count">${subWc}</span>`:""}</div>
+              <span class="menu-count">${subVids.length}</span>
+            </div>`;
+          }
+        }
+        html += `</div>`;
+      }
+      else if(cat === "Group Coaching" && tier === 3 && vids.length > 30){
+        const byYear = {2024: [], 2025: [], 2026: []};
+        vids.forEach(v => {
+          if(v.title.includes("2024")) byYear[2024].push(v);
+          else if(v.title.includes("2025")) byYear[2025].push(v);
+          else if(v.title.includes("2026")) byYear[2026].push(v);
+          else byYear["Other"] = byYear["Other"] || [];
+        });
+        
+        html += `<div class="menu-item" onclick="toggleYearDropdown(this)">
+          <div class="menu-left"><span>👥</span><span>Group Coaching</span><span class="dropdown-arrow">▶</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
+          <span class="menu-count">${vids.length}</span>
+        </div>`;
+        html += `<div id="year-dropdown" style="display:none; padding-left:12px;">`;
+        for(const [year, yearVids] of Object.entries(byYear)){
+          if(yearVids && yearVids.length > 0){
+            const yearWc = yearVids.filter(l => watched[l.id]).length;
+            html += `<div class="dropdown-item" onclick="event.stopPropagation(); selectYearSubcategory('${year}', ${JSON.stringify(yearVids).replace(/"/g, '&quot;')})">
+              <div class="menu-left"><span>📅</span><span>Coaching ${year}</span>${yearWc>0?`<span class="watched-count">${yearWc}</span>`:""}</div>
+              <span class="menu-count">${yearVids.length}</span>
+            </div>`;
+          }
+        }
+        html += `</div>`;
+      }
+      else {
+        html += `<div class="menu-item" onclick="selectCategory('${cat}', ${JSON.stringify(vids).replace(/"/g, '&quot;')})">
+          <div class="menu-left"><span>${getIconForCategory(cat)}</span><span>${cat}</span>${wc>0?`<span class="watched-count">${wc}</span>`:""}</div>
+          <span class="menu-count">${vids.length}</span>
+        </div>`;
+      }
+    }
+  }
+  
+  html += '</div>';
+  
+  html += '<div class="right-col">';
+  html += '<div class="cat-header"><h2 id="cat-title">Select a category</h2><p id="cat-subtitle">Choose from the menu on the left</p></div>';
+  html += '<div id="vid-list"></div>';
+  html += '<div id="player-box" class="player-box">';
+  html += '<h3 id="p-title"></h3>';
+  html += '<div class="player-desc" id="p-desc"></div>';
+  html += '<iframe id="p-iframe" src="" allowfullscreen></iframe>';
+  html += '<div class="player-actions">';
+  html += '<button class="btn-gold" id="p-watch-btn" onclick="toggleWatched()">✓ Mark as watched</button>';
+  html += '<button class="btn btn-gray" onclick="closePlayer()">✕ Close</button>';
+  html += '<span class="watched-label" id="p-watch-label"></span>';
+  html += '</div></div></div></div>';
+  
+  container.innerHTML = html;
+}
 
 function selectCategory(catName, vids){
-  currentCategoryVids = vids;
   document.getElementById("cat-title").innerText = catName;
   document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
   
@@ -323,12 +406,11 @@ function selectCategory(catName, vids){
     </div>`;
   });
   document.getElementById("vid-list").innerHTML = html;
-  document.querySelectorAll(".menu-item, .dropdown-item, .dropdown-subitem").forEach(m => m.classList.remove("active"));
-  if(event && event.target) event.target.closest('.menu-item, .dropdown-item, .dropdown-subitem')?.classList.add("active");
+  document.querySelectorAll(".menu-item, .dropdown-item").forEach(m => m.classList.remove("active"));
+  if(event && event.target) event.target.closest('.menu-item, .dropdown-item')?.classList.add("active");
 }
 
 function selectNlpSubcategory(subcatName, vids){
-  currentCategoryVids = vids;
   document.getElementById("cat-title").innerText = subcatName;
   document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
   
@@ -347,12 +429,11 @@ function selectNlpSubcategory(subcatName, vids){
     </div>`;
   });
   document.getElementById("vid-list").innerHTML = html;
-  document.querySelectorAll(".menu-item, .dropdown-item, .dropdown-subitem").forEach(m => m.classList.remove("active"));
-  if(event && event.target) event.target.closest('.dropdown-item, .dropdown-subitem')?.classList.add("active");
+  document.querySelectorAll(".menu-item, .dropdown-item").forEach(m => m.classList.remove("active"));
+  if(event && event.target) event.target.closest('.dropdown-item')?.classList.add("active");
 }
 
 function selectYearSubcategory(year, vids){
-  currentCategoryVids = vids;
   document.getElementById("cat-title").innerText = `Group Coaching ${year}`;
   document.getElementById("cat-subtitle").innerText = vids.length + " video" + (vids.length !== 1 ? "s" : "");
   
@@ -371,12 +452,9 @@ function selectYearSubcategory(year, vids){
     </div>`;
   });
   document.getElementById("vid-list").innerHTML = html;
-  document.querySelectorAll(".menu-item, .dropdown-item, .dropdown-subitem").forEach(m => m.classList.remove("active"));
-  if(event && event.target) event.target.closest('.dropdown-item, .dropdown-subitem')?.classList.add("active");
+  document.querySelectorAll(".menu-item, .dropdown-item").forEach(m => m.classList.remove("active"));
+  if(event && event.target) event.target.closest('.dropdown-item')?.classList.add("active");
 }
-
-let nlpDropdownOpen = false;
-let yearDropdownOpen = false;
 
 function toggleNlpDropdown(el){
   const dropdown = document.getElementById("nlp-dropdown");
@@ -417,60 +495,6 @@ function switchTier(tier){
   
   buildTierContent(tier);
   updateStats();
-}
-
-function buildTierContent(tier){
-  const container = document.getElementById('tier-content');
-  
-  const tierLessons = lessons.filter(l => l.tier_required === tier);
-  
-  const grouped = {};
-  tierLessons.forEach(l => {
-    let cat = getCategoryForTier(l.title, tier);
-    if(!grouped[cat]) grouped[cat] = [];
-    grouped[cat].push(l);
-  });
-  
-  let html = '<div class="two-col">';
-  html += '<div class="left-menu"><h4>📁 Categories</h4>';
-  html += buildMenuWithDropdowns(grouped);
-  html += '</div>';
-  
-  html += '<div class="right-col">';
-  html += '<div class="cat-header"><h2 id="cat-title">Select a category</h2><p id="cat-subtitle">Choose from the menu on the left</p></div>';
-  html += '<div id="vid-list"></div>';
-  html += '<div id="player-box" class="player-box">';
-  html += '<h3 id="p-title"></h3>';
-  html += '<div class="player-desc" id="p-desc"></div>';
-  html += '<iframe id="p-iframe" src="" allowfullscreen></iframe>';
-  html += '<div class="player-actions">';
-  html += '<button class="btn-gold" id="p-watch-btn" onclick="toggleWatched()">✓ Mark as watched</button>';
-  html += '<button class="btn btn-gray" onclick="closePlayer()">✕ Close</button>';
-  html += '<span class="watched-label" id="p-watch-label"></span>';
-  html += '</div></div></div></div>';
-  
-  container.innerHTML = html;
-}
-
-function getCategoryForTier(title, tier){
-  const t = title.toLowerCase();
-  if(t.includes("nlp") || t.includes("strategic visioning") || t.includes("grey room") || t.includes("anchors") || t.includes("swish")){
-    if(tier === 3) return "NLP Masterclass";
-    else return "NLP Masterclass";
-  }
-  if(t.includes("2024") || t.includes("2025") || t.includes("2026")){
-    if(tier === 3 && (t.includes("group") || t.includes("coach"))) return "Group Coaching";
-    else if(tier === 1 || tier === 2) return "Group Coaching";
-  }
-  if(t.includes("coaching lesson") || t.includes("coach yourself") || t.includes("world class coach") || t.includes("state elicitation")) return "Coaching Certification";
-  if(t.includes("unlock") || t.includes("incredible")) return "Unlock Your Incredible Self";
-  if(t.includes("group coaching") || t.includes("mentoring")) return "Group Coaching";
-  if(t.includes("emotional") || t.includes("clearing") || t.includes("gift") || t.includes("1.")) return "Emotional Clearing";
-  if(t.includes("morning") || t.includes("routine")) return "Morning Routine";
-  if(t.includes("free") || t.includes("intro") || t.includes("confidence") || t.includes("full control") || t.includes("nlp basics")) return "Free Introductions";
-  if(t.includes("meditation") || t.includes("breath") || t.includes("dancing") || t.includes("womb")) return "Meditations";
-  if(t.includes("blue hat") || t.includes("excitement")) return "Bonus Resources";
-  return "Other Content";
 }
 
 function selectVideo(id){
