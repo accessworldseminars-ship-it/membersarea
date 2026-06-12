@@ -7,11 +7,11 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: linear-gradient(145deg, #0F172A 0%, #111827 100%); font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; padding: 24px 20px; }
-.portal { max-width: 1400px; margin: 0 auto; background: #ffffff; border-radius: 2rem; box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.4); overflow: hidden; }
+.portal { max-width: 1400px; margin: 0 auto; background: #ffffff; border-radius: 2rem; box-shadow: 0 25px 45px -12px rgba(0,0,0,0.4); overflow: hidden; }
 
-/* Login view */
+/* Login */
 .login-panel { display: flex; align-items: center; justify-content: center; min-height: 85vh; background: #ffffff; }
-.login-card { background: white; padding: 44px 40px; border-radius: 2rem; max-width: 460px; width: 100%; text-align: center; border: 1px solid rgba(201, 168, 76, 0.3); box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08); }
+.login-card { background: white; padding: 44px 40px; border-radius: 2rem; max-width: 460px; width: 100%; text-align: center; border: 1px solid rgba(201,168,76,0.3); box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08); }
 .login-card h1 { font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #1A2744, #2A3A5C); background-clip: text; -webkit-background-clip: text; color: transparent; }
 .login-card p { color: #5b6e8c; margin: 10px 0 28px; }
 .input-field { margin-bottom: 18px; text-align: left; }
@@ -26,19 +26,20 @@ body { background: linear-gradient(145deg, #0F172A 0%, #111827 100%); font-famil
 .btn-outline-gold:hover { background: #C9A84C; color: #1A2744; }
 .btn-gold { background: #C9A84C; color: #1A2744; padding: 8px 18px; font-weight: 700; }
 .btn-gold:hover { background: #b8933f; }
-.btn-green { background: #16a34a; color: white; }
+.btn-green { background: #16a34a; color: white; padding: 8px 18px; }
 .btn-green:hover { background: #15803d; }
-.btn-red { background: #dc2626; color: white; }
+.btn-red { background: #dc2626; color: white; padding: 8px 18px; }
 .btn-red:hover { background: #b91c1c; }
+.btn-navy { background: #1A2744; color: white; padding: 8px 18px; }
+.btn-navy:hover { background: #243660; }
 .error-message { color: #dc3c4c; font-size: 13px; margin-top: 16px; }
-.success-message { color: #1D9E75; font-size: 13px; margin-top: 16px; }
 
 /* Dashboard */
 .dashboard-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 32px; background: white; border-bottom: 1px solid #edf2f7; flex-wrap: wrap; gap: 12px; }
 .logo-area h2 { font-size: 22px; font-weight: 700; color: #1A2744; }
 .tier-badge { background: #1D9E75; padding: 6px 18px; border-radius: 40px; font-size: 12px; font-weight: 700; color: white; }
-.admin-badge { background: #C9A84C; color: #1A2744; padding: 6px 18px; border-radius: 40px; font-size: 12px; font-weight: 700; }
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 24px 32px 0 32px; }
+.admin-pill { background: #C9A84C; color: #1A2744; padding: 6px 18px; border-radius: 40px; font-size: 12px; font-weight: 700; }
+.stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; padding: 24px 32px 0; }
 .stat-card { background: #F9FAFE; border-radius: 1.5rem; padding: 18px 12px; text-align: center; border: 1px solid #eef2f8; cursor: pointer; transition: 0.2s; }
 .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 .stat-number { font-size: 36px; font-weight: 800; color: #1A2744; }
@@ -51,7 +52,7 @@ body { background: linear-gradient(145deg, #0F172A 0%, #111827 100%); font-famil
 .two-columns { display: flex; gap: 28px; flex-wrap: wrap; }
 .sidebar { width: 280px; flex-shrink: 0; background: #F9FAFE; border-radius: 1.5rem; padding: 18px 14px; max-height: 620px; overflow-y: auto; }
 .category-item { padding: 10px 12px; margin-bottom: 6px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-weight: 600; font-size: 13px; color: #2c3e66; transition: 0.2s; }
-.category-item:hover { background: #eef2fa; transform: translateX(2px); }
+.category-item:hover { background: #eef2fa; }
 .category-item.active { background: #1A2744; color: white; }
 .cat-count { background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 30px; font-size: 11px; }
 .main-panel { flex: 1; }
@@ -61,60 +62,63 @@ body { background: linear-gradient(145deg, #0F172A 0%, #111827 100%); font-famil
 .video-card.active-video { border-left: 5px solid #1D9E75; background: #F2F9F5; }
 .player-panel { margin-top: 28px; background: #F9FAFE; border-radius: 1.5rem; padding: 22px; display: none; animation: slideUp 0.3s ease; }
 .player-panel.show { display: block; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 iframe { width: 100%; height: 400px; border-radius: 1.2rem; border: none; background: #000; }
 .player-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
 .notes-section { background: #F9FAFE; border-radius: 1.5rem; padding: 24px; }
 .note-item { background: white; border-radius: 1rem; padding: 16px; margin-bottom: 12px; border-left: 3px solid #C9A84C; }
-.note-text { margin-bottom: 8px; color: #2c3e66; }
-.note-date { font-size: 11px; color: #8a99b0; }
-.note-actions { display: flex; gap: 8px; margin-top: 8px; }
-.add-note { margin-top: 20px; }
-.add-note textarea { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 1rem; font-family: inherit; resize: vertical; }
+.add-note textarea { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 1rem; font-family: inherit; resize: vertical; margin-top: 20px; }
 @media (max-width: 760px) { .stats-grid { grid-template-columns: repeat(2,1fr); } .sidebar { width: 100%; } .two-columns { flex-direction: column; } iframe { height: 240px; } .login-card { padding: 32px 20px; } }
 
 /* Admin panel */
 #adminPanel { background: #0c111c; border-radius: 1.5rem; overflow: hidden; }
-.admin-header, .toolbar, .bulk-bar, .tabs, .table-wrap, .pagination { margin: 20px; }
+.admin-section { margin: 20px; }
 .admin-header { background: #111827; border-radius: 1rem; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 .admin-header h2 { color: #C9A84C; }
 .toolbar { background: #111827; border-radius: 1rem; padding: 12px 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .toolbar input, .toolbar select { background: #1f2937; border: 1px solid #374151; color: white; padding: 8px 16px; border-radius: 30px; }
 .toolbar input:focus, .toolbar select:focus { outline: none; border-color: #C9A84C; }
-.tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.admin-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 .tab { background: #1f2937; color: #9ca3af; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; }
 .tab:hover { background: #2d3748; color: white; }
 .tab.active { background: #C9A84C; color: #000; }
 .bulk-bar { background: #111827; border-radius: 1rem; padding: 12px 16px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.bulk-bar input, .bulk-bar select { background: #1f2937; border: 1px solid #374151; color: white; padding: 6px 12px; border-radius: 30px; }
+.bulk-bar select { background: #1f2937; border: 1px solid #374151; color: white; padding: 6px 12px; border-radius: 30px; }
 .table-wrap { overflow-x: auto; background: #111827; border-radius: 1rem; }
 table { width: 100%; border-collapse: collapse; min-width: 1000px; }
 th { background: #0f1722; color: #C9A84C; padding: 12px 14px; text-align: left; font-size: 12px; font-weight: 600; }
-td { padding: 10px 14px; border-bottom: 1px solid #1a2332; }
+td { padding: 10px 14px; border-bottom: 1px solid #1a2332; color: #e5e7eb; }
 tr:hover td { background: #161f2e; }
 .cell-input { background: #1f2937; border: 1px solid #374151; color: white; padding: 6px 10px; border-radius: 8px; font-size: 13px; }
 .cell-input:focus { outline: none; border-color: #C9A84C; }
+/* ── KEY: folder dropdown in table ── */
+.folder-select { background: #1f2937; border: 1px solid #374151; color: white; padding: 6px 10px; border-radius: 8px; font-size: 13px; width: 200px; }
+.folder-select:focus { outline: none; border-color: #C9A84C; }
 .title-input { width: 200px; }
-.folder-input { width: 180px; }
 .sort-input { width: 70px; text-align: center; }
 .page-btn { background: #1f2937; border: 1px solid #374151; color: #e5e7eb; padding: 6px 14px; border-radius: 30px; cursor: pointer; margin: 0 2px; transition: 0.2s; }
 .page-btn:hover:not(:disabled) { background: #374151; }
 .page-btn.active { background: #C9A84C; color: #000; border-color: #C9A84C; }
 .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 22px; border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 9999; animation: fadeIn 0.3s ease; background: #16a34a; color: white; }
+.toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 22px; border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 9999; animation: fadeIn 0.3s ease; color: white; }
+.toast-ok { background: #16a34a; }
 .toast-error { background: #dc2626; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
-.modal-content { background: #1f2937; padding: 30px; border-radius: 1.5rem; max-width: 500px; width: 90%; }
-.modal-content input, .modal-content textarea, .modal-content select { width: 100%; margin: 10px 0; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #111827; color: white; }
-.loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.6s linear infinite; }
+.modal-content { background: #1f2937; padding: 30px; border-radius: 1.5rem; max-width: 500px; width: 90%; color: white; }
+.modal-content input, .modal-content textarea, .modal-content select { width: 100%; margin: 8px 0; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #111827; color: white; font-size: 14px; }
+.modal-content label { font-size: 12px; color: #9ca3af; margin-top: 8px; display: block; }
+.loading-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.6s linear infinite; vertical-align: middle; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* View-toggle banner shown to admins in member view */
+.admin-banner { background: #1A2744; color: #C9A84C; padding: 10px 32px; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 </style>
 </head>
 <body>
 <div class="portal">
 
-  <!-- LOGIN VIEW -->
+  <!-- LOGIN -->
   <div id="loginView">
     <div class="login-panel">
       <div class="login-card">
@@ -129,7 +133,12 @@ tr:hover td { background: #161f2e; }
   </div>
 
   <!-- MEMBER DASHBOARD -->
-  <div id="dashboardView" style="display: none;">
+  <div id="dashboardView" style="display:none;">
+    <!-- Banner visible only to admins when in member view -->
+    <div id="adminBanner" class="admin-banner" style="display:none;">
+      <span>👁️ Viewing as Member — you are logged in as Admin</span>
+      <button class="btn btn-gold" onclick="switchToAdmin()">🎛️ Go to Admin Panel</button>
+    </div>
     <div class="dashboard-header">
       <div class="logo-area"><h2>AccessWorld Library</h2></div>
       <div style="display:flex; gap:12px; align-items:center;">
@@ -147,22 +156,24 @@ tr:hover td { background: #161f2e; }
       <button class="tab-btn" data-tab="tier2">🚀 Tier 2</button>
       <button class="tab-btn" data-tab="tier3">🏆 Tier 3</button>
       <button class="tab-btn" data-tab="notes">📝 My Notes</button>
-      <button class="tab-btn" data-tab="watched">✓ Watched Videos</button>
+      <button class="tab-btn" data-tab="watched">✓ Watched</button>
     </div>
     <div class="content-area" id="dynamicContent"></div>
   </div>
 
   <!-- ADMIN PANEL -->
-  <div id="adminPanel" style="display: none;">
-    <div class="admin-header">
+  <div id="adminPanel" style="display:none;">
+    <div class="admin-section admin-header">
       <h2>🎛️ AccessWorld Admin Portal</h2>
-      <div style="display:flex; gap:12px;">
-        <span class="admin-badge">Admin</span>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+        <span class="admin-pill">Admin</span>
+        <!-- KEY: Switch to member view without logging out -->
+        <button class="btn btn-navy" onclick="switchToMember()">👁️ Member View</button>
         <button class="btn-outline-gold btn" onclick="logout()">Sign Out</button>
       </div>
     </div>
-    
-    <div class="toolbar">
+
+    <div class="admin-section toolbar">
       <input type="text" id="adminSearch" placeholder="🔍 Search by title or folder...">
       <select id="adminPerPage">
         <option value="25">25 per page</option>
@@ -172,37 +183,43 @@ tr:hover td { background: #161f2e; }
       </select>
       <button class="btn-gold btn" onclick="loadAdminVideos()">↺ Refresh</button>
       <button class="btn-green btn" onclick="showAddVideoModal()">+ Add Video</button>
-      <button class="btn btn-outline-gold" onclick="showMemberView()">← Member View</button>
+      <button class="btn btn-outline-gold" onclick="showManageFoldersModal()">📁 Manage Folders</button>
     </div>
 
-    <div class="tabs" id="adminTabs">
+    <div class="admin-section admin-tabs" id="adminTabs">
       <div class="tab active" onclick="setAdminTier('all',this)">All Videos</div>
       <div class="tab" onclick="setAdminTier(1,this)">⭐ Tier 1</div>
       <div class="tab" onclick="setAdminTier(2,this)">🚀 Tier 2</div>
       <div class="tab" onclick="setAdminTier(3,this)">🏆 Tier 3</div>
     </div>
 
-    <div class="bulk-bar">
+    <div class="admin-section bulk-bar">
       <label><input type="checkbox" id="adminSelectAllPage"> Select page</label>
       <span id="adminSelCount">0 selected</span>
       <select id="bulkTierSelect">
         <option value="">Move to tier...</option>
-        <option value="1">Tier 1</option>
-        <option value="2">Tier 2</option>
-        <option value="3">Tier 3</option>
+        <option value="1">Tier 1</option><option value="2">Tier 2</option><option value="3">Tier 3</option>
       </select>
-      <button class="btn-gold btn" onclick="bulkUpdateTier()">✓ Apply Tier</button>
-      <button class="btn btn-outline-gold" onclick="bulkRecategorizeByFolder()">📁 Recategorize by Folder</button>
+      <!-- Bulk folder: also a dropdown -->
+      <select id="bulkFolderSelect" style="background:#1f2937; border:1px solid #374151; color:white; padding:6px 12px; border-radius:30px; min-width:180px;">
+        <option value="">Move to folder...</option>
+      </select>
+      <button class="btn-gold btn" onclick="bulkApply()">✓ Apply</button>
       <button class="btn-red btn" onclick="bulkDeleteVideos()">🗑️ Delete Selected</button>
       <button class="btn btn-outline-gold" onclick="clearAdminSelection()">✕ Clear</button>
     </div>
 
-    <div class="table-wrap">
+    <div class="admin-section table-wrap">
       <table>
         <thead>
-          <tr><th style="width:36px"><input type="checkbox" id="adminHeaderCheck"></th><th>ID</th><th>Title</th><th>Folder Path</th><th>Category</th><th>Tier</th><th>Sort</th><th>Actions</th></tr>
+          <tr>
+            <th style="width:36px"><input type="checkbox" id="adminHeaderCheck"></th>
+            <th>ID</th><th>Title</th><th>Folder</th><th>Tier</th><th>Sort</th><th>Actions</th>
+          </tr>
         </thead>
-        <tbody id="adminTableBody"><tr><td colspan="8" style="text-align:center; padding:40px;"><div class="loading-spinner"></div> Loading...</td></tr></tbody>
+        <tbody id="adminTableBody">
+          <tr><td colspan="7" style="text-align:center; padding:40px;"><div class="loading-spinner"></div> Loading...</td></tr>
+        </tbody>
       </table>
     </div>
     <div id="adminPagination" style="display:flex; justify-content:center; gap:12px; margin:20px; flex-wrap:wrap;"></div>
@@ -213,12 +230,18 @@ tr:hover td { background: #161f2e; }
 <div id="addVideoModal" class="modal">
   <div class="modal-content">
     <h3 style="color:#C9A84C; margin-bottom:15px;">➕ Add New Video</h3>
-    <input type="text" id="newVideoTitle" placeholder="Title *" required>
-    <input type="text" id="newVideoUrl" placeholder="Video URL (YouTube or Google Drive)">
-    <input type="text" id="newVideoFolder" placeholder="Folder Path (e.g., Emotional Clearing / Session 1)">
-    <input type="text" id="newVideoCategory" placeholder="Category (optional, auto-detected from folder)">
-    <select id="newVideoTier"><option value="1">Tier 1</option><option value="2">Tier 2</option><option value="3">Tier 3</option></select>
-    <textarea id="newVideoDesc" placeholder="Description" rows="3"></textarea>
+    <label>Title *</label>
+    <input type="text" id="newVideoTitle" placeholder="Video title">
+    <label>Video URL (YouTube or Google Drive)</label>
+    <input type="text" id="newVideoUrl" placeholder="https://...">
+    <label>Folder</label>
+    <select id="newVideoFolder" style="width:100%; margin:8px 0; padding:10px; border-radius:8px; border:1px solid #374151; background:#111827; color:white;">
+      <option value="">Select a folder...</option>
+    </select>
+    <label>Tier</label>
+    <select id="newVideoTier"><option value="1">⭐ Tier 1</option><option value="2">🚀 Tier 2</option><option value="3">🏆 Tier 3</option></select>
+    <label>Description</label>
+    <textarea id="newVideoDesc" placeholder="Optional description" rows="3"></textarea>
     <div style="display:flex; gap:10px; margin-top:15px;">
       <button class="btn-gold btn" onclick="addVideo()">Create Video</button>
       <button class="btn-outline-gold btn" onclick="closeAddVideoModal()">Cancel</button>
@@ -226,14 +249,33 @@ tr:hover td { background: #161f2e; }
   </div>
 </div>
 
+<!-- Manage Folders Modal -->
+<div id="manageFoldersModal" class="modal">
+  <div class="modal-content" style="max-width:420px;">
+    <h3 style="color:#C9A84C; margin-bottom:15px;">📁 Manage Folders</h3>
+    <p style="color:#9ca3af; font-size:13px; margin-bottom:16px;">Add or remove folders. Folders with videos cannot be deleted.</p>
+    <div id="folderList" style="max-height:260px; overflow-y:auto; margin-bottom:16px;"></div>
+    <div style="display:flex; gap:8px;">
+      <input type="text" id="newFolderName" placeholder="New folder name..." style="flex:1; background:#111827; border:1px solid #374151; color:white; padding:8px 12px; border-radius:8px;">
+      <button class="btn-gold btn" onclick="addFolder()">+ Add</button>
+    </div>
+    <div style="margin-top:16px; text-align:right;">
+      <button class="btn-outline-gold btn" onclick="closeManageFoldersModal()">Close</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-// ======================== SUPABASE CONFIG ========================
+// ===================== CONFIG =====================
 const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
-let supabaseClient = null;
+let sb = null;
+
+// State
 let currentUser = null;
-let currentUserRole = null;
+let currentUserRole = 'member';
+let currentUserTier = 1;
 let allVideos = [];
 let watchedMap = {};
 let userNotes = [];
@@ -247,71 +289,57 @@ let adminSearchQuery = "";
 let adminCurrentPage = 1;
 let adminPerPage = 25;
 
-// Folder-to-category mapping
-const FOLDER_CATEGORY_MAP = {
-  "emotional clearing": "💚 Emotional Clearing",
-  "morning routine": "🌅 Morning Routine",
-  "group coaching": "👥 Group Coaching & Mentoring",
-  "goal setting": "🎯 Goal Setting",
-  "health healing": "🏥 Health & Healing",
-  "nlp basics": "🧠 NLP Basics",
-  "free introduction": "🎓 Free Introductions",
-  "world class coach": "📜 World Class Coach Training",
-  "advanced seminar": "🎪 Advanced Seminars",
-  "meditation": "🧘 Meditations",
-  "unlock yourself": "🌟 Unlock Yourself"
-};
+// Folders: loaded from Supabase `folders` table OR derived from existing video folder_path values
+// Structure: [{ id, name }]
+let folders = [];
 
-function categorizeByFolder(folderPath) {
-  if (!folderPath) return "📁 Other Content";
-  const lowerPath = folderPath.toLowerCase();
-  for (const [key, category] of Object.entries(FOLDER_CATEGORY_MAP)) {
-    if (lowerPath.includes(key)) return category;
+// ===================== FOLDER HELPERS =====================
+async function loadFolders() {
+  // Try a `folders` table first; if it doesn't exist, derive from video data
+  let { data, error } = await sb.from("folders").select("*").order("name");
+  if (!error && data) {
+    folders = data; // expects { id, name }
+  } else {
+    // Fallback: extract unique folder_path values from lessons
+    const paths = [...new Set((adminVideos.length ? adminVideos : allVideos)
+      .map(v => v.folder_path)
+      .filter(Boolean)
+    )].sort();
+    folders = paths.map((p, i) => ({ id: p, name: p }));
   }
-  const parts = folderPath.split('/');
-  const lastFolder = parts[parts.length - 1];
-  if (lastFolder) return `📁 ${lastFolder}`;
-  return "📁 Other Content";
+  populateFolderDropdowns();
 }
 
-// ======================== AUTH & LOGIN ========================
+function populateFolderDropdowns() {
+  const options = `<option value="">No folder</option>` +
+    folders.map(f => `<option value="${escHtml(f.name)}">${escHtml(f.name)}</option>`).join('');
+
+  // New video modal
+  const nf = document.getElementById("newVideoFolder");
+  if (nf) nf.innerHTML = options;
+
+  // Bulk folder select
+  const bf = document.getElementById("bulkFolderSelect");
+  if (bf) bf.innerHTML = `<option value="">Move to folder...</option>` +
+    folders.map(f => `<option value="${escHtml(f.name)}">${escHtml(f.name)}</option>`).join('');
+}
+
+// ===================== AUTH =====================
 async function handleLogin() {
   const email = document.getElementById("loginEmail").value.trim();
   const pwd = document.getElementById("loginPassword").value;
   const errDiv = document.getElementById("loginErrorMsg");
   if (!email || !pwd) { errDiv.innerText = "Enter email and password."; return; }
-  
   const btn = document.getElementById("loginBtn");
   btn.disabled = true;
-  btn.innerHTML = '<div class="loading-spinner"></div> Signing in...';
-  
+  btn.innerHTML = '<span class="loading-spinner"></span> Signing in...';
   try {
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pwd });
-    if (error) { errDiv.innerText = error.message; btn.disabled = false; btn.innerHTML = "Sign In →"; return; }
-    
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pwd });
+    if (error) { errDiv.innerText = error.message; return; }
     currentUser = data.user;
-    
-    const { data: prof } = await supabaseClient
-      .from("profiles")
-      .select("membership_tier, role")
-      .eq("email", email)
-      .maybeSingle();
-    
-    currentUserRole = prof?.role || 'member';
-    const userTier = prof?.membership_tier || 1;
-    
-    if (currentUserRole === 'admin') {
-      document.getElementById("loginView").style.display = "none";
-      document.getElementById("dashboardView").style.display = "none";
-      document.getElementById("adminPanel").style.display = "block";
-      loadAdminVideos();
-    } else {
-      document.getElementById("userRoleBadge").innerText = `Tier ${userTier}`;
-      await loadMemberVideos();
-      document.getElementById("loginView").style.display = "none";
-      document.getElementById("dashboardView").style.display = "block";
-    }
-  } catch (err) {
+    await resolveProfile(email);
+    enterApp();
+  } catch(e) {
     errDiv.innerText = "Network error. Please try again.";
   } finally {
     btn.disabled = false;
@@ -319,20 +347,51 @@ async function handleLogin() {
   }
 }
 
-function logout() { supabaseClient.auth.signOut(); location.reload(); }
-function showMemberView() { location.reload(); }
+async function resolveProfile(email) {
+  const { data: prof } = await sb.from("profiles").select("membership_tier, role").eq("email", email).maybeSingle();
+  currentUserRole = prof?.role || 'member';
+  currentUserTier = prof?.membership_tier || 1;
+}
 
-// ======================== MEMBER AREA ========================
+// After login or session restore — always go to member view first
+async function enterApp() {
+  document.getElementById("loginView").style.display = "none";
+  await loadMemberVideos();
+  document.getElementById("userRoleBadge").innerText = currentUserRole === 'admin' ? 'Admin' : `Tier ${currentUserTier}`;
+  if (currentUserRole === 'admin') {
+    document.getElementById("userRoleBadge").className = "admin-pill";
+    document.getElementById("adminBanner").style.display = "flex";
+  }
+  document.getElementById("dashboardView").style.display = "block";
+}
+
+// Admin switches to admin panel (no reload)
+function switchToAdmin() {
+  document.getElementById("dashboardView").style.display = "none";
+  document.getElementById("adminPanel").style.display = "block";
+  loadAdminVideos();
+}
+
+// Admin switches back to member view (no reload)
+function switchToMember() {
+  document.getElementById("adminPanel").style.display = "none";
+  document.getElementById("dashboardView").style.display = "block";
+  // Refresh member videos to reflect any admin changes
+  loadMemberVideos();
+}
+
+function logout() { sb.auth.signOut(); location.reload(); }
+
+// ===================== MEMBER AREA =====================
 async function loadMemberVideos() {
-  const { data, error } = await supabaseClient.from("lessons").select("*").order("sort_order");
-  if (error) { toast("Error loading videos: " + error.message, true); return; }
+  const { data, error } = await sb.from("lessons").select("*").order("sort_order");
+  if (error) { toast("Error loading videos", true); return; }
   allVideos = data || [];
   updateMemberStats();
   renderMemberTierView(1);
 }
 
 function updateMemberStats() {
-  const accessible = allVideos.filter(v => (v.tier_required || 1) <= (parseInt(currentUserRole === 'admin' ? 3 : document.getElementById("userRoleBadge").innerText.split(' ')[1] || 1) || 1));
   document.getElementById("totalVideosStat").innerText = allVideos.length;
   document.getElementById("watchedStat").innerText = Object.keys(watchedMap).length;
   document.getElementById("notesCountStat").innerText = userNotes.length;
@@ -342,54 +401,52 @@ function renderMemberTierView(tierNum) {
   currentTierView = tierNum;
   const tierVideos = allVideos.filter(v => (v.tier_required || 1) === tierNum);
   const groups = {};
-  
   tierVideos.forEach(v => {
-    const category = v.category || categorizeByFolder(v.folder_path);
-    if (!groups[category]) groups[category] = { name: category, videos: [] };
-    groups[category].videos.push(v);
+    const cat = v.folder_path || v.category || "📁 Other Content";
+    if (!groups[cat]) groups[cat] = { name: cat, videos: [] };
+    groups[cat].videos.push(v);
   });
-  
-  let cats = Object.entries(groups).map(([name, data]) => ({ id: name, name, videos: data.videos }));
-  if (cats.length === 0) cats = [{ id: "empty", name: "No Content", videos: [] }];
-  
+  let cats = Object.entries(groups).map(([name, d]) => ({ id: name, name, videos: d.videos }));
+  if (!cats.length) cats = [{ id: "empty", name: "No Content", videos: [] }];
+
   let html = `<div class="two-columns"><div class="sidebar"><h4 style="margin-bottom:12px;">📂 Categories</h4>`;
-  cats.forEach(cat => {
-    html += `<div class="category-item" data-cat="${escapeHtml(cat.id)}">${escapeHtml(cat.name)} <span class="cat-count">${cat.videos.length}</span></div>`;
+  cats.forEach((cat, i) => {
+    html += `<div class="category-item${i===0?' active':''}" data-cat="${escHtml(cat.id)}">${escHtml(cat.name)} <span class="cat-count">${cat.videos.length}</span></div>`;
   });
   html += `</div><div class="main-panel"><div class="video-list" id="memberVideoList">`;
-  
-  if (cats[0].videos.length > 0) {
-    cats[0].videos.forEach(v => {
-      const isWatched = !!watchedMap[v.id];
-      html += `<div class="video-card" data-vid="${v.id}"><div><strong>${escapeHtml(v.title)}</strong></div><div style="font-size:18px;">${isWatched ? '✓' : '▶'}</div></div>`;
-    });
-  } else {
-    html += `<div style="text-align:center; padding:40px; color:#8a99b0;">✨ No videos in this tier yet. Check back soon!</div>`;
-  }
-  
-  html += `</div><div id="memberPlayerPanel" class="player-panel"><h3 id="playerTitle"></h3><div id="playerDesc" style="margin-bottom:12px; color:#62748c;"></div><iframe id="videoPlayerIframe" src="" allowfullscreen></iframe><div class="player-actions"><button id="watchToggleBtn" class="btn btn-gold">✓ Mark as watched</button><button class="btn-outline-gold btn" onclick="closePlayer()">Close</button></div></div></div></div>`;
-  
+  cats[0].videos.forEach(v => {
+    html += videoCardHtml(v);
+  });
+  html += `</div><div id="memberPlayerPanel" class="player-panel">
+    <h3 id="playerTitle"></h3>
+    <div id="playerDesc" style="margin-bottom:12px; color:#62748c;"></div>
+    <iframe id="videoPlayerIframe" src="" allowfullscreen></iframe>
+    <div class="player-actions">
+      <button id="watchToggleBtn" class="btn btn-gold">✓ Mark as watched</button>
+      <button class="btn-outline-gold btn" onclick="closePlayer()">Close</button>
+    </div>
+  </div></div></div>`;
+
   document.getElementById("dynamicContent").innerHTML = html;
-  
-  // Category click handlers
+
   document.querySelectorAll('.category-item').forEach(el => {
     el.onclick = () => {
-      const catName = el.getAttribute('data-cat');
-      const catVideos = cats.find(c => c.id === catName)?.videos || [];
-      const listDiv = document.getElementById("memberVideoList");
-      if (listDiv) {
-        listDiv.innerHTML = catVideos.map(v => `<div class="video-card" data-vid="${v.id}"><div><strong>${escapeHtml(v.title)}</strong></div><div>${!!watchedMap[v.id] ? '✓' : '▶'}</div></div>`).join('');
-        attachVideoClickHandlers();
-      }
       document.querySelectorAll('.category-item').forEach(c => c.classList.remove('active'));
       el.classList.add('active');
+      const catVideos = cats.find(c => c.id === el.getAttribute('data-cat'))?.videos || [];
+      const list = document.getElementById("memberVideoList");
+      if (list) { list.innerHTML = catVideos.map(v => videoCardHtml(v)).join(''); attachVideoHandlers(); }
     };
   });
-  
-  attachVideoClickHandlers();
+  attachVideoHandlers();
 }
 
-function attachVideoClickHandlers() {
+function videoCardHtml(v) {
+  const w = !!watchedMap[v.id];
+  return `<div class="video-card${w?' active-video':''}" data-vid="${v.id}"><div><strong>${escHtml(v.title)}</strong></div><div style="font-size:18px;">${w?'✓':'▶'}</div></div>`;
+}
+
+function attachVideoHandlers() {
   document.querySelectorAll('.video-card').forEach(el => {
     el.onclick = () => playVideo(parseInt(el.getAttribute('data-vid')));
   });
@@ -397,167 +454,122 @@ function attachVideoClickHandlers() {
 
 function playVideo(videoId) {
   const video = allVideos.find(v => v.id === videoId);
-  if (!video) { toast("Video not found", true); return; }
-  const embedUrl = getEmbedUrl(video.video_url);
+  if (!video) return;
   const iframe = document.getElementById("videoPlayerIframe");
-  if (iframe) iframe.src = embedUrl;
+  if (iframe) iframe.src = getEmbedUrl(video.video_url);
   document.getElementById("playerTitle").innerText = video.title || "Untitled";
-  document.getElementById("playerDesc").innerHTML = video.description || "No description available.";
+  document.getElementById("playerDesc").innerHTML = video.description || "";
   document.getElementById("memberPlayerPanel").classList.add("show");
-  
-  const isWatched = !!watchedMap[videoId];
   const btn = document.getElementById("watchToggleBtn");
+  const wasWatched = !!watchedMap[videoId];
   if (btn) {
-    btn.innerText = isWatched ? "✓ Watched" : "Mark as watched";
+    btn.innerText = wasWatched ? "✓ Watched" : "Mark as watched";
     btn.onclick = () => {
-      if (watchedMap[videoId]) delete watchedMap[videoId];
-      else watchedMap[videoId] = Date.now();
+      if (watchedMap[videoId]) delete watchedMap[videoId]; else watchedMap[videoId] = Date.now();
       localStorage.setItem("aw_watched", JSON.stringify(watchedMap));
       updateMemberStats();
       renderMemberTierView(currentTierView);
-      closePlayer();
-      toast(isWatched ? "Removed from watched" : "Marked as watched!");
     };
   }
 }
 
-function closePlayer() { 
-  const panel = document.getElementById("memberPlayerPanel");
-  if (panel) panel.classList.remove("show");
-}
+function closePlayer() { document.getElementById("memberPlayerPanel")?.classList.remove("show"); }
 
 function renderNotesTab() {
-  let notesHtml = `<div class="notes-section"><h3>📝 My Notes</h3><p style="color:#62748c; margin-bottom:20px;">Save personal notes about videos you've watched.</p>`;
-  
-  if (userNotes.length === 0) {
-    notesHtml += `<div style="text-align:center; padding:40px; color:#8a99b0;">No notes yet. Watch a video and add a note!</div>`;
+  let html = `<div class="notes-section"><h3 style="margin-bottom:12px;">📝 My Notes</h3>`;
+  if (!userNotes.length) {
+    html += `<p style="color:#8a99b0; text-align:center; padding:40px;">No notes yet.</p>`;
   } else {
-    userNotes.forEach((note, index) => {
-      const video = allVideos.find(v => v.id === note.videoId);
-      notesHtml += `
-        <div class="note-item">
-          <div class="note-text"><strong>${escapeHtml(video?.title || 'Unknown Video')}</strong><br>${escapeHtml(note.text)}</div>
-          <div class="note-date">${new Date(note.date).toLocaleDateString()}</div>
-          <div class="note-actions"><button class="btn-outline-gold btn" style="padding:4px 12px; font-size:12px;" onclick="deleteNote(${index})">Delete</button></div>
-        </div>`;
+    userNotes.forEach((n, i) => {
+      const vid = allVideos.find(v => v.id === n.videoId);
+      html += `<div class="note-item"><div><strong>${escHtml(vid?.title||'General note')}</strong><p style="margin-top:6px;">${escHtml(n.text)}</p><div style="font-size:11px; color:#8a99b0; margin-top:6px;">${new Date(n.date).toLocaleDateString()}</div></div><div style="margin-top:8px;"><button class="btn-outline-gold btn" style="padding:4px 12px; font-size:12px;" onclick="deleteNote(${i})">Delete</button></div></div>`;
     });
   }
-  
-  notesHtml += `<div class="add-note"><textarea id="newNoteText" placeholder="Write a note about a video..."></textarea><button class="btn-gold btn" style="margin-top:10px;" onclick="addNote()">+ Add Note</button></div></div>`;
-  document.getElementById("dynamicContent").innerHTML = notesHtml;
+  html += `<textarea id="newNoteText" placeholder="Write a note..." style="width:100%; margin-top:20px; padding:12px; border:1.5px solid #e2e8f0; border-radius:1rem; font-family:inherit; resize:vertical; min-height:80px;"></textarea><button class="btn-gold btn" style="margin-top:10px;" onclick="addNote()">+ Save Note</button></div>`;
+  document.getElementById("dynamicContent").innerHTML = html;
 }
 
 function renderWatchedTab() {
-  const watchedVideos = allVideos.filter(v => watchedMap[v.id]);
-  if (watchedVideos.length === 0) {
-    document.getElementById("dynamicContent").innerHTML = `<div style="text-align:center; padding:60px;"><h3>👀 No watched videos yet</h3><p>Start watching and mark videos as complete!</p></div>`;
-    return;
-  }
-  
+  const wv = allVideos.filter(v => watchedMap[v.id]);
+  if (!wv.length) { document.getElementById("dynamicContent").innerHTML = `<div style="text-align:center; padding:60px; color:#8a99b0;"><h3>No watched videos yet</h3></div>`; return; }
   let html = `<div class="video-list">`;
-  watchedVideos.forEach(v => {
-    html += `<div class="video-card" data-vid="${v.id}" style="cursor:pointer;"><div><strong>${escapeHtml(v.title)}</strong><div style="font-size:12px; color:#62748c;">Watched: ${new Date(watchedMap[v.id]).toLocaleDateString()}</div></div><div>✓</div></div>`;
-  });
+  wv.forEach(v => { html += `<div class="video-card" data-vid="${v.id}"><div><strong>${escHtml(v.title)}</strong><div style="font-size:12px; color:#62748c;">Watched: ${new Date(watchedMap[v.id]).toLocaleDateString()}</div></div><div>✓</div></div>`; });
   html += `</div>`;
   document.getElementById("dynamicContent").innerHTML = html;
-  document.querySelectorAll('.video-card').forEach(el => {
-    el.onclick = () => playVideo(parseInt(el.getAttribute('data-vid')));
-  });
+  attachVideoHandlers();
 }
 
 function addNote() {
-  const noteText = document.getElementById("newNoteText")?.value.trim();
-  if (!noteText) { toast("Please enter a note", true); return; }
-  userNotes.push({ text: noteText, videoId: null, date: Date.now() });
+  const t = document.getElementById("newNoteText")?.value.trim();
+  if (!t) { toast("Enter a note first", true); return; }
+  userNotes.push({ text: t, videoId: null, date: Date.now() });
   localStorage.setItem("aw_notes", JSON.stringify(userNotes));
   updateMemberStats();
   renderNotesTab();
   toast("Note saved!");
 }
+function deleteNote(i) { userNotes.splice(i, 1); localStorage.setItem("aw_notes", JSON.stringify(userNotes)); updateMemberStats(); renderNotesTab(); }
+function switchToNotesTab() { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelector('[data-tab="notes"]').classList.add('active'); renderNotesTab(); }
+function switchToWatchedTab() { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelector('[data-tab="watched"]').classList.add('active'); renderWatchedTab(); }
+function switchToVideosTab() { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelector('[data-tab="tier1"]').classList.add('active'); renderMemberTierView(1); }
 
-function deleteNote(index) {
-  userNotes.splice(index, 1);
-  localStorage.setItem("aw_notes", JSON.stringify(userNotes));
-  updateMemberStats();
-  renderNotesTab();
-  toast("Note deleted");
-}
-
-function switchToNotesTab() {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('[data-tab="notes"]').classList.add('active');
-  renderNotesTab();
-}
-
-function switchToWatchedTab() {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('[data-tab="watched"]').classList.add('active');
-  renderWatchedTab();
-}
-
-function switchToVideosTab() {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('[data-tab="tier1"]').classList.add('active');
-  renderMemberTierView(1);
-}
-
-function getEmbedUrl(raw) { 
-  if (!raw) return ""; 
-  const ytMatch = raw.match(/(?:youtu\.be\/|youtube.com\/watch\?v=)([a-zA-Z0-9_-]{11})/); 
-  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  const gdriveMatch = raw.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (gdriveMatch) return `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`;
-  return raw; 
-}
-
-function escapeHtml(s) { 
-  if (!s) return '';
-  return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); 
-}
-
-// ======================== ADMIN AREA ========================
+// ===================== ADMIN AREA =====================
 async function loadAdminVideos() {
-  const { data, error } = await supabaseClient.from("lessons").select("*").order("sort_order");
+  const { data, error } = await sb.from("lessons").select("*").order("sort_order");
   if (error) { toast("Load error: " + error.message, true); return; }
   adminVideos = data || [];
   adminSelectedIds.clear();
+  await loadFolders();
   renderAdminTable();
 }
 
 function renderAdminTable() {
   let filtered = adminVideos.filter(v => {
     if (adminTierFilter !== "all" && v.tier_required !== adminTierFilter) return false;
-    if (adminSearchQuery && !(v.title || "").toLowerCase().includes(adminSearchQuery.toLowerCase()) && 
-        !(v.folder_path || "").toLowerCase().includes(adminSearchQuery.toLowerCase())) return false;
+    if (adminSearchQuery && !(v.title||"").toLowerCase().includes(adminSearchQuery.toLowerCase()) &&
+        !(v.folder_path||"").toLowerCase().includes(adminSearchQuery.toLowerCase())) return false;
     return true;
   });
-  
   const totalPages = Math.ceil(filtered.length / adminPerPage) || 1;
   if (adminCurrentPage > totalPages) adminCurrentPage = Math.max(1, totalPages);
-  const start = (adminCurrentPage - 1) * adminPerPage;
-  const paged = filtered.slice(start, start + adminPerPage);
-  
+  const paged = filtered.slice((adminCurrentPage-1)*adminPerPage, adminCurrentPage*adminPerPage);
+
   const tbody = document.getElementById("adminTableBody");
-  if (!paged.length) { 
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:40px;">📭 No videos found</td></tr>'; 
-    renderAdminPagination(1, 0);
-    return; 
+  if (!paged.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px;">📭 No videos found</td></tr>';
+    document.getElementById("adminPagination").innerHTML = "";
+    return;
   }
-  
-  tbody.innerHTML = paged.map(v => `
-    <tr data-id="${v.id}">
-      <td><input type="checkbox" class="admin-check" data-id="${v.id}" ${adminSelectedIds.has(v.id) ? 'checked' : ''}></td>
-      <td style="color:#6b7280;">${v.id}</td>
-      <td><input class="cell-input title-input" data-field="title" data-id="${v.id}" value="${escapeHtml(v.title || '')}"></td>
-      <td><input class="cell-input folder-input" data-field="folder_path" data-id="${v.id}" value="${escapeHtml(v.folder_path || '')}" placeholder="Folder path"></td>
-      <td><input class="cell-input" data-field="category" data-id="${v.id}" value="${escapeHtml(v.category || '')}" placeholder="Auto from folder" style="width:140px"></td>
-      <td><select class="cell-input" data-field="tier_required" data-id="${v.id}" style="width:80px;"><option value="1" ${v.tier_required===1?'selected':''}>Tier 1</option><option value="2" ${v.tier_required===2?'selected':''}>Tier 2</option><option value="3" ${v.tier_required===3?'selected':''}>Tier 3</option></select></td>
-      <td><input class="cell-input sort-input" data-field="sort_order" data-id="${v.id}" type="number" value="${v.sort_order || 0}"></td>
-      <td><button class="btn-gold btn" style="padding:4px 12px; font-size:12px;" onclick="saveVideo(${v.id})">💾 Save</button>
-      <button class="btn-red btn" style="padding:4px 12px; font-size:12px; margin-left:5px;" onclick="deleteVideo(${v.id})">🗑️</button></td>
-    </tr>
-  `).join('');
-  
+
+  // Build folder options string once for efficiency
+  const folderOpts = `<option value="">No folder</option>` +
+    folders.map(f => `<option value="${escHtml(f.name)}">${escHtml(f.name)}</option>`).join('');
+
+  tbody.innerHTML = paged.map(v => {
+    // Build folder select with current value pre-selected
+    const folderSel = `<select class="folder-select" data-field="folder_path" data-id="${v.id}">` +
+      `<option value="">No folder</option>` +
+      folders.map(f => `<option value="${escHtml(f.name)}" ${v.folder_path===f.name?'selected':''}>${escHtml(f.name)}</option>`).join('') +
+      `</select>`;
+
+    return `<tr data-id="${v.id}">
+      <td><input type="checkbox" class="admin-check" data-id="${v.id}" ${adminSelectedIds.has(v.id)?'checked':''}></td>
+      <td style="color:#6b7280; font-size:12px;">${v.id}</td>
+      <td><input class="cell-input title-input" data-field="title" data-id="${v.id}" value="${escHtml(v.title||'')}"></td>
+      <td>${folderSel}</td>
+      <td><select class="cell-input" data-field="tier_required" data-id="${v.id}" style="width:80px;">
+        <option value="1" ${v.tier_required===1?'selected':''}>Tier 1</option>
+        <option value="2" ${v.tier_required===2?'selected':''}>Tier 2</option>
+        <option value="3" ${v.tier_required===3?'selected':''}>Tier 3</option>
+      </select></td>
+      <td><input class="cell-input sort-input" data-field="sort_order" data-id="${v.id}" type="number" value="${v.sort_order||0}"></td>
+      <td>
+        <button class="btn-gold btn" style="padding:4px 12px; font-size:12px;" onclick="saveVideo(${v.id})">💾 Save</button>
+        <button class="btn-red btn" style="padding:4px 12px; font-size:12px; margin-left:5px;" onclick="deleteVideo(${v.id})">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+
   attachAdminCheckboxes();
   renderAdminPagination(totalPages, filtered.length);
 }
@@ -566,145 +578,167 @@ function attachAdminCheckboxes() {
   document.querySelectorAll('.admin-check').forEach(cb => {
     cb.onchange = () => {
       const id = parseInt(cb.getAttribute('data-id'));
-      if (cb.checked) adminSelectedIds.add(id);
-      else adminSelectedIds.delete(id);
-      updateAdminSelCount();
-      syncAdminHeaderCheck();
+      if (cb.checked) adminSelectedIds.add(id); else adminSelectedIds.delete(id);
+      updateAdminSelCount(); syncAdminHeaderCheck();
     };
   });
   syncAdminHeaderCheck();
 }
 
 function syncAdminHeaderCheck() {
-  const allChecks = document.querySelectorAll('.admin-check');
-  const allChecked = allChecks.length > 0 && [...allChecks].every(c => c.checked);
-  const headerCheck = document.getElementById("adminHeaderCheck");
-  if (headerCheck) headerCheck.checked = allChecked;
-  const pageSelect = document.getElementById("adminSelectAllPage");
-  if (pageSelect) pageSelect.checked = allChecked;
+  const all = document.querySelectorAll('.admin-check');
+  const allChecked = all.length > 0 && [...all].every(c => c.checked);
+  const h = document.getElementById("adminHeaderCheck"); if (h) h.checked = allChecked;
+  const p = document.getElementById("adminSelectAllPage"); if (p) p.checked = allChecked;
 }
 
-function updateAdminSelCount() { 
-  document.getElementById("adminSelCount").innerText = adminSelectedIds.size + " selected"; 
-}
+function updateAdminSelCount() { document.getElementById("adminSelCount").innerText = adminSelectedIds.size + " selected"; }
 
 function renderAdminPagination(totalPages, totalItems) {
-  const pgDiv = document.getElementById("adminPagination");
-  if (totalPages <= 1) { pgDiv.innerHTML = ""; return; }
-  
-  let html = `<span style="color:#6b7280; margin-right:12px;">📊 ${totalItems} videos · Page ${adminCurrentPage} of ${totalPages}</span>`;
-  html += `<button class="page-btn" onclick="adminGoPage(1)" ${adminCurrentPage === 1 ? 'disabled' : ''}>«</button>`;
-  html += `<button class="page-btn" onclick="adminGoPage(${adminCurrentPage - 1})" ${adminCurrentPage === 1 ? 'disabled' : ''}>‹</button>`;
-  
-  for (let i = Math.max(1, adminCurrentPage - 2); i <= Math.min(totalPages, adminCurrentPage + 2); i++) {
-    html += `<button class="page-btn ${i === adminCurrentPage ? 'active' : ''}" onclick="adminGoPage(${i})">${i}</button>`;
+  const pg = document.getElementById("adminPagination");
+  if (totalPages <= 1) { pg.innerHTML = ""; return; }
+  let html = `<span style="color:#6b7280; margin-right:12px;">${totalItems} videos · Page ${adminCurrentPage} of ${totalPages}</span>`;
+  html += `<button class="page-btn" onclick="adminGoPage(1)" ${adminCurrentPage===1?'disabled':''}>«</button>`;
+  html += `<button class="page-btn" onclick="adminGoPage(${adminCurrentPage-1})" ${adminCurrentPage===1?'disabled':''}>‹</button>`;
+  for (let i=Math.max(1,adminCurrentPage-2); i<=Math.min(totalPages,adminCurrentPage+2); i++) {
+    html += `<button class="page-btn${i===adminCurrentPage?' active':''}" onclick="adminGoPage(${i})">${i}</button>`;
   }
-  
-  html += `<button class="page-btn" onclick="adminGoPage(${adminCurrentPage + 1})" ${adminCurrentPage === totalPages ? 'disabled' : ''}>›</button>`;
-  html += `<button class="page-btn" onclick="adminGoPage(${totalPages})" ${adminCurrentPage === totalPages ? 'disabled' : ''}>»</button>`;
-  pgDiv.innerHTML = html;
+  html += `<button class="page-btn" onclick="adminGoPage(${adminCurrentPage+1})" ${adminCurrentPage===totalPages?'disabled':''}>›</button>`;
+  html += `<button class="page-btn" onclick="adminGoPage(${totalPages})" ${adminCurrentPage===totalPages?'disabled':''}>»</button>`;
+  pg.innerHTML = html;
 }
-
-function adminGoPage(page) {
-  adminCurrentPage = page;
-  renderAdminTable();
-}
+function adminGoPage(p) { adminCurrentPage = p; renderAdminTable(); }
 
 async function saveVideo(id) {
   const updates = {};
-  document.querySelectorAll(`[data-id="${id}"]`).forEach(el => {
-    const field = el.getAttribute('data-field');
-    if (field) updates[field] = el.value;
+  document.querySelectorAll(`[data-id="${id}"][data-field]`).forEach(el => {
+    updates[el.getAttribute('data-field')] = el.value;
   });
   if (updates.tier_required) updates.tier_required = parseInt(updates.tier_required);
-  if (updates.sort_order) updates.sort_order = parseInt(updates.sort_order) || 0;
-  
-  if (!updates.category && updates.folder_path) {
-    updates.category = categorizeByFolder(updates.folder_path);
-  }
-  
-  const { error } = await supabaseClient.from("lessons").update(updates).eq("id", id);
+  if (updates.sort_order !== undefined) updates.sort_order = parseInt(updates.sort_order) || 0;
+
+  const { error } = await sb.from("lessons").update(updates).eq("id", id);
   if (error) { toast("Save failed: " + error.message, true); return; }
-  toast("✅ Saved successfully");
-  loadAdminVideos();
-  if (document.getElementById("dashboardView").style.display === "block") loadMemberVideos();
+  // Update local arrays
+  const idx = adminVideos.findIndex(v => v.id === id);
+  if (idx !== -1) Object.assign(adminVideos[idx], updates);
+  const midx = allVideos.findIndex(v => v.id === id);
+  if (midx !== -1) Object.assign(allVideos[midx], updates);
+  toast("✅ Saved");
 }
 
 async function deleteVideo(id) {
-  if (!confirm("⚠️ Delete this video permanently?")) return;
-  const { error } = await supabaseClient.from("lessons").delete().eq("id", id);
-  if (error) { toast("Delete failed: " + error.message, true); return; }
+  if (!confirm("Delete this video permanently?")) return;
+  const { error } = await sb.from("lessons").delete().eq("id", id);
+  if (error) { toast("Delete failed", true); return; }
+  adminVideos = adminVideos.filter(v => v.id !== id);
+  allVideos = allVideos.filter(v => v.id !== id);
+  adminSelectedIds.delete(id);
+  renderAdminTable();
   toast("🗑️ Deleted");
-  loadAdminVideos();
 }
 
 async function addVideo() {
   const title = document.getElementById("newVideoTitle").value.trim();
   if (!title) { toast("Title required", true); return; }
-  
   const folderPath = document.getElementById("newVideoFolder").value;
-  let category = document.getElementById("newVideoCategory").value;
-  if (!category && folderPath) category = categorizeByFolder(folderPath);
-  
   const newVideo = {
-    title: title,
+    title,
     video_url: document.getElementById("newVideoUrl").value,
     folder_path: folderPath,
-    category: category,
+    category: folderPath || null,
     tier_required: parseInt(document.getElementById("newVideoTier").value),
     description: document.getElementById("newVideoDesc").value,
     sort_order: adminVideos.length + 1
   };
-  
-  const { error } = await supabaseClient.from("lessons").insert(newVideo);
+  const { error } = await sb.from("lessons").insert(newVideo);
   if (error) { toast("Add failed: " + error.message, true); return; }
   toast("✅ Video added!");
   closeAddVideoModal();
   loadAdminVideos();
 }
 
-async function bulkUpdateTier() {
-  if (adminSelectedIds.size === 0) { toast("Select videos first", true); return; }
+async function bulkApply() {
+  if (!adminSelectedIds.size) { toast("Select videos first", true); return; }
   const newTier = document.getElementById("bulkTierSelect").value;
-  if (!newTier) { toast("Select a tier", true); return; }
-  if (!confirm(`Apply Tier ${newTier} to ${adminSelectedIds.size} video(s)?`)) return;
-  
+  const newFolder = document.getElementById("bulkFolderSelect").value;
+  if (!newTier && !newFolder) { toast("Choose a tier or folder to apply", true); return; }
+  const updates = {};
+  if (newTier) updates.tier_required = parseInt(newTier);
+  if (newFolder) { updates.folder_path = newFolder; updates.category = newFolder; }
   for (const id of adminSelectedIds) {
-    await supabaseClient.from("lessons").update({ tier_required: parseInt(newTier) }).eq("id", id);
+    await sb.from("lessons").update(updates).eq("id", id);
+    const v = adminVideos.find(v => v.id === id);
+    if (v) Object.assign(v, updates);
+    const mv = allVideos.find(v => v.id === id);
+    if (mv) Object.assign(mv, updates);
   }
   toast(`✅ Updated ${adminSelectedIds.size} videos`);
   adminSelectedIds.clear();
-  loadAdminVideos();
-}
-
-async function bulkRecategorizeByFolder() {
-  if (adminSelectedIds.size === 0) { toast("Select videos first", true); return; }
-  let updated = 0;
-  for (const id of adminSelectedIds) {
-    const video = adminVideos.find(v => v.id === id);
-    if (video && video.folder_path) {
-      const newCategory = categorizeByFolder(video.folder_path);
-      await supabaseClient.from("lessons").update({ category: newCategory }).eq("id", id);
-      updated++;
-    }
-  }
-  toast(`📁 Recategorized ${updated} videos by folder`);
-  adminSelectedIds.clear();
-  loadAdminVideos();
+  renderAdminTable();
 }
 
 async function bulkDeleteVideos() {
-  if (adminSelectedIds.size === 0) { toast("Select videos first", true); return; }
-  if (!confirm(`⚠️ PERMANENTLY delete ${adminSelectedIds.size} video(s)? This cannot be undone.`)) return;
-  
-  for (const id of adminSelectedIds) {
-    await supabaseClient.from("lessons").delete().eq("id", id);
-  }
-  toast(`🗑️ Deleted ${adminSelectedIds.size} videos`);
+  if (!adminSelectedIds.size) { toast("Select videos first", true); return; }
+  if (!confirm(`Permanently delete ${adminSelectedIds.size} video(s)?`)) return;
+  for (const id of adminSelectedIds) await sb.from("lessons").delete().eq("id", id);
+  adminVideos = adminVideos.filter(v => !adminSelectedIds.has(v.id));
+  allVideos = allVideos.filter(v => !adminSelectedIds.has(v.id));
   adminSelectedIds.clear();
-  loadAdminVideos();
+  renderAdminTable();
+  toast("🗑️ Deleted selected");
 }
 
+// ===================== FOLDER MANAGEMENT =====================
+function showManageFoldersModal() {
+  renderFolderList();
+  document.getElementById("manageFoldersModal").style.display = "flex";
+}
+function closeManageFoldersModal() { document.getElementById("manageFoldersModal").style.display = "none"; }
+
+function renderFolderList() {
+  const container = document.getElementById("folderList");
+  if (!folders.length) { container.innerHTML = `<p style="color:#6b7280; font-size:13px;">No folders yet. Add one below.</p>`; return; }
+  container.innerHTML = folders.map(f => {
+    const inUse = adminVideos.some(v => v.folder_path === f.name);
+    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#111827; border-radius:8px; margin-bottom:6px;">
+      <span style="color:#e5e7eb; font-size:13px;">📁 ${escHtml(f.name)}</span>
+      <span style="display:flex; align-items:center; gap:8px;">
+        ${inUse ? `<span style="color:#6b7280; font-size:11px;">${adminVideos.filter(v=>v.folder_path===f.name).length} videos</span>` : ''}
+        ${!inUse ? `<button class="btn-red btn" style="padding:3px 10px; font-size:12px;" onclick="deleteFolder('${escHtml(f.name)}')">Remove</button>` : `<span style="color:#374151; font-size:11px;">in use</span>`}
+      </span>
+    </div>`;
+  }).join('');
+}
+
+async function addFolder() {
+  const name = document.getElementById("newFolderName").value.trim();
+  if (!name) return;
+  // Try to insert into folders table; if table doesn't exist, just add locally
+  const { error } = await sb.from("folders").insert({ name });
+  if (!error) {
+    folders.push({ id: name, name });
+  } else {
+    // Table may not exist — just add locally for this session
+    if (!folders.find(f => f.name === name)) folders.push({ id: name, name });
+  }
+  document.getElementById("newFolderName").value = "";
+  populateFolderDropdowns();
+  renderFolderList();
+  toast("📁 Folder added");
+}
+
+async function deleteFolder(name) {
+  const inUse = adminVideos.some(v => v.folder_path === name);
+  if (inUse) { toast("Can't delete — folder has videos", true); return; }
+  await sb.from("folders").delete().eq("name", name).maybeSingle();
+  folders = folders.filter(f => f.name !== name);
+  populateFolderDropdowns();
+  renderFolderList();
+  toast("Folder removed");
+}
+
+// ===================== MISC HELPERS =====================
 function setAdminTier(tier, el) {
   adminTierFilter = tier;
   adminCurrentPage = 1;
@@ -712,123 +746,77 @@ function setAdminTier(tier, el) {
   el.classList.add('active');
   renderAdminTable();
 }
-
-function clearAdminSelection() { 
-  adminSelectedIds.clear(); 
-  renderAdminTable(); 
-}
-
-function showAddVideoModal() { 
-  document.getElementById("addVideoModal").style.display = "flex"; 
-}
-
-function closeAddVideoModal() { 
+function clearAdminSelection() { adminSelectedIds.clear(); renderAdminTable(); }
+function showAddVideoModal() { document.getElementById("addVideoModal").style.display = "flex"; }
+function closeAddVideoModal() {
   document.getElementById("addVideoModal").style.display = "none";
-  document.getElementById("newVideoTitle").value = "";
-  document.getElementById("newVideoUrl").value = "";
-  document.getElementById("newVideoFolder").value = "";
-  document.getElementById("newVideoCategory").value = "";
-  document.getElementById("newVideoDesc").value = "";
+  ["newVideoTitle","newVideoUrl","newVideoDesc"].forEach(id => { const el=document.getElementById(id); if(el) el.value=""; });
+}
+function getEmbedUrl(raw) {
+  if (!raw) return "";
+  const yt = raw.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+  const gd = raw.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (gd) return `https://drive.google.com/file/d/${gd[1]}/preview`;
+  return raw;
+}
+function escHtml(s) { return s ? String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]) : ''; }
+function toast(msg, isErr=false) {
+  const d = document.createElement("div");
+  d.className = `toast ${isErr ? 'toast-error' : 'toast-ok'}`;
+  d.innerText = msg;
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 3000);
 }
 
-function toast(msg, isErr = false) { 
-  const d = document.createElement("div"); 
-  d.className = `toast ${isErr ? 'toast-error' : ''}`; 
-  d.innerText = msg; 
-  document.body.appendChild(d); 
-  setTimeout(() => d.remove(), 3000); 
-}
-
-// Search and filter handlers
-document.getElementById("adminSearch")?.addEventListener("input", (e) => { 
-  adminSearchQuery = e.target.value; 
-  adminCurrentPage = 1; 
-  renderAdminTable(); 
+// ===================== EVENT WIRING =====================
+document.getElementById("adminSearch")?.addEventListener("input", e => { adminSearchQuery = e.target.value; adminCurrentPage = 1; renderAdminTable(); });
+document.getElementById("adminPerPage")?.addEventListener("change", e => { adminPerPage = parseInt(e.target.value); adminCurrentPage = 1; renderAdminTable(); });
+document.getElementById("adminSelectAllPage")?.addEventListener("change", e => {
+  document.querySelectorAll('.admin-check').forEach(cb => {
+    cb.checked = e.target.checked;
+    const id = parseInt(cb.getAttribute('data-id'));
+    if (e.target.checked) adminSelectedIds.add(id); else adminSelectedIds.delete(id);
+  });
+  updateAdminSelCount(); syncAdminHeaderCheck();
 });
-
-document.getElementById("adminPerPage")?.addEventListener("change", (e) => { 
-  adminPerPage = parseInt(e.target.value); 
-  adminCurrentPage = 1; 
-  renderAdminTable(); 
-});
-
-document.getElementById("adminSelectAllPage")?.addEventListener("change", (e) => { 
-  document.querySelectorAll('.admin-check').forEach(cb => { 
-    cb.checked = e.target.checked; 
-    const id = parseInt(cb.getAttribute('data-id')); 
-    if (e.target.checked) adminSelectedIds.add(id); 
-    else adminSelectedIds.delete(id); 
-  }); 
-  updateAdminSelCount(); 
-  syncAdminHeaderCheck();
-});
-
-document.getElementById("adminHeaderCheck")?.addEventListener("change", (e) => { 
-  document.querySelectorAll('.admin-check').forEach(cb => { 
-    cb.checked = e.target.checked; 
-    const id = parseInt(cb.getAttribute('data-id')); 
-    if (e.target.checked) adminSelectedIds.add(id); 
-    else adminSelectedIds.delete(id); 
-  }); 
+document.getElementById("adminHeaderCheck")?.addEventListener("change", e => {
+  document.querySelectorAll('.admin-check').forEach(cb => {
+    cb.checked = e.target.checked;
+    const id = parseInt(cb.getAttribute('data-id'));
+    if (e.target.checked) adminSelectedIds.add(id); else adminSelectedIds.delete(id);
+  });
   updateAdminSelCount();
 });
-
-// ======================== TAB SWITCHING ========================
-document.getElementById("tabContainer")?.addEventListener("click", (e) => {
-  const tabBtn = e.target.closest('.tab-btn');
-  if (!tabBtn) return;
-  const tab = tabBtn.getAttribute('data-tab');
-  if (!tab) return;
-  
+document.getElementById("tabContainer")?.addEventListener("click", e => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  const tab = btn.getAttribute('data-tab');
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  tabBtn.classList.add('active');
-  
+  btn.classList.add('active');
   if (tab === 'notes') { renderNotesTab(); return; }
   if (tab === 'watched') { renderWatchedTab(); return; }
-  
-  currentTierView = parseInt(tab.replace('tier', ''));
+  currentTierView = parseInt(tab.replace('tier',''));
   renderMemberTierView(currentTierView);
 });
 
-// ======================== INIT ========================
+// ===================== INIT =====================
 window.addEventListener("load", async () => {
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   try {
-    const savedWatched = localStorage.getItem("aw_watched");
-    if (savedWatched) watchedMap = JSON.parse(savedWatched);
-    const savedNotes = localStorage.getItem("aw_notes");
-    if (savedNotes) userNotes = JSON.parse(savedNotes);
-  } catch(e) { console.error("LocalStorage error", e); }
+    const w = localStorage.getItem("aw_watched"); if (w) watchedMap = JSON.parse(w);
+    const n = localStorage.getItem("aw_notes"); if (n) userNotes = JSON.parse(n);
+  } catch(e) {}
 
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  
+  const { data: { user } } = await sb.auth.getUser();
   if (user) {
     currentUser = user;
-    const { data: prof } = await supabaseClient
-      .from("profiles")
-      .select("membership_tier, role")
-      .eq("email", user.email)
-      .maybeSingle();
-
-    currentUserRole = prof?.role || 'member';
-
-    if (currentUserRole === 'admin') {
-      document.getElementById("loginView").style.display = "none";
-      document.getElementById("adminPanel").style.display = "block";
-      loadAdminVideos();
-    } else {
-      document.getElementById("userRoleBadge").innerText = `Tier ${prof?.membership_tier || 1}`;
-      document.getElementById("loginView").style.display = "none";
-      document.getElementById("dashboardView").style.display = "block";
-      await loadMemberVideos();
-    }
+    await resolveProfile(user.email);
+    await enterApp();
   }
 
   document.getElementById("loginBtn").addEventListener("click", handleLogin);
-  document.getElementById("loginPassword")?.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") handleLogin();
-  });
+  document.getElementById("loginPassword")?.addEventListener("keypress", e => { if (e.key === "Enter") handleLogin(); });
 });
 </script>
 </body>
