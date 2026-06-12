@@ -638,18 +638,44 @@ function addQuickNote(video) {
 
 function playVideo(videoId) {
   const video = allVideos.find(v => v.id === videoId);
+  console.log("=== TIER DEBUG ===");
+  console.log("Video ID:", videoId);
+  console.log("Video found:", video);
+  console.log("Video tier:", video?.tier_required);
+  console.log("Description:", video?.description);
+  
   if (!video) return;
+  
   activeVideoId = videoId;
   const panel = document.getElementById("playerPanel");
+  
   if (panel) {
-    document.getElementById("playerTitle").innerText = video.title || "Untitled";
-    document.getElementById("playerDesc").innerText = video.description || "No description available.";  // ← THIS LINE
-    document.getElementById("videoPlayerIframe").src = getEmbedUrl(video.video_url || video.google_drive_embed_url || "");
-    document.getElementById("watchToggleBtn").innerText = watchedMap[videoId] ? "✓ Watched" : "Mark as watched";
-    document.getElementById("watchToggleBtn").onclick = () => toggleWatched(videoId);
+    // Set title
+    const titleEl = document.getElementById("playerTitle");
+    if (titleEl) titleEl.innerText = video.title || "Untitled";
+    
+    // Set description - THIS IS THE KEY LINE
+    const descEl = document.getElementById("playerDesc");
+    if (descEl) {
+      descEl.innerText = video.description || "No description available.";
+      console.log("Description set to:", descEl.innerText);
+    }
+    
+    // Set video URL
+    const iframeEl = document.getElementById("videoPlayerIframe");
+    if (iframeEl) {
+      iframeEl.src = getEmbedUrl(video.video_url || video.google_drive_embed_url || "");
+    }
+    
+    // Set watch button
+    const watchBtn = document.getElementById("watchToggleBtn");
+    if (watchBtn) {
+      watchBtn.innerText = watchedMap[videoId] ? "✓ Watched" : "Mark as watched";
+      watchBtn.onclick = () => toggleWatched(videoId);
+    }
+    
     panel.classList.add("show");
   }
-  // ... rest of your code
 }
 
 function toggleWatched(videoId) {
