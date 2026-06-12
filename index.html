@@ -102,6 +102,19 @@ body {
 iframe { width: 100%; height: 400px; border-radius: 1.2rem; border: none; background: #000; }
 .player-actions { display: flex; gap: 12px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
 .watched-badge { color: #1D9E75; font-weight: 600; font-size: 14px; }
+/* NOTES SECTION */
+.notes-container { background: #F9FAFE; border-radius: 1.5rem; padding: 24px; }
+.note-card { background: white; border-radius: 1rem; padding: 18px; margin-bottom: 16px; border-left: 4px solid #C9A84C; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.note-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+.note-video-title { font-weight: 700; color: #1A2744; cursor: pointer; }
+.note-video-title:hover { text-decoration: underline; color: #C9A84C; }
+.note-date { font-size: 11px; color: #8a99b0; }
+.note-text { color: #4a5568; line-height: 1.5; margin-bottom: 12px; }
+.note-actions { display: flex; gap: 8px; }
+.note-actions button { padding: 4px 12px; font-size: 12px; }
+.add-note-form { background: white; border-radius: 1rem; padding: 20px; margin-top: 20px; border: 1px solid #e2e8f0; }
+.add-note-form select, .add-note-form textarea { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 12px; margin-top: 8px; margin-bottom: 12px; font-family: inherit; }
+.empty-notes { text-align: center; padding: 60px; color: #8a99b0; }
 /* ADMIN */
 #adminPanel { background: #0c111c; overflow: hidden; }
 .admin-section { margin: 20px; }
@@ -117,9 +130,12 @@ iframe { width: 100%; height: 400px; border-radius: 1.2rem; border: none; backgr
 .tab { background: #1f2937; color: #9ca3af; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; }
 .tab:hover { background: #2d3748; color: white; }
 .tab.active { background: #C9A84C; color: #000; }
-.bulk-bar { background: #111827; border-radius: 1rem; padding: 12px 16px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.folder-filter-group { display: flex; gap: 8px; align-items: center; background: #111827; border-radius: 1rem; padding: 8px 16px; margin: 0 20px 20px; flex-wrap: wrap; }
+.folder-filter-group label { color: #9ca3af; font-size: 12px; }
+.folder-filter-group select { background: #1f2937; border: 1px solid #374151; color: white; padding: 6px 12px; border-radius: 30px; }
+.bulk-bar { background: #111827; border-radius: 1rem; padding: 12px 16px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 0 20px 20px; }
 .bulk-bar select { background: #1f2937; border: 1px solid #374151; color: white; padding: 6px 12px; border-radius: 30px; }
-.table-wrap { overflow-x: auto; background: #111827; border-radius: 1rem; }
+.table-wrap { overflow-x: auto; background: #111827; border-radius: 1rem; margin: 0 20px 20px; }
 table { width: 100%; border-collapse: collapse; min-width: 900px; }
 th { background: #0f1722; color: #C9A84C; padding: 12px 14px; text-align: left; font-size: 12px; font-weight: 600; }
 td { padding: 10px 14px; border-bottom: 1px solid #1a2332; color: #e5e7eb; }
@@ -129,7 +145,6 @@ tr:hover td { background: #161f2e; }
 .title-input { width: 320px; }
 .sort-input { width: 70px; text-align: center; }
 .cat-select { background: #1f2937; border: 1px solid #374151; color: white; padding: 6px 10px; border-radius: 8px; font-size: 13px; width: 210px; }
-.cat-select:focus { outline: none; border-color: #C9A84C; }
 .page-btn { background: #1f2937; border: 1px solid #374151; color: #e5e7eb; padding: 6px 14px; border-radius: 30px; cursor: pointer; margin: 0 2px; transition: 0.2s; }
 .page-btn:hover:not(:disabled) { background: #374151; }
 .page-btn.active { background: #C9A84C; color: #000; border-color: #C9A84C; }
@@ -141,7 +156,6 @@ tr:hover td { background: #161f2e; }
 .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
 .modal-content { background: #1f2937; padding: 30px; border-radius: 1.5rem; max-width: 500px; width: 90%; color: white; }
 .modal-content input, .modal-content textarea, .modal-content select { width:100%; margin:8px 0; padding:10px; border-radius:8px; border:1px solid #374151; background:#111827; color:white; font-size:14px; }
-.modal-content label { font-size: 12px; color: #9ca3af; margin-top: 8px; display: block; }
 .loading-spinner { display:inline-block; width:18px; height:18px; border:2px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:white; animation:spin 0.6s linear infinite; vertical-align:middle; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 760px) {
@@ -190,7 +204,7 @@ tr:hover td { background: #161f2e; }
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-number" id="totalVideosStat">0</div><div class="stat-label">Videos</div></div>
       <div class="stat-card"><div class="stat-number" id="watchedStat">0</div><div class="stat-label">Watched</div></div>
-      <div class="stat-card"><div class="stat-number" id="notesCountStat">0</div><div class="stat-label">Notes</div></div>
+      <div class="stat-card" onclick="switchToNotesTab()"><div class="stat-number" id="notesCountStat">0</div><div class="stat-label">Notes</div></div>
     </div>
     <div class="tabs-row" id="tabContainer">
       <button class="tab-btn active" data-tab="tier1">⭐ Tier 1</button>
@@ -228,6 +242,17 @@ tr:hover td { background: #161f2e; }
       <div class="tab" onclick="setAdminTier(2,this)">🚀 Tier 2</div>
       <div class="tab" onclick="setAdminTier(3,this)">🏆 Tier 3</div>
     </div>
+    
+    <!-- NEW: Folder Filter for Admin -->
+    <div class="folder-filter-group">
+      <label>📁 Filter by Folder:</label>
+      <select id="adminFolderFilter" onchange="setAdminFolderFilter(this.value)">
+        <option value="">All Folders</option>
+      </select>
+      <button class="btn-outline-gold btn" onclick="extractFoldersFromTier()" style="padding:4px 12px;">📂 Extract Unique Folders</button>
+      <span style="font-size:12px; color:#6b7280;">Select a tier above, then extract folders to see videos from specific folders</span>
+    </div>
+
     <div class="admin-section bulk-bar">
       <label><input type="checkbox" id="adminSelectAllPage"> Select page</label>
       <span id="adminSelCount">0 selected</span>
@@ -239,10 +264,12 @@ tr:hover td { background: #161f2e; }
     </div>
     <div class="admin-section table-wrap">
       <table>
-        <thead><tr>
-          <th style="width:36px"><input type="checkbox" id="adminHeaderCheck"></th>
-          <th style="width:45px">ID</th><th style="min-width:320px">Title</th><th>Category</th><th style="width:85px">Tier</th><th style="width:75px">Sort</th><th style="width:130px">Actions</th>
-        </tr></thead>
+        <thead>
+          <tr>
+            <th style="width:36px"><input type="checkbox" id="adminHeaderCheck"></th>
+            <th style="width:45px">ID</th><th style="min-width:320px">Title</th><th>Category</th><th style="width:85px">Tier</th><th style="width:75px">Sort</th><th style="width:130px">Actions</th>
+          </tr>
+        </thead>
         <tbody id="adminTableBody"><tr><td colspan="7" style="text-align:center; padding:40px;"><div class="loading-spinner"></div> Loading...</td></tr></tbody>
       </table>
     </div>
@@ -278,28 +305,26 @@ const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3d29kb3BlemFkcWphemhham14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ4ODEsImV4cCI6MjA5NjYxMDg4MX0.xiY_Kg0O0_g714YRHmgcuSd08qKi9ErJ1iz3ehZetIg";
 let sb = null;
 
-// ===================== CATEGORIES (keyword-matched — edit these to tweak) =====================
+// ===================== CATEGORIES =====================
 const CATEGORIES = [
-  { id: "unlock",     name: "🌟 Unlock Yourself",            tier: 1, kw: ["unlock your incredible", "artistry explained", "listen to the attendees"] },
+  { id: "unlock",     name: "🌟 Unlock Yourself",            tier: 1, kw: ["unlock your incredible", "artistry explained"] },
   { id: "morning",    name: "🌅 Morning Routine",             tier: 1, kw: ["morning routine"] },
-  { id: "group",      name: "👥 Group Coaching & Mentoring",  tier: 1, kw: ["group coaching", "goal setting", "jan 2024", "apr 2024", "feb 2025", "mar 2025", "jan 2026"] },
-  { id: "emotional",  name: "💚 Emotional Clearing",          tier: 1, kw: ["emotional clearing", "gift process", "yelling", "ball and fire", "grey room", "ultimate freedom"] },
-  { id: "health",     name: "🏥 Health & Healing",            tier: 1, kw: ["acid alkaline", "health & energy", "pain & healing", "healing sadness", "holistic health"] },
-  { id: "nlp_basic",  name: "🧠 NLP Basics",                 tier: 1, kw: ["nlp basics", "take full control", "confidence to succeed", "strategic visioning"] },
-  { id: "intro",      name: "🎓 Free Introductions",          tier: 2, kw: ["free introduction", "nlp for beginners", "money mindset", "feeling stuck"] },
-  { id: "wcc",        name: "📜 World Class Coach Training",  tier: 2, kw: ["coaching lesson", "how to become a world class coach"] },
-  { id: "adv_sem",    name: "🎪 Advanced Seminars",           tier: 3, kw: ["emotional mastery seminar", "holistic health webinar", "day 1", "day 2"] },
-  { id: "meditation", name: "🧘 Meditations & Audio",         tier: 1, kw: ["meditation", "the gift", "guided breath"] }
+  { id: "group",      name: "👥 Group Coaching & Mentoring",  tier: 1, kw: ["group coaching", "goal setting"] },
+  { id: "emotional",  name: "💚 Emotional Clearing",          tier: 1, kw: ["emotional clearing", "gift process"] },
+  { id: "health",     name: "🏥 Health & Healing",            tier: 1, kw: ["acid alkaline", "health & energy"] },
+  { id: "nlp_basic",  name: "🧠 NLP Basics",                 tier: 1, kw: ["nlp basics", "take full control"] },
+  { id: "intro",      name: "🎓 Free Introductions",          tier: 2, kw: ["free introduction", "nlp for beginners"] },
+  { id: "wcc",        name: "📜 World Class Coach Training",  tier: 2, kw: ["coaching lesson", "world class coach"] },
+  { id: "adv_sem",    name: "🎪 Advanced Seminars",           tier: 3, kw: ["emotional mastery seminar", "holistic health webinar"] },
+  { id: "meditation", name: "🧘 Meditations & Audio",         tier: 1, kw: ["meditation", "the gift"] }
 ];
 
 function getCatForVideo(video) {
   const title = (video.title || "").toLowerCase();
-  // If video has a manually-set category that matches a CATEGORIES id, use that
   if (video.category) {
     const manual = CATEGORIES.find(c => c.id === video.category || c.name === video.category);
     if (manual) return manual;
   }
-  // Otherwise keyword-match on title
   for (const cat of CATEGORIES) {
     if (cat.kw.some(k => title.includes(k.toLowerCase()))) return cat;
   }
@@ -320,6 +345,7 @@ let currentTierView = 1;
 let adminVideos = [];
 let adminSelectedIds = new Set();
 let adminTierFilter = "all";
+let adminFolderFilter = "";
 let adminSearchQuery = "";
 let adminCurrentPage = 1;
 let adminPerPage = 25;
@@ -373,7 +399,6 @@ async function resolveProfile(email) {
   } catch(e) { console.warn("Profile fetch error", e); }
 }
 
-// Always enter via member view — admin banner shows if admin
 async function enterApp() {
   document.getElementById("loginView").style.display = "none";
   await loadMemberVideos();
@@ -396,7 +421,7 @@ function switchToAdmin() {
 function switchToMember() {
   document.getElementById("adminPanel").style.display = "none";
   document.getElementById("dashboardView").style.display = "block";
-  loadMemberVideos(); // refresh so admin changes show immediately
+  loadMemberVideos();
 }
 
 function logout() { sb.auth.signOut(); location.reload(); }
@@ -417,6 +442,104 @@ function updateStats() {
   document.getElementById("notesCountStat").innerText = userNotes.length;
 }
 
+// ===================== NOTES FEATURE =====================
+function renderNotesTab() {
+  let html = `<div class="notes-container">`;
+  if (userNotes.length === 0) {
+    html += `<div class="empty-notes">📝 No notes yet. Watch a video and add a note!</div>`;
+  } else {
+    userNotes.forEach((note, idx) => {
+      const video = allVideos.find(v => v.id === note.videoId);
+      html += `
+        <div class="note-card">
+          <div class="note-header">
+            <div class="note-video-title" onclick="playVideoFromNote(${note.videoId})">
+              🎬 ${esc(video?.title || 'Unknown Video')}
+            </div>
+            <div class="note-date">${new Date(note.date).toLocaleDateString()}</div>
+          </div>
+          <div class="note-text">${esc(note.text)}</div>
+          <div class="note-actions">
+            <button class="btn-outline-gold btn" style="padding:4px 12px;" onclick="editNote(${idx})">✏️ Edit</button>
+            <button class="btn-red btn" style="padding:4px 12px;" onclick="deleteNote(${idx})">🗑️ Delete</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+  
+  // Add new note form
+  html += `
+    <div class="add-note-form">
+      <h4 style="margin-bottom:12px;">✏️ Add a Note</h4>
+      <select id="noteVideoSelect">
+        <option value="">Select a video...</option>
+        ${allVideos.filter(v => (v.tier_required||1) <= currentUserTier).map(v => `<option value="${v.id}">${esc(v.title)}</option>`).join('')}
+      </select>
+      <textarea id="noteTextInput" rows="3" placeholder="Write your notes about this video..."></textarea>
+      <button class="btn-gold btn" onclick="addNote()">💾 Save Note</button>
+    </div>
+  </div>`;
+  
+  document.getElementById("dynamicContent").innerHTML = html;
+}
+
+function addNote() {
+  const videoId = parseInt(document.getElementById("noteVideoSelect").value);
+  const noteText = document.getElementById("noteTextInput").value.trim();
+  if (!videoId) { toast("Please select a video", true); return; }
+  if (!noteText) { toast("Please enter a note", true); return; }
+  
+  userNotes.push({
+    videoId: videoId,
+    text: noteText,
+    date: Date.now()
+  });
+  localStorage.setItem("aw_notes", JSON.stringify(userNotes));
+  updateStats();
+  renderNotesTab();
+  toast("Note added!");
+}
+
+function editNote(index) {
+  const newText = prompt("Edit your note:", userNotes[index].text);
+  if (newText && newText.trim()) {
+    userNotes[index].text = newText.trim();
+    userNotes[index].date = Date.now();
+    localStorage.setItem("aw_notes", JSON.stringify(userNotes));
+    renderNotesTab();
+    toast("Note updated!");
+  }
+}
+
+function deleteNote(index) {
+  if (confirm("Delete this note?")) {
+    userNotes.splice(index, 1);
+    localStorage.setItem("aw_notes", JSON.stringify(userNotes));
+    updateStats();
+    renderNotesTab();
+    toast("Note deleted");
+  }
+}
+
+function playVideoFromNote(videoId) {
+  switchToVideosTab();
+  setTimeout(() => playVideo(videoId), 100);
+}
+
+function switchToNotesTab() {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-tab="notes"]').classList.add('active');
+  renderNotesTab();
+}
+
+function switchToVideosTab() {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-tab="tier1"]').classList.add('active');
+  renderTierView(1);
+}
+
+// ===================== VIDEO PLAYER =====================
 function renderTierView(tierNum) {
   currentTierView = tierNum;
   if (tierNum > currentUserTier && currentUserRole !== 'admin') {
@@ -468,20 +591,21 @@ function renderTierView(tierNum) {
     <div class="player-actions">
       <button id="watchToggleBtn" class="btn btn-gold">Mark as watched</button>
       <button class="btn btn-outline-gold" onclick="document.getElementById('playerPanel').classList.remove('show')">Close</button>
+      <button id="noteThisVideoBtn" class="btn btn-navy">📝 Note this video</button>
     </div>
   </div></div></div>`;
   document.getElementById("dynamicContent").innerHTML = html;
 
-  // If a video was active, re-open player
   if (activeVideoId) {
     const panel = document.getElementById("playerPanel");
     const video = allVideos.find(v => v.id === activeVideoId);
     if (video && panel) {
       document.getElementById("playerTitle").innerText = video.title || "";
       document.getElementById("playerDesc").innerText = video.description || "";
-      document.getElementById("videoPlayerIframe").src = getEmbedUrl(video.video_url || video.google_drive_embed_url || "");
+      document.getElementById("videoPlayerIframe").src = getEmbedUrl(video.video_url || "");
       document.getElementById("watchToggleBtn").innerText = watchedMap[activeVideoId] ? "✓ Watched" : "Mark as watched";
       document.getElementById("watchToggleBtn").onclick = () => toggleWatched(activeVideoId);
+      document.getElementById("noteThisVideoBtn").onclick = () => addQuickNote(video);
       panel.classList.add("show");
     }
   }
@@ -498,6 +622,20 @@ function renderTierView(tierNum) {
   });
 }
 
+function addQuickNote(video) {
+  const noteText = prompt(`Add a note about "${video.title}":`);
+  if (noteText && noteText.trim()) {
+    userNotes.push({
+      videoId: video.id,
+      text: noteText.trim(),
+      date: Date.now()
+    });
+    localStorage.setItem("aw_notes", JSON.stringify(userNotes));
+    updateStats();
+    toast("Note saved!");
+  }
+}
+
 function playVideo(videoId) {
   const video = allVideos.find(v => v.id === videoId);
   if (!video) return;
@@ -506,9 +644,11 @@ function playVideo(videoId) {
   if (panel) {
     document.getElementById("playerTitle").innerText = video.title || "Untitled";
     document.getElementById("playerDesc").innerText = video.description || "";
-    document.getElementById("videoPlayerIframe").src = getEmbedUrl(video.video_url || video.google_drive_embed_url || "");
+    document.getElementById("videoPlayerIframe").src = getEmbedUrl(video.video_url || "");
     document.getElementById("watchToggleBtn").innerText = watchedMap[videoId] ? "✓ Watched" : "Mark as watched";
     document.getElementById("watchToggleBtn").onclick = () => toggleWatched(videoId);
+    const noteBtn = document.getElementById("noteThisVideoBtn");
+    if (noteBtn) noteBtn.onclick = () => addQuickNote(video);
     panel.classList.add("show");
   }
   document.querySelectorAll('.video-card').forEach(c => {
@@ -522,7 +662,6 @@ function toggleWatched(videoId) {
   updateStats();
   const btn = document.getElementById("watchToggleBtn");
   if (btn) btn.innerText = watchedMap[videoId] ? "✓ Watched" : "Mark as watched";
-  // Refresh icon on the card without full re-render
   document.querySelectorAll('.video-card').forEach(c => {
     if (parseInt(c.getAttribute('data-id')) === videoId) {
       const icon = c.querySelector('div:last-child');
@@ -536,15 +675,13 @@ function switchTab(tab) {
   document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
   activeCategoryId = null;
   if (tab === "notes") {
-    document.getElementById("dynamicContent").innerHTML =
-      `<div style="padding:40px;text-align:center;color:#62748c;"><h3>📝 My Notes</h3><p>Notes feature coming soon.</p></div>`;
+    renderNotesTab();
   } else {
     renderTierView(parseInt(tab.replace('tier','')));
   }
 }
 
-// ===================== ADMIN AREA =====================
-// Build category options HTML (reused in table rows + modals)
+// ===================== ADMIN AREA with Folder Filter =====================
 function buildCatOptions(selectedId) {
   return CATEGORIES.map(c =>
     `<option value="${c.id}" ${selectedId===c.id?'selected':''}>${c.name}</option>`
@@ -556,15 +693,37 @@ async function loadAdminVideos() {
   if (error) { toast("Load error: " + error.message, true); return; }
   adminVideos = data || [];
   adminSelectedIds.clear();
-  // Populate bulk category dropdown
-  document.getElementById("bulkCatSel").innerHTML =
-    `<option value="">Move to category...</option>` + buildCatOptions("");
+  document.getElementById("bulkCatSel").innerHTML = `<option value="">Move to category...</option>` + buildCatOptions("");
+  extractUniqueFolders();
+  renderAdminTable();
+}
+
+function extractUniqueFolders() {
+  // Extract unique folder paths from current tier-filtered videos
+  let filtered = adminVideos;
+  if (adminTierFilter !== "all") {
+    filtered = adminVideos.filter(v => v.tier_required === adminTierFilter);
+  }
+  const folders = [...new Set(filtered.map(v => v.folder_path || "Uncategorized").filter(f => f))];
+  const folderSelect = document.getElementById("adminFolderFilter");
+  folderSelect.innerHTML = `<option value="">All Folders</option>` + folders.map(f => `<option value="${esc(f)}">📁 ${esc(f)}</option>`).join('');
+}
+
+function extractFoldersFromTier() {
+  extractUniqueFolders();
+  toast(`📁 Folders extracted for current tier filter`);
+}
+
+function setAdminFolderFilter(folder) {
+  adminFolderFilter = folder;
+  adminCurrentPage = 1;
   renderAdminTable();
 }
 
 function renderAdminTable() {
   let filtered = adminVideos.filter(v => {
     if (adminTierFilter !== "all" && v.tier_required !== adminTierFilter) return false;
+    if (adminFolderFilter && v.folder_path !== adminFolderFilter) return false;
     if (adminSearchQuery && !(v.title||"").toLowerCase().includes(adminSearchQuery.toLowerCase())) return false;
     return true;
   });
@@ -578,8 +737,7 @@ function renderAdminTable() {
     return;
   }
   tbody.innerHTML = paged.map(v => {
-    const detectedCat = getCatForVideo(v);
-    const savedCatId = v.category || detectedCat.id;
+    const savedCatId = v.category || "other";
     return `<tr data-id="${v.id}">
       <td><input type="checkbox" class="admin-check" data-id="${v.id}" ${adminSelectedIds.has(v.id)?'checked':''}></td>
       <td style="color:#6b7280;font-size:12px;">${v.id}</td>
@@ -651,6 +809,7 @@ async function saveVideo(id) {
   const midx = allVideos.findIndex(v => v.id === id);
   if (midx !== -1) Object.assign(allVideos[midx], updates);
   toast("✅ Saved");
+  extractUniqueFolders();
 }
 
 async function deleteVideo(id) {
@@ -661,6 +820,7 @@ async function deleteVideo(id) {
   allVideos = allVideos.filter(v => v.id !== id);
   adminSelectedIds.delete(id);
   renderAdminTable();
+  extractUniqueFolders();
   toast("🗑️ Deleted");
 }
 
@@ -668,7 +828,6 @@ async function addVideo() {
   const title = document.getElementById("newTitle").value.trim();
   if (!title) { toast("Title required", true); return; }
   const catId = document.getElementById("newCat").value;
-  const catObj = CATEGORIES.find(c => c.id === catId);
   const newVideo = {
     title,
     video_url: document.getElementById("newUrl").value,
@@ -700,6 +859,7 @@ async function bulkApply() {
   toast(`✅ Updated ${adminSelectedIds.size} videos`);
   adminSelectedIds.clear();
   renderAdminTable();
+  extractUniqueFolders();
 }
 
 async function bulkDelete() {
@@ -710,13 +870,17 @@ async function bulkDelete() {
   allVideos = allVideos.filter(v => !adminSelectedIds.has(v.id));
   adminSelectedIds.clear();
   renderAdminTable();
+  extractUniqueFolders();
   toast("🗑️ Deleted selected");
 }
 
 function setAdminTier(tier, el) {
-  adminTierFilter = tier; adminCurrentPage = 1;
+  adminTierFilter = tier;
+  adminFolderFilter = "";
+  adminCurrentPage = 1;
   document.querySelectorAll('#adminTabs .tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
+  extractUniqueFolders();
   renderAdminTable();
 }
 function clearSel() { adminSelectedIds.clear(); renderAdminTable(); }
