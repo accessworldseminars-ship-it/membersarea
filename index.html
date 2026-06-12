@@ -637,14 +637,29 @@ function addQuickNote(video) {
 }
 
 function playVideo(videoId) {
-  const video = allVideos.find(v => v.id === videoId);
-  console.log("=== TIER DEBUG ===");
-  console.log("Video ID:", videoId);
-  console.log("Video found:", video);
-  console.log("Video tier:", video?.tier_required);
-  console.log("Description:", video?.description);
+  console.log("=== PLAYING VIDEO ===");
+  console.log("Video ID requested:", videoId);
+  console.log("allVideos length:", allVideos.length);
   
-  if (!video) return;
+  // Make sure allVideos has the data
+  const video = allVideos.find(v => v.id === videoId);
+  
+  if (!video) {
+    console.error("Video not found in allVideos! Reloading...");
+    // Try to reload videos if not found
+    loadMemberVideos().then(() => {
+      const retryVideo = allVideos.find(v => v.id === videoId);
+      if (retryVideo) {
+        playVideo(videoId); // Retry
+      } else {
+        toast("Video not found", true);
+      }
+    });
+    return;
+  }
+  
+  console.log("Video tier:", video.tier_required);
+  console.log("Description:", video.description);
   
   activeVideoId = videoId;
   const panel = document.getElementById("playerPanel");
@@ -659,6 +674,8 @@ function playVideo(videoId) {
     if (descEl) {
       descEl.innerText = video.description || "No description available.";
       console.log("Description set to:", descEl.innerText);
+    } else {
+      console.error("playerDesc element not found!");
     }
     
     // Set video URL
