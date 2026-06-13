@@ -442,30 +442,44 @@ function updateStats() {
   document.getElementById("notesCountStat").innerText = userNotes.length;
 }
 
-// ===================== NOTES FEATURE =====================
-function renderNotesTab() {
+// ===================== NOTES FEATURE (Supabase Version) =====================
+
+async function renderNotesTab() {
+  // Load notes from Supabase
+  const { data: notes, error } = await sb
+    .from('user_notes')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error loading notes:', error);
+    toast('Error loading notes', true);
+    return;
+  }
+  
   let html = `<div class="notes-container">`;
-  if (userNotes.length === 0) {
+  
+  if (!notes || notes.length === 0) {
     html += `<div class="empty-notes">📝 No notes yet. Watch a video and add a note!</div>`;
   } else {
-    userNotes.forEach((note, idx) => {
-      const video = allVideos.find(v => v.id === note.videoId);
+    for (const note of notes) {
+      const video = allVideos.find(v => v.id === note.video_id);
       html += `
-        <div class="note-card">
+        <div class="note-card" data-note-id="${note.id}">
           <div class="note-header">
-            <div class="note-video-title" onclick="playVideoFromNote(${note.videoId})">
+            <div class="note-video-title" onclick="playVideoFromNote(${note.video_id})">
               🎬 ${esc(video?.title || 'Unknown Video')}
             </div>
-            <div class="note-date">${new Date(note.date).toLocaleDateString()}</div>
+            <div class="note-date">${new Date(note.created_at).toLocaleDateString()}</div>
           </div>
-          <div class="note-text">${esc(note.text)}</div>
+          <div class="note-text">${esc(note.note_text)}</div>
           <div class="note-actions">
-            <button class="btn-outline-gold btn" style="padding:4px 12px;" onclick="editNote(${idx})">✏️ Edit</button>
-            <button class="btn-red btn" style="padding:4px 12px;" onclick="deleteNote(${idx})">🗑️ Delete</button>
+            <button class="btn-outline-gold btn" style="padding:4px 12px;" onclick="editNoteById(${note.id})">✏️ Edit</button>
+            <button class="btn-red btn" style="padding:4px 12px;" onclick="deleteNoteById(${note.id})">🗑️ Delete</button>
           </div>
         </div>
       `;
-    });
+    }
   }
   
   // Add new note form
@@ -477,49 +491,77 @@ function renderNotesTab() {
         ${allVideos.filter(v => (v.tier_required||1) <= currentUserTier).map(v => `<option value="${v.id}">${esc(v.title)}</option>`).join('')}
       </select>
       <textarea id="noteTextInput" rows="3" placeholder="Write your notes about this video..."></textarea>
-      <button class="btn-gold btn" onclick="addNote()">💾 Save Note</button>
+      <button class="btn-gold btn" onclick="saveNewNote()">💾 Save Note</button>
     </div>
   </div>`;
   
   document.getElementById("dynamicContent").innerHTML = html;
 }
 
-function addNote() {
+async function saveNewNote() {
   const videoId = parseInt(document.getElementById("noteVideoSelect").value);
   const noteText = document.getElementById("noteTextInput").value.trim();
+  
   if (!videoId) { toast("Please select a video", true); return; }
   if (!noteText) { toast("Please enter a note", true); return; }
   
-  userNotes.push({
-    videoId: videoId,
-    text: noteText,
-    date: Date.now()
-  });
-  localStorage.setItem("aw_notes", JSON.stringify(userNotes));
-  updateStats();
+  const { data, error } = await sb
+    .from('user_notes')
+    .insert({
+      user_id: currentUser.id,
+      video_id: videoId,
+      note_text: noteText
+    });
+  
+  if (error) {
+    console.error('Error saving note:', error);
+    toast('Error saving note: ' + error.message, true);
+    return;
+  }
+  
+  toast("Note saved!");
   renderNotesTab();
-  toast("Note added!");
 }
 
-function editNote(index) {
-  const newText = prompt("Edit your note:", userNotes[index].text);
-  if (newText && newText.trim()) {
-    userNotes[index].text = newText.trim();
-    userNotes[index].date = Date.now();
-    localStorage.setItem("aw_notes", JSON.stringify(userNotes));
-    renderNotesTab();
-    toast("Note updated!");
+async function editNoteById(noteId) {
+  // Get current note text from the DOM
+  const noteCard = document.querySelector(`.note-card[data-note-id="${noteId}"]`);
+  const currentText = noteCard.querySelector('.note-text').innerText;
+  
+  const newText = prompt("Edit your note:", currentText);
+  if (!newText || !newText.trim()) return;
+  
+  const { error } = await sb
+    .from('user_notes')
+    .update({ note_text: newText.trim(), updated_at: new Date() })
+    .eq('id', noteId);
+  
+  if (error) {
+    console.error('Error updating note:', error);
+    toast('Error updating note: ' + error.message, true);
+    return;
   }
+  
+  toast("Note updated!");
+  renderNotesTab();
 }
 
-function deleteNote(index) {
-  if (confirm("Delete this note?")) {
-    userNotes.splice(index, 1);
-    localStorage.setItem("aw_notes", JSON.stringify(userNotes));
-    updateStats();
-    renderNotesTab();
-    toast("Note deleted");
+async function deleteNoteById(noteId) {
+  if (!confirm("Delete this note?")) return;
+  
+  const { error } = await sb
+    .from('user_notes')
+    .delete()
+    .eq('id', noteId);
+  
+  if (error) {
+    console.error('Error deleting note:', error);
+    toast('Error deleting note: ' + error.message, true);
+    return;
   }
+  
+  toast("Note deleted");
+  renderNotesTab();
 }
 
 function playVideoFromNote(videoId) {
