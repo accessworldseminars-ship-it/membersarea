@@ -235,6 +235,7 @@ tr:hover td { background: #161f2e; }
       </select>
       <button class="btn-gold btn" onclick="loadAdminVideos()">↺ Refresh</button>
       <button class="btn-green btn" onclick="showAddModal()">+ Add Video</button>
+      <button class="btn-navy btn" onclick="showAddUserModal()">+ Add User</button>
     </div>
     <div class="admin-section admin-tabs" id="adminTabs">
       <div class="tab active" onclick="setAdminTier('all',this)">All Videos</div>
@@ -277,6 +278,7 @@ tr:hover td { background: #161f2e; }
   </div>
 </div>
 
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <!-- Add Video Modal -->
 <div id="addModal" class="modal">
   <div class="modal-content">
@@ -297,8 +299,32 @@ tr:hover td { background: #161f2e; }
     </div>
   </div>
 </div>
-
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <!-- Add User Modal -->
+<div id="addUserModal" class="modal">
+  <div class="modal-content">
+    <h3 style="color:#C9A84C; margin-bottom:15px;">👤 Add New User</h3>
+    <label>Full Name *</label>
+    <input type="text" id="newUserName" placeholder="John Smith">
+    <label>Email *</label>
+    <input type="email" id="newUserEmail" placeholder="john@email.com">
+    <label>Tier</label>
+    <select id="newUserTier">
+      <option value="1">⭐ Tier 1</option>
+      <option value="2">🚀 Tier 2</option>
+      <option value="3">🏆 Tier 3</option>
+    </select>
+    <label>Role</label>
+    <select id="newUserRole">
+      <option value="member">Member</option>
+      <option value="admin">Admin</option>
+    </select>
+    <div style="display:flex; gap:10px; margin-top:15px;">
+      <button class="btn-gold btn" onclick="addUser()">Send Invite</button>
+      <button class="btn-outline-gold btn" onclick="closeAddUserModal()">Cancel</button>
+    </div>
+    <div id="addUserMsg" style="margin-top:12px; font-size:13px;"></div>
+  </div>
+</div>
 <script>
 // ===================== CONFIG =====================
 const SUPABASE_URL = "https://zwwodopezadqjazhajmx.supabase.co";
@@ -970,9 +996,40 @@ function showAddModal() {
   document.getElementById("newCat").innerHTML = buildCatOptions(CATEGORIES[0].id);
   document.getElementById("addModal").style.display = "flex";
 }
+
 function closeAddModal() {
   document.getElementById("addModal").style.display = "none";
   ["newTitle","newUrl","newDesc"].forEach(id => { const el=document.getElementById(id); if(el) el.value=""; });
+}
+
+function showAddUserModal() {
+  document.getElementById("addUserModal").style.display = "flex";
+  document.getElementById("addUserMsg").innerText = "";
+  ["newUserName","newUserEmail"].forEach(id => { document.getElementById(id).value = ""; });
+}
+
+function closeAddUserModal() {
+  document.getElementById("addUserModal").style.display = "none";
+}
+
+async function addUser() {
+  const name  = document.getElementById("newUserName").value.trim();
+  const email = document.getElementById("newUserEmail").value.trim();
+  const tier  = parseInt(document.getElementById("newUserTier").value);
+  const role  = document.getElementById("newUserRole").value;
+  const msgEl = document.getElementById("addUserMsg");
+  if (!name)  { msgEl.style.color="#dc2626"; msgEl.innerText="Name is required."; return; }
+  if (!email) { msgEl.style.color="#dc2626"; msgEl.innerText="Email is required."; return; }
+  msgEl.style.color="#9ca3af"; msgEl.innerText="Sending invite...";
+  const { data, error } = await sb.auth.admin.inviteUserByEmail(email);
+  if (error) { msgEl.style.color="#dc2626"; msgEl.innerText="Error: " + error.message; return; }
+  const { error: profErr } = await sb.from("profiles").upsert({
+    email, full_name: name, membership_tier: tier, role
+  }, { onConflict: "email" });
+  if (profErr) { msgEl.style.color="#f59e0b"; msgEl.innerText="Invite sent but profile error: " + profErr.message; return; }
+  msgEl.style.color="#16a34a";
+  msgEl.innerText="✅ Invite sent to " + email;
+  toast("✅ Invite sent to " + email);
 }
 
 // ===================== EVENTS =====================
