@@ -424,7 +424,7 @@ function switchToMember() {
   loadMemberVideos();
 }
 
-function logout() { sb.auth.signOut(); location.reload(); }
+function logout() { sb.auth.signOut().then(() => location.reload()); }
 
 // ===================== MEMBER AREA =====================
 async function loadMemberVideos() {
@@ -1007,12 +1007,7 @@ window.addEventListener("load", async () => {
     const n = localStorage.getItem("aw_notes"); if(n) userNotes = JSON.parse(n);
   } catch(e) {}
 
-  const { data: { user } } = await sb.auth.getUser();
-  if (user) {
-    currentUser = user;
-    await resolveProfile(user.email);
-    await enterApp();
-  }
+ await sb.auth.signOut();
 
   document.getElementById("loginBtn").addEventListener("click", handleLogin);
   document.getElementById("loginPassword")?.addEventListener("keydown", e => { if(e.key==="Enter") handleLogin(); });
