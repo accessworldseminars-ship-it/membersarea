@@ -244,7 +244,7 @@ tr:hover td { background: #161f2e; }
       <div class="tab" onclick="setAdminTier(3,this)">🏆 Tier 3</div>
     </div>
     
-    <!-- NEW: Folder Filter for Admin -->
+    <!-- Folder Filter for Admin -->
     <div class="folder-filter-group">
       <label>📁 Filter by Folder:</label>
       <select id="adminFolderFilter" onchange="setAdminFolderFilter(this.value)">
@@ -299,7 +299,7 @@ tr:hover td { background: #161f2e; }
     </div>
   </div>
 </div>
-  <!-- Add User Modal -->
+<!-- Add User Modal -->
 <div id="addUserModal" class="modal">
   <div class="modal-content">
     <h3 style="color:#C9A84C; margin-bottom:15px;">👤 Add New User</h3>
@@ -1012,25 +1012,54 @@ function closeAddUserModal() {
   document.getElementById("addUserModal").style.display = "none";
 }
 
+// ===================== UPDATED addUser() – uses Edge Function =====================
 async function addUser() {
   const name  = document.getElementById("newUserName").value.trim();
   const email = document.getElementById("newUserEmail").value.trim();
   const tier  = parseInt(document.getElementById("newUserTier").value);
   const role  = document.getElementById("newUserRole").value;
   const msgEl = document.getElementById("addUserMsg");
+
   if (!name)  { msgEl.style.color="#dc2626"; msgEl.innerText="Name is required."; return; }
   if (!email) { msgEl.style.color="#dc2626"; msgEl.innerText="Email is required."; return; }
+
   msgEl.style.color="#9ca3af"; msgEl.innerText="Sending invite...";
-  const { data, error } = await sb.auth.admin.inviteUserByEmail(email);
-  if (error) { msgEl.style.color="#dc2626"; msgEl.innerText="Error: " + error.message; return; }
-  const { error: profErr } = await sb.from("profiles").upsert({
-    email, full_name: name, membership_tier: tier, role
-  }, { onConflict: "email" });
-  if (profErr) { msgEl.style.color="#f59e0b"; msgEl.innerText="Invite sent but profile error: " + profErr.message; return; }
-  msgEl.style.color="#16a34a";
-  msgEl.innerText="✅ Invite sent to " + email;
-  toast("✅ Invite sent to " + email);
+
+  // Get the current session's access token
+  const { data: { session } } = await sb.auth.getSession();
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/add-student`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({ email, full_name: name, membership_tier: tier, role })
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      msgEl.style.color="#dc2626";
+      msgEl.innerText = "Error: " + (result.error || "Unknown error");
+      return;
+    }
+
+    msgEl.style.color="#16a34a";
+    msgEl.innerText = "✅ Invite sent to " + email;
+    toast("✅ Invite sent to " + email);
+
+    // Optionally clear the form
+    document.getElementById("newUserName").value = "";
+    document.getElementById("newUserEmail").value = "";
+
+  } catch (err) {
+    msgEl.style.color="#dc2626";
+    msgEl.innerText = "Network error: " + err.message;
+  }
 }
+// ===================== END addUser() =====================
 
 // ===================== EVENTS =====================
 document.getElementById("adminSearch")?.addEventListener("input", e => { adminSearchQuery = e.target.value; adminCurrentPage = 1; renderAdminTable(); });
